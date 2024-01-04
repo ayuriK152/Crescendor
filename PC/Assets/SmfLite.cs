@@ -21,6 +21,7 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 namespace SmfLite
 {
@@ -51,6 +52,18 @@ namespace SmfLite
         }
 
         #endregion
+    }
+
+    public class Tempo
+    {
+        public int deltaTime;
+        public int microSecond;
+
+        public Tempo(int deltaTime, int microSecond)
+        {
+            this.deltaTime = deltaTime;
+            this.microSecond = microSecond;
+        }
     }
 
     //
@@ -134,11 +147,14 @@ namespace SmfLite
 
         // Track list contained in this file.
         public List<MidiTrack> tracks;
+
+        public List<Tempo> tempoMap;
         
-        public MidiFileContainer (int division, List<MidiTrack> tracks)
+        public MidiFileContainer (int division, List<MidiTrack> tracks, List<Tempo> tempoMap)
         {
             this.division = division;
             this.tracks = tracks;
+            this.tempoMap = tempoMap;
         }
         
         public override string ToString ()
@@ -246,6 +262,7 @@ namespace SmfLite
         public static MidiFileContainer Load (byte[] data)
         {
             var tracks = new List<MidiTrack> ();
+            var tempoMap = new List<Tempo>();
             var reader = new MidiDataStreamReader (data);
             
             // Chunk type.
@@ -272,22 +289,27 @@ namespace SmfLite
             
             // Read the tracks.
             for (var trackIndex = 0; trackIndex < trackCount; trackIndex++) {
-                tracks.Add (ReadTrack (reader));
+                KeyValuePair<MidiTrack, List<Tempo>> result = ReadTrack(reader);
+                tracks.Add(result.Key);
+                if (result.Value.Count > 0)
+                    tempoMap = result.Value;
             }
             
-            return new MidiFileContainer (division, tracks);
+            return new MidiFileContainer (division, tracks, tempoMap);
         }
 
         #endregion
 
         #region Private members
         
-        static MidiTrack ReadTrack (MidiDataStreamReader reader)
+        static KeyValuePair<MidiTrack, List<Tempo>> ReadTrack (MidiDataStreamReader reader)
         {
             var track = new MidiTrack ();
-            
+            var tempoMap = new List<Tempo>();
+
             // Chunk type.
-            if (new string (reader.ReadChars (4)) != "MTrk") {
+            string trackName = new string(reader.ReadChars(4));
+            if (trackName != "MTrk") {
                 throw new System.FormatException ("Can't find track chunk.");
             }
             
@@ -307,9 +329,21 @@ namespace SmfLite
                 }
                 
                 if (ev == 0xff) {
-                    // 0xff: Meta event (unused).
-                    reader.Advance (1);
-                    reader.Advance (reader.ReadMultiByteValue ());
+                    // 0xff: Meta event
+                    // 템포를 읽기위한 임의 수정 부분
+                    ev = reader.ReadByte();
+                    if (ev == 0x51) {
+                        byte length = reader.ReadByte();
+                        int value = 0;
+                        for (int i = 0; i < length; i++) {
+                            value <<= 8;
+                            int tempByte = reader.ReadByte();
+                            value += tempByte & 0xff;
+                        }
+                        tempoMap.Add(new Tempo(delta, value));
+                    } else {
+                        reader.Advance(reader.ReadMultiByteValue());
+                    }
                 } else if (ev == 0xf0) {
                     // 0xf0: SysEx (unused).
                     while (reader.ReadByte() != 0xf7) {
@@ -321,8 +355,8 @@ namespace SmfLite
                     track.AddEvent (delta, new MidiEvent (ev, data1, data2));
                 }
             }
-            
-            return track;
+
+            return new KeyValuePair<MidiTrack, List<Tempo>>(track, tempoMap);
         }
 
         #endregion
