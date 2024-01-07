@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using static Define;
+using static Datas;
+using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 public class MidiTest : MonoBehaviour
 {
@@ -17,6 +20,7 @@ public class MidiTest : MonoBehaviour
 
     public float noteScale = 1.0f;
     public float scrollSpeed = 1.0f;
+    public int tempo = 120;
 
     List<GameObject> instatiateNotes = new List<GameObject>();
     List<Notes> notes = new List<Notes>();
@@ -24,13 +28,19 @@ public class MidiTest : MonoBehaviour
 
     void Awake()
     {
-        sourceFile = Resources.Load<TextAsset>("Converts/Nw_j_variations");
+        sourceFile = Resources.Load<TextAsset>("Converts/b9IsAwesome");
     }
 
-    IEnumerator Start()
+    void Start()
     {
         song = MidiFileLoader.Load(sourceFile.bytes);
-        yield return new WaitForSeconds(1.0f);
+        while (song.tracks == null)     // 혹시 모를 비동기 로드 상황에 대비
+        {
+            Debug.Log("Now MIDI data on loading..");
+        }
+        Debug.Log("MIDI data loaded!");
+
+        tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
         for (int i = 0; i < song.tracks.Count; i++)
         {
             MidiTrack track = song.tracks[i];
@@ -62,7 +72,21 @@ public class MidiTest : MonoBehaviour
         {
             instatiateNotes.Add(Instantiate(noteObj, noteInstantiatePoint));
             instatiateNotes[i].transform.localScale = new Vector3(0.5f, 0.5f, notes[i].deltaTime / (float)song.division * noteScale);
-            instatiateNotes[i].transform.localPosition = new Vector3(notes[i].keyNum, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+            instatiateNotes[i].transform.localPosition = new Vector3(notes[i].keyNum - DEFAULT_C3_POSITION, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
         }
+    }
+
+    void Update()
+    {
+        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond * noteScale * Time.deltaTime));
+    }
+
+    // 밀리초 데이터를 이용한 곡 템포 계산
+    int CalcTempoWithRatio(float ratio)
+    {
+        int resultTempo = -1;
+        float temp = Datas.DEFAULT_TEMPO * ratio;
+        resultTempo = temp - (int)temp < 0.5f ? (int)temp : (int)temp + 1;
+        return resultTempo;
     }
 }

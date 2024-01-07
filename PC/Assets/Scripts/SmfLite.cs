@@ -58,11 +58,12 @@ namespace SmfLite
     {
         public int deltaTime;
         public int milliSecond;
+        public int tempo;
 
-        public Tempo(int deltaTime, int microSecond)
+        public Tempo(int deltaTime, int milliSecond)
         {
             this.deltaTime = deltaTime;
-            this.milliSecond = microSecond;
+            this.milliSecond = milliSecond;
         }
     }
 
