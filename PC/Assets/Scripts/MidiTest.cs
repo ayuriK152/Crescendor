@@ -21,10 +21,14 @@ public class MidiTest : MonoBehaviour
     public float noteScale = 1.0f;
     public float scrollSpeed = 1.0f;
     public int tempo = 120;
+    public float currentDeltaTime = 0.0f;
 
     List<GameObject> instatiateNotes = new List<GameObject>();
     List<Notes> notes = new List<Notes>();
     Dictionary<int, int> tempNoteData = new Dictionary<int, int>();
+    List<int> noteTiming = new List<int>();
+    Dictionary<int, List<Notes>> noteSetBySameTime = new Dictionary<int, List<Notes>>();
+    int currentNoteIndex = 0;
 
     void Awake()
     {
@@ -70,15 +74,41 @@ public class MidiTest : MonoBehaviour
         }
         for (int i = 0; i < notes.Count; i++)
         {
+            if (!noteSetBySameTime.ContainsKey(notes[i].startTime))
+            {
+                noteTiming.Add(notes[i].startTime);
+                noteSetBySameTime.Add(notes[i].startTime, new List<Notes>());
+            }
+            noteSetBySameTime[notes[i].startTime].Add(notes[i]);
+
             instatiateNotes.Add(Instantiate(noteObj, noteInstantiatePoint));
             instatiateNotes[i].transform.localScale = new Vector3(0.5f, 0.5f, notes[i].deltaTime / (float)song.division * noteScale);
-            instatiateNotes[i].transform.localPosition = new Vector3(notes[i].keyNum - DEFAULT_C3_POSITION, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+            instatiateNotes[i].transform.localPosition = new Vector3((notes[i].keyNum - DEFAULT_C3_POSITION) * 0.5f, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
         }
+
+        noteTiming.Sort();
     }
 
     void Update()
     {
+        Scroll();
+    }
+
+    void Scroll()
+    {
+        if (noteTiming[currentNoteIndex] <= currentDeltaTime)
+        {
+            currentDeltaTime = noteTiming[currentNoteIndex];
+            transform.position = new Vector3(0, 0, -currentDeltaTime / song.division * noteScale);
+            return;
+        }
+        currentDeltaTime += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond * song.division * Time.deltaTime;
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond * noteScale * Time.deltaTime));
+    }
+
+    public void IncreaseCurrentNoteIndex()
+    {
+        currentNoteIndex += 1;
     }
 
     // 밀리초 데이터를 이용한 곡 템포 계산
