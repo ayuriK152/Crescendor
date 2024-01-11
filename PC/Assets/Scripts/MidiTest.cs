@@ -1,12 +1,12 @@
 using SmfLite;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using static Define;
 using static Datas;
-using UnityEngine.UIElements;
-using Unity.VisualScripting;
+using Melanchall.DryWetMidi.Multimedia;
+using System;
+using Melanchall.DryWetMidi.Core;
 
 public class MidiTest : MonoBehaviour
 {
@@ -23,11 +23,16 @@ public class MidiTest : MonoBehaviour
     public int tempo = 120;
     public float currentDeltaTime = 0.0f;
 
+    static bool[] keyChecks = new bool[88];
+    static InputDevice _inputDevice;
+
+    bool _isInputTiming = false;
+
     List<GameObject> instatiateNotes = new List<GameObject>();
     List<Notes> notes = new List<Notes>();
     Dictionary<int, int> tempNoteData = new Dictionary<int, int>();
     List<int> noteTiming = new List<int>();
-    Dictionary<int, List<Notes>> noteSetBySameTime = new Dictionary<int, List<Notes>>();
+    Dictionary<int, List<KeyValuePair<int, bool>>> noteSetBySameTime = new Dictionary<int, List<KeyValuePair<int, bool>>>();
     int currentNoteIndex = 0;
 
     void Awake()
@@ -77,9 +82,9 @@ public class MidiTest : MonoBehaviour
             if (!noteSetBySameTime.ContainsKey(notes[i].startTime))
             {
                 noteTiming.Add(notes[i].startTime);
-                noteSetBySameTime.Add(notes[i].startTime, new List<Notes>());
+                noteSetBySameTime.Add(notes[i].startTime, new List<KeyValuePair<int, bool>>());
             }
-            noteSetBySameTime[notes[i].startTime].Add(notes[i]);
+            noteSetBySameTime[notes[i].startTime].Add(new KeyValuePair<int, bool>(notes[i].keyNum - 1, false));
 
             instatiateNotes.Add(Instantiate(noteObj, noteInstantiatePoint));
             instatiateNotes[i].transform.localScale = new Vector3(0.5f, 0.5f, notes[i].deltaTime / (float)song.division * noteScale);
@@ -87,10 +92,23 @@ public class MidiTest : MonoBehaviour
         }
 
         noteTiming.Sort();
+
+        try
+        {
+            _inputDevice = InputDevice.GetByName("Digital Piano");
+            _inputDevice.EventReceived += OnEventReceived;
+            _inputDevice.StartEventsListening();
+            Debug.Log(_inputDevice.IsListeningForEvents);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }
     }
 
     void Update()
     {
+        WaitMidiInput();
         Scroll();
     }
 
@@ -100,10 +118,24 @@ public class MidiTest : MonoBehaviour
         {
             currentDeltaTime = noteTiming[currentNoteIndex];
             transform.position = new Vector3(0, 0, -currentDeltaTime / song.division * noteScale);
+            _isInputTiming = true;
             return;
         }
         currentDeltaTime += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond * song.division * Time.deltaTime;
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond * noteScale * Time.deltaTime));
+    }
+
+    void WaitMidiInput()
+    {
+        if (!_isInputTiming)
+            return;
+        for (int i = 0; i < noteSetBySameTime[noteTiming[currentNoteIndex]].Count; i++)
+        {
+            noteSetBySameTime[noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key, keyChecks[noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key]);
+            if (!noteSetBySameTime[noteTiming[currentNoteIndex]][i].Value)
+                return;
+        }
+        IncreaseCurrentNoteIndex();
     }
 
     public void IncreaseCurrentNoteIndex()
@@ -118,5 +150,24 @@ public class MidiTest : MonoBehaviour
         float temp = Datas.DEFAULT_TEMPO * ratio;
         resultTempo = temp - (int)temp < 0.5f ? (int)temp : (int)temp + 1;
         return resultTempo;
+    }
+
+    static void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
+    {
+        var midiDevice = (MidiDevice)sender;
+        if (e.Event.EventType != MidiEventType.ActiveSensing)
+        {
+            NoteEvent noteEvent = e.Event as NoteEvent;
+            if (noteEvent.Velocity != 0)
+            {
+                keyChecks[noteEvent.NoteNumber - 1] = true;
+                Debug.Log(keyChecks[noteEvent.NoteNumber - 1]);
+            }
+            else if (noteEvent.Velocity == 0)
+            {
+                keyChecks[noteEvent.NoteNumber - 1] = false;
+                Debug.Log(keyChecks[noteEvent.NoteNumber - 1]);
+            }
+        }
     }
 }
