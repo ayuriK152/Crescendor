@@ -22,7 +22,7 @@ const users = [
  */
 
 /**
- * @path {GET} http://localhost:3000/
+ * @path {GET} http://3.35.3.193:3000/
  * @description 요청 데이터 값이 없고 반환 값이 있는 GET Method
  */
 app.get('/', (req, res) => {
@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 })
 
 /**
- * @path {GET} http://localhost:3000/api/users
+ * @path {GET} http://3.35.3.193:3000/api/users
  * @description 요청 데이터 값이 없고 반환 값이 있는 GET Method
  */
 app.get('/api/users', (req, res) => {
@@ -40,7 +40,7 @@ app.get('/api/users', (req, res) => {
 })
 
 /**
- * @path {GET} http://localhost:3000/api/users/user?user_id=1
+ * @path {GET} http://3.35.3.193:3000/api/users/user?user_id=1
  * @description Query Params 요청 데이터 값이 있고 반환 값이 있는 GET Method
  *
  *  Query Params 방식
@@ -58,7 +58,7 @@ app.get('/api/users/user', (req, res) => {
 })
 
 /**
- * @path {GET} http://localhost:3000/api/users/userBody
+ * @path {GET} http://3.35.3.193:3000/api/users/userBody
  * @description Body 요청 데이터 값이 있고 반환 값이 있는 GET Method
  *
  *  post로 요청시 body에 데이터를 담아서 보낼수 있듯이 get도 사용이 가능하다.
@@ -73,7 +73,7 @@ app.get('/api/users/userBody', (req, res) => {
 })
 
 /**
- * @path {GET} http://localhost:3000/api/users/:user_id
+ * @path {GET} http://3.35.3.193:3000/api/users/:user_id
  * @description Path Variables 요청 데이터 값이 있고 반환 값이 있는 GET Method
  *
  *  Path Variables 방식
@@ -96,7 +96,7 @@ app.get('/api/users/:user_id', (req, res) => {
 })
 
 /**
- * @path {POST} http://localhost:3000/api/users/add
+ * @path {POST} http://3.35.3.193:3000/api/users/add
  * @description POST Method
  *
  *  POST 데이터를 생성할 때 사용된다.
@@ -113,7 +113,7 @@ app.post('/api/users/add', (req, res) => {
 })
 
 /**
- * @path {PUT} http://localhost:3000/api/users/update
+ * @path {PUT} http://3.35.3.193:3000/api/users/update
  * @description 전체 데이터를 수정할 때 사용되는 Method
  */
 app.put('/api/users/update', (req, res) => {
@@ -134,7 +134,7 @@ app.put('/api/users/update', (req, res) => {
 })
 
 /**
- * @path {PATCH} http://localhost:3000/api/user/update/:user_id
+ * @path {PATCH} http://3.35.3.193:3000/api/user/update/:user_id
  * @description 단일 데이터를 수정할 때 사용되는 Method
  */
 app.patch('/api/user/update/:user_id', (req, res) => {
@@ -155,7 +155,7 @@ app.patch('/api/user/update/:user_id', (req, res) => {
 })
 
 /**
- * @path {DELETE} http://localhost:3000/api/user/delete
+ * @path {DELETE} http://3.35.3.193:3000/api/user/delete
  * @description 데이터 삭제
  *
  */
