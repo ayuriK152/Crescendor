@@ -79,5 +79,3 @@ crashlytics-build.properties
 .vscode/
 
 /Server/node_modules
-
-package.json
