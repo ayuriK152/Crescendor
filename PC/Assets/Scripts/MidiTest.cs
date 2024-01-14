@@ -13,15 +13,17 @@ public class MidiTest : MonoBehaviour
     public TextAsset sourceFile;
     public MidiFileContainer song;
     public GameObject noteObj;
+    public GameObject keyTextObj;
     public Transform noteInstantiatePoint;
 
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
 
+    public int tempo = 120;
     public float noteScale = 1.0f;
     public float scrollSpeed = 1.0f;
-    public int tempo = 120;
     public float currentDeltaTime = 0.0f;
+    public float notePosOffset = 0.0f;
 
     static bool[] keyChecks = new bool[88];
     static InputDevice _inputDevice;
@@ -87,8 +89,13 @@ public class MidiTest : MonoBehaviour
             noteSetBySameTime[notes[i].startTime].Add(new KeyValuePair<int, bool>(notes[i].keyNum - 1, false));
 
             instatiateNotes.Add(Instantiate(noteObj, noteInstantiatePoint));
-            instatiateNotes[i].transform.localScale = new Vector3(0.5f, 0.5f, notes[i].deltaTime / (float)song.division * noteScale);
-            instatiateNotes[i].transform.localPosition = new Vector3((notes[i].keyNum - DEFAULT_C3_POSITION) * 0.5f, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+            instatiateNotes[i].transform.localScale = new Vector3(0.25f, 0.25f, notes[i].deltaTime / (float)song.division * noteScale);
+            instatiateNotes[i].transform.localPosition = new Vector3((notes[i].keyNum - DEFAULT_C3_POSITION) * 0.25f, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+            GameObject tempKeyObject = Instantiate(keyTextObj, noteInstantiatePoint);
+            tempKeyObject.transform.parent = instatiateNotes[i].transform;
+            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
+            tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
+            tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(notes[i].keyNum);
         }
 
         noteTiming.Sort();
@@ -118,7 +125,7 @@ public class MidiTest : MonoBehaviour
         if (noteTiming[currentNoteIndex] <= currentDeltaTime)
         {
             currentDeltaTime = noteTiming[currentNoteIndex];
-            transform.position = new Vector3(0, 0, -currentDeltaTime / song.division * noteScale);
+            transform.position = new Vector3(0, 0, -currentDeltaTime / song.division * noteScale + notePosOffset);
             _isInputTiming = true;
             return;
         }
@@ -158,6 +165,63 @@ public class MidiTest : MonoBehaviour
         return resultTempo;
     }
 
+    string GetKeyFromKeynum(int keyNum)
+    {
+        keyNum -= 20;
+        string key = "";
+        string pos = "";
+        int offset = -1;
+        if (keyNum > 3)
+        {
+            offset = (keyNum - 3) / 12;
+            keyNum -= 3;
+        }
+        else
+            keyNum += 9;
+
+        switch (keyNum % 12)
+        {
+            case 1:
+                pos = "C";
+                break;
+            case 2:
+                pos = "C#";
+                break;
+            case 3:
+                pos = "D";
+                break;
+            case 4:
+                pos = "D#";
+                break;
+            case 5:
+                pos = "E";
+                break;
+            case 6:
+                pos = "F";
+                break;
+            case 7:
+                pos = "F#";
+                break;
+            case 8:
+                pos = "G";
+                break;
+            case 9:
+                pos = "G#";
+                break;
+            case 10:
+                pos = "A";
+                break;
+            case 11:
+                pos = "A#";
+                break;
+            case 0:
+                pos = "B";
+                break;
+        }
+        key = $"{pos}{offset}";
+        return key;
+    }
+
     static void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
     {
         var midiDevice = (MidiDevice)sender;
@@ -167,12 +231,11 @@ public class MidiTest : MonoBehaviour
             if (noteEvent.Velocity != 0)
             {
                 keyChecks[noteEvent.NoteNumber - 1] = true;
-                Debug.Log(keyChecks[noteEvent.NoteNumber - 1]);
+                Debug.Log(noteEvent);
             }
             else if (noteEvent.Velocity == 0)
             {
                 keyChecks[noteEvent.NoteNumber - 1] = false;
-                Debug.Log(keyChecks[noteEvent.NoteNumber - 1]);
             }
         }
     }

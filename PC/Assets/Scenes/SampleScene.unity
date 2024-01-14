@@ -797,7 +797,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -821,14 +821,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.70696384, y: -0, z: -0, w: 0.70724976}
+  m_LocalPosition: {x: 0, y: 6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1022914000
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,13 +875,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceFile: {fileID: 0}
   noteObj: {fileID: 4329751273353442230, guid: 993f54e5afef5d94fa96c5bb575f5c1b, type: 3}
+  keyTextObj: {fileID: 3420301408059104893, guid: 81b1b20cc3886ab4db208392f9d71606, type: 3}
   noteInstantiatePoint: {fileID: 1022914002}
   deviceText: {fileID: 0}
   noteText: {fileID: 0}
+  tempo: 120
   noteScale: 3
   scrollSpeed: 1
-  tempo: 120
   currentDeltaTime: 0
+  notePosOffset: -3
 --- !u!1 &1597907717
 GameObject:
   m_ObjectHideFlags: 0
