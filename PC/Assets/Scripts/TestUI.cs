@@ -13,4 +13,9 @@ public class TestUI : MonoBehaviour
     {
         midiTest.IncreaseCurrentNoteIndex();
     }
+
+    public void DisconnectPianoBtn()
+    {
+        midiTest.DisconnectPiano();
+    }
 }

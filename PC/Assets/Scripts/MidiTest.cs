@@ -96,6 +96,7 @@ public class MidiTest : MonoBehaviour
         try
         {
             _inputDevice = InputDevice.GetByName("Digital Piano");
+            _inputDevice.EventReceived -= OnEventReceived;
             _inputDevice.EventReceived += OnEventReceived;
             _inputDevice.StartEventsListening();
             Debug.Log(_inputDevice.IsListeningForEvents);
@@ -141,6 +142,11 @@ public class MidiTest : MonoBehaviour
     public void IncreaseCurrentNoteIndex()
     {
         currentNoteIndex += 1;
+    }
+
+    public void DisconnectPiano()
+    {
+        _inputDevice.StopEventsListening();
     }
 
     // 밀리초 데이터를 이용한 곡 템포 계산
