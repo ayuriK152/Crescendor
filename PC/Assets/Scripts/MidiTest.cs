@@ -12,12 +12,17 @@ public class MidiTest : MonoBehaviour
 {
     public TextAsset sourceFile;
     public MidiFileContainer song;
-    public GameObject noteObj;
+    public GameObject whiteNoteObj;
+    public GameObject blackNoteObj;
     public GameObject keyTextObj;
     public Transform noteInstantiatePoint;
 
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
+    public Material whiteKeyOne;
+    public Material whiteKeyTwo;
+    public Material blackKeyOne;
+    public Material blackKeyTwo;
 
     public int tempo = 120;
     public float noteScale = 1.0f;
@@ -39,7 +44,7 @@ public class MidiTest : MonoBehaviour
 
     void Awake()
     {
-        sourceFile = Resources.Load<TextAsset>("Converts/b9IsAwesome");
+        sourceFile = Resources.Load<TextAsset>("Converts/for_elise");
     }
 
     void Start()
@@ -52,6 +57,8 @@ public class MidiTest : MonoBehaviour
         Debug.Log("MIDI data loaded!");
 
         tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
+
+        int trackNum = 0;
         for (int i = 0; i < song.tracks.Count; i++)
         {
             MidiTrack track = song.tracks[i];
@@ -60,12 +67,13 @@ public class MidiTest : MonoBehaviour
             for (int j = 0; j < track.sequence.Count; j++)
             {
                 deltaTime = track.sequence[j].delta != 0 ? track.sequence[j].delta : deltaTime;
-                eventStartTime += eventStartTime == -1 ? 1 : track.sequence[j].delta;
+                //eventStartTime += eventStartTime == -1 ? 1 : track.sequence[j].delta;
+                eventStartTime += track.sequence[j].delta;
                 if (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 > 0)
                 {
                     if (tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
                     {
-                        notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime));
+                        notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
                         tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                     }
                     tempNoteData.Add(track.sequence[j].midiEvent.data1, eventStartTime);
@@ -74,10 +82,12 @@ public class MidiTest : MonoBehaviour
                 {
                     if (!tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
                         continue;
-                    notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime));
+                    notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
                     tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                 }
             }
+            if (notes.Count > 0 && trackNum == 0)
+                trackNum++;
         }
         for (int i = 0; i < notes.Count; i++)
         {
@@ -88,9 +98,40 @@ public class MidiTest : MonoBehaviour
             }
             noteSetBySameTime[notes[i].startTime].Add(new KeyValuePair<int, bool>(notes[i].keyNum - 1, false));
 
-            instatiateNotes.Add(Instantiate(noteObj, noteInstantiatePoint));
-            instatiateNotes[i].transform.localScale = new Vector3(0.25f, 0.25f, notes[i].deltaTime / (float)song.division * noteScale);
-            instatiateNotes[i].transform.localPosition = new Vector3((notes[i].keyNum - DEFAULT_C3_POSITION) * 0.25f, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+            string noteKeyStr = GetKeyFromKeynum(notes[i].keyNum);
+            if (BlackKeyJudge(notes[i].keyNum))
+            {
+                int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
+                int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
+                instatiateNotes.Add(Instantiate(whiteNoteObj, noteInstantiatePoint));
+                instatiateNotes[i].transform.localScale = new Vector3(0.13125f, 0.13125f, notes[i].deltaTime / (float)song.division * noteScale);
+                instatiateNotes[i].transform.localPosition = new Vector3(0.065625f + keyPos * 0.13125f + keyOffset * 1.575f, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                if (notes[i].channel == 0)
+                {
+                    instatiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
+                }
+                else
+                {
+                    instatiateNotes[i].GetComponent<Renderer>().material = blackKeyTwo;
+                }
+            }
+            else
+            {
+                int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
+                int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
+                instatiateNotes.Add(Instantiate(whiteNoteObj, noteInstantiatePoint));
+                instatiateNotes[i].transform.localScale = new Vector3(0.225f, 0.225f, notes[i].deltaTime / (float)song.division * noteScale);
+                instatiateNotes[i].transform.localPosition = new Vector3(0.1125f + keyPos * 0.225f + keyOffset * 1.575f, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                if (notes[i].channel == 0)
+                {
+                    instatiateNotes[i].GetComponent<Renderer>().material = whiteKeyOne;
+                }
+                else
+                {
+                    instatiateNotes[i].GetComponent<Renderer>().material = whiteKeyTwo;
+                }
+            }
+            
             GameObject tempKeyObject = Instantiate(keyTextObj, noteInstantiatePoint);
             tempKeyObject.transform.parent = instatiateNotes[i].transform;
             tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
@@ -173,8 +214,10 @@ public class MidiTest : MonoBehaviour
         int offset = -1;
         if (keyNum > 3)
         {
-            offset = (keyNum - 3) / 12;
             keyNum -= 3;
+            offset = keyNum / 12;
+            if (keyNum % 12 == 0)
+                offset--;
         }
         else
             keyNum += 9;
@@ -220,6 +263,106 @@ public class MidiTest : MonoBehaviour
         }
         key = $"{pos}{offset}";
         return key;
+    }
+
+    bool BlackKeyJudge(int keyNum)
+    {
+        bool flag = false;
+        keyNum -= 20;
+        if (keyNum > 3)
+            keyNum -= 3;
+        else
+            keyNum += 9;
+        switch (keyNum % 12)
+        {
+            case 1:
+                flag = false;
+                break;
+            case 2:
+                flag = true;
+                break;
+            case 3:
+                flag = false;
+                break;
+            case 4:
+                flag = true;
+                break;
+            case 5:
+                flag = false;
+                break;
+            case 6:
+                flag = false;
+                break;
+            case 7:
+                flag = true;
+                break;
+            case 8:
+                flag = false;
+                break;
+            case 9:
+                flag = true;
+                break;
+            case 10:
+                flag = false;
+                break;
+            case 11:
+                flag = true;
+                break;
+            case 0:
+                flag = false;
+                break;
+        }
+        return flag;
+    }
+
+    int NoteKeyPosOrder(int keyNum)
+    {
+        int keyPos = 0;
+        keyNum -= 20;
+        if (keyNum > 3)
+            keyNum -= 3;
+        else
+            keyNum += 9;
+        switch (keyNum % 12)
+        {
+            case 1:
+                keyPos = 1;
+                break;
+            case 2:
+                keyPos = 2;
+                break;
+            case 3:
+                keyPos = 2;
+                break;
+            case 4:
+                keyPos = 4;
+                break;
+            case 5:
+                keyPos = 3;
+                break;
+            case 6:
+                keyPos = 4;
+                break;
+            case 7:
+                keyPos = 7;
+                break;
+            case 8:
+                keyPos = 5;
+                break;
+            case 9:
+                keyPos = 9;
+                break;
+            case 10:
+                keyPos = 6;
+                break;
+            case 11:
+                keyPos = 11;
+                break;
+            case 0:
+                keyPos = 7;
+                break;
+        }
+        return keyPos;
     }
 
     static void OnEventReceived(object sender, MidiEventReceivedEventArgs e)

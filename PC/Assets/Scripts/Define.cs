@@ -10,13 +10,15 @@ public class Define
         public int startTime;
         public int endTime;
         public int deltaTime;
+        public int channel;
 
-        public Notes(int keyNum, int startTime, int endTime)
+        public Notes(int keyNum, int startTime, int endTime, int channel)
         {
             this.keyNum = keyNum;
             this.startTime = startTime;
             this.endTime = endTime;
             this.deltaTime = endTime - startTime;
+            this.channel = channel;
         }
     }
 }

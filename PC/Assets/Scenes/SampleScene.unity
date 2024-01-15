@@ -874,11 +874,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceFile: {fileID: 0}
-  noteObj: {fileID: 4329751273353442230, guid: 993f54e5afef5d94fa96c5bb575f5c1b, type: 3}
+  whiteNoteObj: {fileID: 4329751273353442230, guid: 993f54e5afef5d94fa96c5bb575f5c1b, type: 3}
+  blackNoteObj: {fileID: 4329751273353442230, guid: 5fcdcf92b5b0e454abf55c2c7609bea1, type: 3}
   keyTextObj: {fileID: 3420301408059104893, guid: 81b1b20cc3886ab4db208392f9d71606, type: 3}
   noteInstantiatePoint: {fileID: 1022914002}
   deviceText: {fileID: 0}
   noteText: {fileID: 0}
+  whiteKeyOne: {fileID: 2100000, guid: 1d5ed4b2e1a80c34c9a0e72042090da1, type: 2}
+  whiteKeyTwo: {fileID: 2100000, guid: 2a079145a0f1cc24eb896485173c0a8e, type: 2}
+  blackKeyOne: {fileID: 2100000, guid: daed70a8310d4d24d890b079625673b2, type: 2}
+  blackKeyTwo: {fileID: 2100000, guid: b05fffd1b2116e14584dd1569e336ac9, type: 2}
   tempo: 120
   noteScale: 3
   scrollSpeed: 1
