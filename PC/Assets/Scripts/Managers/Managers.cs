@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
+    static GameObject _managerObj = null;
+    public static GameObject ManagerObj { get { return _managerObj; } }
+
     static Managers _managerInstance = null;
-    static Managers ManagerInstance {  get { return _managerInstance; } }
+    public static Managers ManagerInstance {  get { return _managerInstance; } }
 
     private static InputManager _input = new InputManager();
+    private static MidiManager _midi = new MidiManager();
 
     public static InputManager Input { get { return _input; } }
+    public static MidiManager Midi { get { return _midi; } }
 
     void Awake()
     {
@@ -40,5 +45,6 @@ public class Managers : MonoBehaviour
         }
 
         Input.Init();
+        Midi.Init();
     }
 }
