@@ -6,7 +6,7 @@ public class TestUI : MonoBehaviour
 
     void Start()
     {
-        midiTest = GameObject.Find("Manager").GetComponent<MidiTest>();
+        midiTest = GameObject.Find("@Manager").GetComponent<MidiTest>();
     }
 
     public void ScrollNextBtn()

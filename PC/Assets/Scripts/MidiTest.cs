@@ -30,9 +30,6 @@ public class MidiTest : MonoBehaviour
     public float currentDeltaTime = 0.0f;
     public float notePosOffset = 0.0f;
 
-    static bool[] keyChecks = new bool[88];
-    static InputDevice _inputDevice;
-
     bool _isInputTiming = false;
 
     List<GameObject> instatiateNotes = new List<GameObject>();
@@ -140,19 +137,6 @@ public class MidiTest : MonoBehaviour
         }
 
         noteTiming.Sort();
-
-        try
-        {
-            _inputDevice = InputDevice.GetByName("Digital Piano");
-            _inputDevice.EventReceived -= OnEventReceived;
-            _inputDevice.EventReceived += OnEventReceived;
-            _inputDevice.StartEventsListening();
-            Debug.Log(_inputDevice.IsListeningForEvents);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
     }
 
     void Update()
@@ -180,7 +164,7 @@ public class MidiTest : MonoBehaviour
             return;
         for (int i = 0; i < noteSetBySameTime[noteTiming[currentNoteIndex]].Count; i++)
         {
-            noteSetBySameTime[noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key, keyChecks[noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key]);
+            noteSetBySameTime[noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[noteSetBySameTime[noteTiming[currentNoteIndex]][i].Key]);
             if (!noteSetBySameTime[noteTiming[currentNoteIndex]][i].Value)
                 return;
         }
@@ -194,7 +178,7 @@ public class MidiTest : MonoBehaviour
 
     public void DisconnectPiano()
     {
-        _inputDevice.StopEventsListening();
+        Managers.Input.inputDevice.StopEventsListening();
     }
 
     // 밀리초 데이터를 이용한 곡 템포 계산
@@ -363,23 +347,5 @@ public class MidiTest : MonoBehaviour
                 break;
         }
         return keyPos;
-    }
-
-    static void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
-    {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
-        {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-            if (noteEvent.Velocity != 0)
-            {
-                keyChecks[noteEvent.NoteNumber - 1] = true;
-                Debug.Log(noteEvent);
-            }
-            else if (noteEvent.Velocity == 0)
-            {
-                keyChecks[noteEvent.NoteNumber - 1] = false;
-            }
-        }
     }
 }
