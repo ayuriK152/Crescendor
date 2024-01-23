@@ -15,6 +15,7 @@ public class MidiTest : MonoBehaviour
     public float currentDeltaTime = 0.0f;
     public float notePosOffset = 0.0f;
     public float noteScale = 1.0f;
+    public float widthValue = 1.0f;
 
     bool _isInputTiming = false;
 
@@ -23,6 +24,7 @@ public class MidiTest : MonoBehaviour
     void Start()
     {
         Managers.Midi.noteScale = noteScale;
+        Managers.Midi.widthValue = widthValue;
         Managers.Midi.LoadAndInstantiateMidi("for_elise", gameObject);
     }
 
@@ -37,7 +39,7 @@ public class MidiTest : MonoBehaviour
         if (Managers.Midi.noteTiming[currentNoteIndex] <= currentDeltaTime)
         {
             currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
-            transform.position = new Vector3(0, 0, -currentDeltaTime / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+            transform.position = new Vector3(-1, 0, -currentDeltaTime / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
             _isInputTiming = true;
             return;
         }
