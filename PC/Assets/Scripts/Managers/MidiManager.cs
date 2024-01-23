@@ -82,6 +82,11 @@ public class MidiManager
             if (notes.Count > 0 && trackNum == 0)
                 trackNum++;
         }
+        /*
+        noteTiming.Add(0);
+        noteSetBySameTime.Add(0, new List<KeyValuePair<int, bool>>());
+        noteSetBySameTime[0].Add(new KeyValuePair<int, bool>(1, false));
+        */
         for (int i = 0; i < notes.Count; i++)
         {
             if (!noteSetBySameTime.ContainsKey(notes[i].startTime))
