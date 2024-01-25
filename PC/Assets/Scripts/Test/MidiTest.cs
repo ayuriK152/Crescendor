@@ -12,7 +12,6 @@ public class MidiTest : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float currentDeltaTime = 0.0f;
     public float notePosOffset = 0.0f;
     public float noteScale = 1.0f;
     public float widthValue = 1.0f;
@@ -30,8 +29,9 @@ public class MidiTest : MonoBehaviour
         Managers.UI.BindIngameUI();
         Managers.UI.songTitleTMP.text = songTitle;
         Managers.UI.songNoteMountTMP.text = $"0/{Managers.Midi.notes.Count}";
-        Managers.UI.SongBpmTMP.text = $"{Managers.Midi.tempo}";
+        Managers.UI.songBpmTMP.text = $"{Managers.Midi.tempo}";
         Managers.UI.songBeatTMP.text = $"4/4";
+        Managers.UI.songTimeSlider.maxValue = Managers.Midi.notes[Managers.Midi.notes.Count - 1].endTime;
     }
 
     void Update()
@@ -42,14 +42,15 @@ public class MidiTest : MonoBehaviour
 
     void Scroll()
     {
-        if (Managers.Midi.noteTiming[currentNoteIndex] <= currentDeltaTime)
+        if (Managers.Midi.noteTiming[currentNoteIndex] <= Managers.Ingame.currentDeltaTimeF)
         {
-            currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
-            transform.position = new Vector3(-1, 0, -currentDeltaTime / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+            Managers.Ingame.currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
+            Managers.Ingame.SyncDeltaTime();
+            transform.position = new Vector3(-1, 0, -Managers.Ingame.currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
             _isInputTiming = true;
             return;
         }
-        currentDeltaTime += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
+        Managers.Ingame.currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
     }
 

@@ -15,10 +15,12 @@ public class Managers : MonoBehaviour
     private static InputManager _input = new InputManager();
     private static MidiManager _midi = new MidiManager();
     private static UIManager _ui = new UIManager();
+    private static IngameManager _ingame = new IngameManager();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
     public static UIManager UI { get { return _ui; } }
+    public static IngameManager Ingame { get { return _ingame; } }
 
     void Awake()
     {
@@ -32,7 +34,7 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-        
+        Input.Update();
     }
 
     static void Init()
@@ -52,5 +54,6 @@ public class Managers : MonoBehaviour
 
         Input.Init();
         Midi.Init();
+        Ingame.Init();
     }
 }
