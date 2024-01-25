@@ -1,3 +1,7 @@
+/* 미디 매니저
+ * 작성 - 이원섭
+ * 미디 파일의 입출력을 위해 사용하는 객체 */
+
 using SmfLite;
 using System.Collections.Generic;
 using TMPro;

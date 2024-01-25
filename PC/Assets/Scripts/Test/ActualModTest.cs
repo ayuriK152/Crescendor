@@ -5,7 +5,7 @@ using UnityEngine;
 using static Define;
 using static Datas;
 
-public class MidiTest : MonoBehaviour
+public class ActualModTest : MonoBehaviour
 {
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
@@ -16,7 +16,6 @@ public class MidiTest : MonoBehaviour
     public float notePosOffset = 0.0f;
     public float noteScale = 1.0f;
     public float widthValue = 1.0f;
-    public string songTitle;
 
     bool _isInputTiming = false;
 
@@ -26,17 +25,11 @@ public class MidiTest : MonoBehaviour
     {
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
-        Managers.UI.BindIngameUI();
-        Managers.UI.songTitleTMP.text = songTitle;
-        Managers.UI.songNoteMountTMP.text = $"0/{Managers.Midi.notes.Count}";
-        Managers.UI.SongBpmTMP.text = $"{Managers.Midi.tempo}";
-        Managers.UI.songBeatTMP.text = $"4/4";
+        Managers.Midi.LoadAndInstantiateMidi("for_elise", gameObject);
     }
 
     void Update()
     {
-        WaitMidiInput();
         Scroll();
     }
 
@@ -51,19 +44,6 @@ public class MidiTest : MonoBehaviour
         }
         currentDeltaTime += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
-    }
-
-    void WaitMidiInput()
-    {
-        if (!_isInputTiming)
-            return;
-        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
-        {
-            Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-            if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
-                return;
-        }
-        IncreaseCurrentNoteIndex();
     }
 
     public void IncreaseCurrentNoteIndex()

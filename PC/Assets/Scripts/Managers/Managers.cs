@@ -1,3 +1,7 @@
+/* 매니저 오브젝트
+ * 작성 - 이원섭
+ * 모든 매니저 객체를 관리하는 객체. 실질적으로 게임 월드에 객체로써 생성되는 오브젝트. */
+
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -10,9 +14,11 @@ public class Managers : MonoBehaviour
 
     private static InputManager _input = new InputManager();
     private static MidiManager _midi = new MidiManager();
+    private static UIManager _ui = new UIManager();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
+    public static UIManager UI { get { return _ui; } }
 
     void Awake()
     {

@@ -1,3 +1,7 @@
+/* 인풋 매니저
+ * 작성 - 이원섭
+ * 입력 기기의 입출력을 처리하기 위해 사용하는 객체 */
+
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System;
