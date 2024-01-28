@@ -18,7 +18,8 @@ public class MidiManager
     Material blackKeyOne;
     Material blackKeyTwo;
 
-    public int tempo;
+    public int tempo = 120;
+    public int songLength = 0;
     public float noteScale = 1.0f;
     public float blackNoteWidth = 0.13125f;
     public float whiteNoteWidth = 0.225f;
@@ -79,6 +80,7 @@ public class MidiManager
                 {
                     if (!tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
                         continue;
+                    songLength = songLength < eventStartTime ? eventStartTime : songLength;
                     notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
                     tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                 }
@@ -86,7 +88,7 @@ public class MidiManager
             if (notes.Count > 0 && trackNum == 0)
                 trackNum++;
         }
-        /*
+        /*  바로 시작 방지용 코드, 검증 필요
         noteTiming.Add(0);
         noteSetBySameTime.Add(0, new List<KeyValuePair<int, bool>>());
         noteSetBySameTime[0].Add(new KeyValuePair<int, bool>(1, false));

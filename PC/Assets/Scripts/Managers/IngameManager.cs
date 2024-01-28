@@ -30,9 +30,17 @@ public class IngameManager
         Managers.Input.keyAction += InputKeyEvent;
     }
 
-    public void SyncDeltaTime()
+    public void SyncDeltaTime(bool isIntToFloat)
     {
-        currentDeltaTimeF = currentDeltaTime;
+        if (isIntToFloat)
+        {
+            currentDeltaTimeF = currentDeltaTime;
+        }
+        else
+        {
+            currentDeltaTime = currentDeltaTimeF - (int)currentDeltaTimeF < 0.5f ? (int)currentDeltaTimeF : (int)currentDeltaTimeF + 1;
+        }
+        Managers.UI.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
     }
 
     void InputKeyEvent(KeyCode keyCode)
@@ -51,12 +59,26 @@ public class IngameManager
     void SetStartDeltaTime()
     {
         loopStartDeltaTime = currentDeltaTime;
+        if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
+        {
+            int temp = loopEndDeltaTime;
+            loopEndDeltaTime = loopStartDeltaTime;
+            loopStartDeltaTime = temp;
+            Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
+        }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
     }
 
     void SetEndDeltaTime()
     {
         loopEndDeltaTime = currentDeltaTime;
-        Debug.Log($"Loop Start Delta Time Set to {loopEndDeltaTime}");
+        if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
+        {
+            int temp = loopEndDeltaTime;
+            loopEndDeltaTime = loopStartDeltaTime;
+            loopStartDeltaTime = temp;
+            Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
+        }
+        Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
     }
 }

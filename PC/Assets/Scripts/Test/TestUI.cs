@@ -18,4 +18,9 @@ public class TestUI : MonoBehaviour
     {
         midiTest.DisconnectPiano();
     }
+
+    public void AutoScrollBtn()
+    {
+        midiTest.AutoScroll();
+    }
 }
