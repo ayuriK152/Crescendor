@@ -59,26 +59,34 @@ public class IngameManager
     void SetStartDeltaTime()
     {
         loopStartDeltaTime = currentDeltaTime;
+        Managers.UI.SetLoopStartMarker();
         if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
+            Managers.UI.SwapStartEndMarker();
         }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
+        if (loopEndDeltaTime >= 0)
+            isLoop = true;
     }
 
     void SetEndDeltaTime()
     {
         loopEndDeltaTime = currentDeltaTime;
+        Managers.UI.SetLoopEndMarker();
         if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
+            Managers.UI.SwapStartEndMarker();
         }
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
+        if (loopStartDeltaTime >= 0)
+            isLoop = true;
     }
 }

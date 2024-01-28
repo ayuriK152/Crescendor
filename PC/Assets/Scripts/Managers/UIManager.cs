@@ -13,6 +13,11 @@ public class UIManager
     public TextMeshProUGUI songBpmTMP;
     public TextMeshProUGUI songBeatTMP;
     public Slider songTimeSlider;
+    public GameObject songTimeSliderHandle;
+    public GameObject loopStartMarker;
+    public Image loopStartMarkerSprite;
+    public GameObject loopEndMarker;
+    public Image loopEndMarkerSprite;
 
     public void BindIngameUI()
     {
@@ -21,5 +26,31 @@ public class UIManager
         songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
         songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
+        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+        loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
+        loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
+        loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
+        loopEndMarkerSprite = loopEndMarker.GetComponent<Image>();
+        loopStartMarkerSprite.enabled = false;
+        loopEndMarkerSprite.enabled = false;
+    }
+
+    public void SetLoopStartMarker()
+    {
+        loopStartMarker.transform.position = songTimeSliderHandle.transform.position;
+        loopStartMarkerSprite.enabled = true;
+    }
+
+    public void SetLoopEndMarker()
+    {
+        loopEndMarker.transform.position = songTimeSliderHandle.transform.position;
+        loopEndMarkerSprite.enabled = true;
+    }
+
+    public void SwapStartEndMarker()
+    {
+        Vector3 temp = loopStartMarker.transform.position;
+        loopStartMarker.transform.position = loopEndMarker.transform.position;
+        loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
 }

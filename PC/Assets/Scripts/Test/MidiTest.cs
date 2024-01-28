@@ -43,6 +43,15 @@ public class MidiTest : MonoBehaviour
 
     void Scroll()
     {
+        if (Managers.Ingame.isLoop)
+        {
+            if (Managers.Ingame.currentDeltaTimeF >= Managers.Ingame.loopEndDeltaTime)
+            {
+                Managers.Ingame.currentDeltaTimeF = Managers.Ingame.loopStartDeltaTime;
+                Managers.Ingame.SyncDeltaTime(false);
+                transform.position = new Vector3(-1, 0, -Managers.Ingame.currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+            }
+        }
         if (Managers.Midi.noteTiming[currentNoteIndex] <= Managers.Ingame.currentDeltaTimeF && _isWaitInput)
         {
             Managers.Ingame.currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
