@@ -8,10 +8,13 @@ public class IngameManager
 {
     public int passedNote;
     public int totalNote;
+    public int currentNoteIndex;
 
     public bool isLoop;
     public int loopStartDeltaTime;
     public int loopEndDeltaTime;
+    public int loopStartNoteIndex;
+    public int loopStartPassedNote;
 
     public int currentDeltaTime;
     public float currentDeltaTimeF;
@@ -20,6 +23,9 @@ public class IngameManager
     {
         passedNote = 0;
         totalNote = 0;
+        currentNoteIndex = 0;
+        loopStartNoteIndex = 0;
+        loopStartPassedNote = 0;
 
         isLoop = false;
         loopStartDeltaTime = -1;
@@ -59,6 +65,8 @@ public class IngameManager
     void SetStartDeltaTime()
     {
         loopStartDeltaTime = currentDeltaTime;
+        loopStartNoteIndex = currentNoteIndex;
+        loopStartPassedNote = passedNote;
         Managers.UI.SetLoopStartMarker();
         if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
@@ -75,6 +83,8 @@ public class IngameManager
 
     void SetEndDeltaTime()
     {
+        if (loopStartDeltaTime < 0)
+            return;
         loopEndDeltaTime = currentDeltaTime;
         Managers.UI.SetLoopEndMarker();
         if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
@@ -88,5 +98,12 @@ public class IngameManager
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
         if (loopStartDeltaTime >= 0)
             isLoop = true;
+    }
+
+    public void TurnOffLoop()
+    {
+        isLoop = false;
+        loopStartDeltaTime = -1;
+        loopEndDeltaTime = -1;
     }
 }

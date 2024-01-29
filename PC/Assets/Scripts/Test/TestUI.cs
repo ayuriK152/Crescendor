@@ -23,4 +23,9 @@ public class TestUI : MonoBehaviour
     {
         midiTest.AutoScroll();
     }
+
+    public void TurnOffLoop()
+    {
+        midiTest.TurnOffLoop();
+    }
 }

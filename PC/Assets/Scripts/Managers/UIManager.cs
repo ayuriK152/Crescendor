@@ -53,4 +53,15 @@ public class UIManager
         loopStartMarker.transform.position = loopEndMarker.transform.position;
         loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
+
+    public void TurnOffLoop()
+    {
+        loopStartMarkerSprite.enabled = false;
+        loopEndMarkerSprite.enabled = false;
+    }
+
+    public void UpdatePassedNote()
+    {
+        songNoteMountTMP.text = $"{Managers.Ingame.passedNote}/{Managers.Ingame.totalNote}";
+    }
 }

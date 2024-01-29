@@ -20,16 +20,15 @@ public class MidiTest : MonoBehaviour
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
-    int currentNoteIndex = 0;
-
     void Start()
     {
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
         Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
+        Managers.Ingame.totalNote = Managers.Midi.notes.Count;
         Managers.UI.BindIngameUI();
         Managers.UI.songTitleTMP.text = songTitle;
-        Managers.UI.songNoteMountTMP.text = $"0/{Managers.Midi.notes.Count}";
+        Managers.UI.songNoteMountTMP.text = $"0/{Managers.Ingame.totalNote}";
         Managers.UI.songBpmTMP.text = $"{Managers.Midi.tempo}";
         Managers.UI.songBeatTMP.text = $"4/4";
         Managers.UI.songTimeSlider.maxValue = Managers.Midi.songLength;
@@ -47,14 +46,17 @@ public class MidiTest : MonoBehaviour
         {
             if (Managers.Ingame.currentDeltaTimeF >= Managers.Ingame.loopEndDeltaTime)
             {
+                Managers.Ingame.currentNoteIndex = Managers.Ingame.loopStartNoteIndex;
+                Managers.Ingame.passedNote = Managers.Ingame.loopStartPassedNote;
+                Managers.UI.UpdatePassedNote();
                 Managers.Ingame.currentDeltaTimeF = Managers.Ingame.loopStartDeltaTime;
                 Managers.Ingame.SyncDeltaTime(false);
                 transform.position = new Vector3(-1, 0, -Managers.Ingame.currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
             }
         }
-        if (Managers.Midi.noteTiming[currentNoteIndex] <= Managers.Ingame.currentDeltaTimeF && _isWaitInput)
+        if (Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex] <= Managers.Ingame.currentDeltaTimeF && _isWaitInput)
         {
-            Managers.Ingame.currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
+            Managers.Ingame.currentDeltaTime = Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex];
             Managers.Ingame.SyncDeltaTime(true);
             transform.position = new Vector3(-1, 0, -Managers.Ingame.currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
             _isInputTiming = true;
@@ -69,10 +71,10 @@ public class MidiTest : MonoBehaviour
     {
         if (!_isInputTiming)
             return;
-        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]].Count; i++)
         {
-            Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-            if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
+            Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]][i].Key]);
+            if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]][i].Value)
                 return;
         }
         IncreaseCurrentNoteIndex();
@@ -80,7 +82,9 @@ public class MidiTest : MonoBehaviour
 
     public void IncreaseCurrentNoteIndex()
     {
-        currentNoteIndex += 1;
+        Managers.Ingame.passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[Managers.Ingame.currentNoteIndex]].Count;
+        Managers.UI.UpdatePassedNote();
+        Managers.Ingame.currentNoteIndex += 1;
     }
 
     public void DisconnectPiano()
@@ -90,6 +94,12 @@ public class MidiTest : MonoBehaviour
 
     public void AutoScroll()
     {
-        _isWaitInput = false;
+        _isWaitInput = !_isWaitInput;
+    }
+
+    public void TurnOffLoop()
+    {
+        Managers.UI.TurnOffLoop();
+        Managers.Ingame.TurnOffLoop();
     }
 }
