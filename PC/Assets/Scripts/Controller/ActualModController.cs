@@ -5,7 +5,7 @@ using UnityEngine;
 using static Define;
 using static Datas;
 
-public class ActualModTest : MonoBehaviour
+public class ActualModController : MonoBehaviour
 {
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;

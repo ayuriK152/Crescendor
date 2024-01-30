@@ -16,11 +16,13 @@ public class Managers : MonoBehaviour
     private static MidiManager _midi = new MidiManager();
     private static UIManager _ui = new UIManager();
     private static IngameManager _ingame = new IngameManager();
+    private static SceneManagerEx _scene = new SceneManagerEx();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
     public static UIManager UI { get { return _ui; } }
     public static IngameManager Ingame { get { return _ingame; } }
+    public static SceneManagerEx Scene {  get { return _scene; } }
 
     void Awake()
     {
@@ -52,8 +54,11 @@ public class Managers : MonoBehaviour
             _managerInstance = go.GetComponent<Managers>();
         }
 
+        /* 아래 Init 메소드 호출 순서는 의도되었으며, 임의로 순서를 바꿔서는 절대로 안됨
+         * 바꿔야하는 이유가 있다면 상의 요망*/
         Input.Init();
         Midi.Init();
         Ingame.Init();
+        Scene.Init();
     }
 }

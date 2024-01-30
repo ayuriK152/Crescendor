@@ -21,4 +21,13 @@ public class Define
             this.channel = channel;
         }
     }
+
+    public enum Scene
+    {
+        Unknown,
+        ActualModScene,
+        PracticeMoveScene,
+        SongSelectionScene,
+        ResultScene,
+    }
 }
