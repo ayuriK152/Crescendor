@@ -34,6 +34,12 @@ public class Managers : MonoBehaviour
         Init();
     }
 
+    void Start()
+    {
+        UI.Init();
+        Ingame.Init();
+    }
+
     void Update()
     {
         Input.Update();
@@ -56,9 +62,14 @@ public class Managers : MonoBehaviour
 
         /* 아래 Init 메소드 호출 순서는 의도되었으며, 임의로 순서를 바꿔서는 절대로 안됨
          * 바꿔야하는 이유가 있다면 상의 요망*/
+        Scene.Init();
         Input.Init();
         Midi.Init();
+    }
+
+    static void InitPostSceneLoad()
+    {
+        UI.Init();
         Ingame.Init();
-        Scene.Init();
     }
 }

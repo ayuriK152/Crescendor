@@ -2,30 +2,30 @@ using UnityEngine;
 
 public class TestUI : MonoBehaviour
 {
-    MidiTest midiTest;
+    PracticeModController practiceModController;
 
     void Start()
     {
-        midiTest = GameObject.Find("@Manager").GetComponent<MidiTest>();
+        practiceModController = GameObject.Find("@Manager").GetComponent<PracticeModController>();
     }
 
     public void ScrollNextBtn()
     {
-        midiTest.IncreaseCurrentNoteIndex();
+        practiceModController.IncreaseCurrentNoteIndex();
     }
 
     public void DisconnectPianoBtn()
     {
-        midiTest.DisconnectPiano();
+        practiceModController.DisconnectPiano();
     }
 
     public void AutoScrollBtn()
     {
-        midiTest.AutoScroll();
+        practiceModController.AutoScroll();
     }
 
     public void TurnOffLoop()
     {
-        midiTest.TurnOffLoop();
+        practiceModController.TurnOffLoop();
     }
 }

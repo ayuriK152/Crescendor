@@ -26,7 +26,7 @@ public class Define
     {
         Unknown,
         ActualModScene,
-        PracticeMoveScene,
+        PracticeModScene,
         SongSelectionScene,
         ResultScene,
     }
