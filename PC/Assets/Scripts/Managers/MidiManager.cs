@@ -34,7 +34,7 @@ public class MidiManager
     public Dictionary<int, int> tempNoteData = new Dictionary<int, int>();
     public Dictionary<int, List<KeyValuePair<int, bool>>> noteSetBySameTime = new Dictionary<int, List<KeyValuePair<int, bool>>>();
     public void Init()
-    {
+    {    
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
         keyTextObj = Resources.Load<GameObject>("Prefabs/KeyText");
 

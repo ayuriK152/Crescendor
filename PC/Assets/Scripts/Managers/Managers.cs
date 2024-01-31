@@ -6,23 +6,28 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
+
+
+
     static GameObject _managerObj = null;
     public static GameObject ManagerObj { get { return _managerObj; } }
 
     static Managers _managerInstance = null;
-    public static Managers ManagerInstance {  get { return _managerInstance; } }
+    public static Managers ManagerInstance {  get {  return _managerInstance; } }
 
     private static InputManager _input = new InputManager();
     private static MidiManager _midi = new MidiManager();
     private static UIManager _ui = new UIManager();
     private static IngameManager _ingame = new IngameManager();
     private static SceneManagerEx _scene = new SceneManagerEx();
+    private static ResourceManager _resource = new ResourceManager();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
     public static UIManager UI { get { return _ui; } }
     public static IngameManager Ingame { get { return _ingame; } }
     public static SceneManagerEx Scene {  get { return _scene; } }
+    public static ResourceManager Resource { get { return _resource; } }
 
     void Awake()
     {
