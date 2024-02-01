@@ -18,6 +18,12 @@ public class UIManager
                 if (currentUIController == null)
                     currentUIController = Managers.ManagerInstance.AddComponent<PracticeModUIController>();
                 break;
+
+            case Scene.ActualModScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<ActualModUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<ActualModUIController>();
+                break;
         }
     }
 }

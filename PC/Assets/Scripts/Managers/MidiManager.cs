@@ -31,8 +31,13 @@ public class MidiManager
     public List<int> noteTiming = new List<int>();
     public List<GameObject> instatiateNotes = new List<GameObject>();
 
-    public Dictionary<int, int> tempNoteData = new Dictionary<int, int>();
+    // 같은 시간대에 동시에 쳐야하는 노트들 모음
     public Dictionary<int, List<KeyValuePair<int, bool>>> noteSetBySameTime = new Dictionary<int, List<KeyValuePair<int, bool>>>();
+    // 각 건반별 쳐야하는 노트들 모음
+    public Dictionary<int, List<KeyValuePair<int, int>>> noteSetByKey = new Dictionary<int, List<KeyValuePair<int, int>>>();
+
+    // 미디 파싱 로직에서 잠깐 씀. 실사용X
+    Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
     public void Init()
     {
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
@@ -69,20 +74,20 @@ public class MidiManager
                 eventStartTime += eventStartTime == -1 ? track.sequence[j].delta + 1 : track.sequence[j].delta;
                 if (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 > 0)
                 {
-                    if (tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
+                    if (_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
                     {
-                        notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
-                        tempNoteData.Remove(track.sequence[j].midiEvent.data1);
+                        notes.Add(new Notes(track.sequence[j].midiEvent.data1, _tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
+                        _tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                     }
-                    tempNoteData.Add(track.sequence[j].midiEvent.data1, eventStartTime);
+                    _tempNoteData.Add(track.sequence[j].midiEvent.data1, eventStartTime);
                 }
                 else if (track.sequence[j].midiEvent.status == 128 || (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 == 0))
                 {
-                    if (!tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
+                    if (!_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
                         continue;
                     songLength = songLength < eventStartTime ? eventStartTime : songLength;
-                    notes.Add(new Notes(track.sequence[j].midiEvent.data1, tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
-                    tempNoteData.Remove(track.sequence[j].midiEvent.data1);
+                    notes.Add(new Notes(track.sequence[j].midiEvent.data1, _tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
+                    _tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                 }
             }
             if (notes.Count > 0 && trackNum == 0)

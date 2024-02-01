@@ -1368,7 +1368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1022914002}
   - component: {fileID: 1022914004}
-  - component: {fileID: 1022914003}
+  - component: {fileID: 1022914005}
   m_Layer: 0
   m_Name: '@Manager'
   m_TagString: Untagged
@@ -1391,29 +1391,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1022914003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022914000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b1c12b94f3e91a41853f7f1c6aec4d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deviceText: {fileID: 0}
-  noteText: {fileID: 0}
-  tempo: 120
-  scrollSpeed: 1
-  notePosOffset: -2.625
-  noteScale: 3
-  widthValue: 1.5
-  songTitle: For Elise-Beethoven
-  _isInputTiming: 0
-  _isWaitInput: 1
-  _uiController: {fileID: 0}
 --- !u!114 &1022914004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1426,6 +1403,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f571ac4835a57d49803c0d8220bb5c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1022914005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022914000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f92ac0e42969a604b89ebe076849480a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deviceText: {fileID: 0}
+  noteText: {fileID: 0}
+  tempo: 120
+  scrollSpeed: 1
+  notePosOffset: -2.625
+  noteScale: 3
+  widthValue: 1.5
+  songTitle: For Elise-Beethoven
+  passedNote: 0
+  totalNote: 0
+  currentDeltaTime: 0
+  currentDeltaTimeF: 0
 --- !u!1 &1162924382
 GameObject:
   m_ObjectHideFlags: 0
