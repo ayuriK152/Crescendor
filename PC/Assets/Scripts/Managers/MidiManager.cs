@@ -66,7 +66,7 @@ public class MidiManager
             {
                 deltaTime = track.sequence[j].delta != 0 ? track.sequence[j].delta : deltaTime;
                 //eventStartTime += eventStartTime == -1 ? 1 : track.sequence[j].delta;
-                eventStartTime += track.sequence[j].delta;
+                eventStartTime += eventStartTime == -1 ? track.sequence[j].delta + 1 : track.sequence[j].delta;
                 if (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 > 0)
                 {
                     if (tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
@@ -88,6 +88,9 @@ public class MidiManager
             if (notes.Count > 0 && trackNum == 0)
                 trackNum++;
         }
+
+        notes.Sort();
+
         /*  바로 시작 방지용 코드, 검증 필요
         noteTiming.Add(0);
         noteSetBySameTime.Add(0, new List<KeyValuePair<int, bool>>());
