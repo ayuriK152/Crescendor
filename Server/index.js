@@ -20,6 +20,29 @@ app.get('/users', (req, res) => {
   })
 })
 
+app.get('/record', (req, res) => {
+  connection.query('SELECT * from record', (error, rows) => {
+    if (error) throw error
+    console.log('Record info is: ', rows)
+    res.send(rows)
+  })
+})
+
+app.get('/practice', (req, res) => {
+  connection.query('SELECT * from practice', (error, rows) => {
+    if (error) throw error
+    console.log('Practice info is: ', rows)
+    res.send(rows)
+  })
+})
+
+app.get('/music', (req, res) => {
+  connection.query('SELECT * from music', (error, rows) => {
+    if (error) throw error
+    console.log('Music info is: ', rows)
+    res.send(rows)
+  })
+})
 app.listen(app.get('port'), () => {
   console.log('Express server listening on port ' + app.get('port'))
 })
