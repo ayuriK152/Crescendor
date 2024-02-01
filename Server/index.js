@@ -21,7 +21,7 @@ app.get('/users', (req, res) => {
 })
 
 app.get('/record', (req, res) => {
-  connection.query('SELECT * from Crescendor.record', (error, rows) => {
+  connection.query('SELECT * from Crescendor.record;', (error, rows) => {
     if (error) throw error
     console.log('Record info is: ', rows)
     res.send(rows)
@@ -29,7 +29,7 @@ app.get('/record', (req, res) => {
 })
 
 app.get('/practice', (req, res) => {
-  connection.query('SELECT * from Crescendor.practice', (error, rows) => {
+  connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
     if (error) throw error
     console.log('Practice info is: ', rows)
     res.send(rows)
@@ -37,7 +37,7 @@ app.get('/practice', (req, res) => {
 })
 
 app.get('/music', (req, res) => {
-  connection.query('SELECT * from Crescendor.music', (error, rows) => {
+  connection.query('SELECT * from Crescendor.music;', (error, rows) => {
     if (error) throw error
     console.log('Music info is: ', rows)
     res.send(rows)
