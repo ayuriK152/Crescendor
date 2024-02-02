@@ -12,7 +12,12 @@ public class UI_Select : UI_Scene
     enum GameObjects
     {
         SongPanel,
-        SongButton
+        RankPanel,
+    }
+
+    enum Buttons
+    {
+        RankButton,
     }
 
     void Start()
@@ -25,7 +30,8 @@ public class UI_Select : UI_Scene
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));
-
+        Bind<Button>(typeof(Buttons));
+        GetButton((int)Buttons.RankButton).gameObject.BindEvent(OnRankButtonClick);
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         SongManager.Instance.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
@@ -45,7 +51,8 @@ public class UI_Select : UI_Scene
                 if (button != null)
                 {
                     // 예시로 Song의 songTitle을 버튼에 표시
-                    button.GetComponentInChildren<TextMeshProUGUI>().text = "Song Title = " + SongManager.Instance.songs[i].songTitle;
+                    button.GetComponentInChildren<TextMeshProUGUI>().text = SongManager.Instance.songs[i].songTitle;
+                    button.onClick.AddListener(() => OnSongButtonClick());
                 }
             }
             else
@@ -53,6 +60,19 @@ public class UI_Select : UI_Scene
                 Debug.LogError($"Failed to load SongButton prefab");
             }
         }
+
     }
+
+    public void OnSongButtonClick()
+    {
+        Managers.UI.ShowPopupUI<UI_SongPopup>();
+    }
+
+    public void OnRankButtonClick(PointerEventData data)
+    {
+        Managers.UI.ShowPopupUI<UI_RankPopUp>();
+    }
+
+
 }
 
