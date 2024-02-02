@@ -13,13 +13,36 @@ app.get('/', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-  connection.query('SELECT * from users', (error, rows) => {
+  connection.query('SELECT * FROM Crescendor.users;', (error, rows) => {
     if (error) throw error
     console.log('User info is: ', rows)
     res.send(rows)
   })
 })
 
+app.get('/record', (req, res) => {
+  connection.query('SELECT * from Crescendor.record;', (error, rows) => {
+    if (error) throw error
+    console.log('Record info is: ', rows)
+    res.send(rows)
+  })
+})
+
+app.get('/practice', (req, res) => {
+  connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
+    if (error) throw error
+    console.log('Practice info is: ', rows)
+    res.send(rows)
+  })
+})
+
+app.get('/music', (req, res) => {
+  connection.query('SELECT * from Crescendor.music;', (error, rows) => {
+    if (error) throw error
+    console.log('Music info is: ', rows)
+    res.send(rows)
+  })
+})
 app.listen(app.get('port'), () => {
   console.log('Express server listening on port ' + app.get('port'))
 })

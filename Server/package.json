@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "Main.js",
   "scripts": {
-    "start": "node main"
+    "start": "pm2 start index.js"
   },
   "keywords": [
     "crescendor",
