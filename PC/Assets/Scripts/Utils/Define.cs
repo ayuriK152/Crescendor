@@ -22,19 +22,6 @@ public class Define
         }
     }
 
-    public class Songs
-    {
-        public int songNum;
-        public string songTitle;
-        public string composer;
-  
-        public Songs(int songNum, string songTitle, string composer)
-        {
-            this.songNum = songNum;
-            this.songTitle = songTitle;
-            this.composer = composer;
-        }
-    }
 
 
     public enum Scene
