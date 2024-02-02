@@ -18,7 +18,7 @@ public class NetworkTest : MonoBehaviour
     IEnumerator UnityWebRequestGETTest()
     {
         // GET 방식
-        string url = "http://3.35.3.193:3000/api/users";
+        string url = "http://15.164.2.49:3000/users";
 
         // UnityWebRequest에 내장되있는 GET 메소드를 사용한다.
         UnityWebRequest www = UnityWebRequest.Get(url);
