@@ -7,12 +7,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public abstract class UI_Base : MonoBehaviour
 {
+    // 각 타입에 대한 UI 요소를 저장하는 딕셔너리
     protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
 
     public abstract void Init();
 
+    // UI 요소를 찾아서 바인딩하는 메서드
     protected void Bind<T>(Type type) where T : UnityEngine.Object
     {
+        // Enum에서 이름들을 가져와서 각 요소를 찾아서 저장
         string[] names = Enum.GetNames(type);
         UnityEngine.Object[] objects = new UnityEngine.Object[names.Length];
         _objects.Add(typeof(T), objects);
@@ -28,7 +31,7 @@ public abstract class UI_Base : MonoBehaviour
                 Debug.Log($"Failed to bind({names[i]})");
         }
     }
-
+    // 인덱스에 해당하는 UI 요소를 가져오는 메서드
     protected T Get<T>(int idx) where T : UnityEngine.Object
     {
         UnityEngine.Object[] objects = null;
@@ -43,6 +46,7 @@ public abstract class UI_Base : MonoBehaviour
     protected Button GetButton(int idx) { return Get<Button>(idx); }
     protected Image GetImage(int idx) { return Get<Image>(idx); }
 
+    // UI 요소에 이벤트를 바인딩하는 메서드
     public static void BindEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
     {
         UI_EventHandler evt = Util.GetOrAddComponent<UI_EventHandler>(go);
