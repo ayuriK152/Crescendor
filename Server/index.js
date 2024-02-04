@@ -28,6 +28,17 @@ app.get('/record', (req, res) => {
   })
 })
 
+app.get('/record/getscore/:user_id/:music_id', (req, res) => {
+  const user_id = req.params.user_id
+  const music_id = Number(req.params.music_id)
+
+  connection.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
+    if (error) throw error
+    console.log('score = ?%', rows)
+    res.send(rows)
+  })
+  
+}) 
 app.get('/practice', (req, res) => {
   connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
     if (error) throw error
