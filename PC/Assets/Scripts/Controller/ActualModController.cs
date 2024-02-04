@@ -8,6 +8,7 @@ using System.Collections;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System;
+using Melanchall.DryWetMidi.Interaction;
 
 public class ActualModController : MonoBehaviour
 {
@@ -47,14 +48,16 @@ public class ActualModController : MonoBehaviour
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
         Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
+
         totalNote = Managers.Midi.notes.Count;
         totalAcc = Managers.Midi.totalDeltaTime;
+        tempo = Managers.Midi.tempo;
 
         _uiController = Managers.UI.currentUIController as ActualModUIController;
         _uiController.BindIngameUI();
         _uiController.songTitleTMP.text = songTitle;
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
+        _uiController.songBpmTMP.text = $"{tempo}";
         _uiController.songBeatTMP.text = $"4/4";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLength;
 
