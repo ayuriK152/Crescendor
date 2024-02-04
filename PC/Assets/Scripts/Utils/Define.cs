@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Define
 {
-    public class Notes
+    public class Notes : IComparable
     {
         public int keyNum;
         public int startTime;
@@ -19,6 +20,12 @@ public class Define
             this.endTime = endTime;
             this.deltaTime = endTime - startTime;
             this.channel = channel;
+        }
+
+        public int CompareTo(object obj)
+        {
+            Notes oppo = obj as Notes;
+            return startTime.CompareTo(oppo.startTime);
         }
     }
 
@@ -41,7 +48,7 @@ public class Define
     {
         Unknown,
         ActualModScene,
-        PracticeMoveScene,
+        PracticeModScene,
         SongSelectionScene,
         ResultScene,
     }

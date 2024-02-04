@@ -2,75 +2,61 @@
  * 작성 - 이원섭
  * 여러 씬에서 사용되는 UI를 일괄 관리하고 바인딩하기 위해 사용하는 객체 */
 
+using System;
+using Unity.VisualScripting;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using static Define;
 
 public class UIManager
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
-    public GameObject loopStartMarker;
-    public Image loopStartMarkerSprite;
-    public GameObject loopEndMarker;
-    public Image loopEndMarkerSprite;
+    public object currentUIController;
 
     int _order = 10;
     Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
     UI_Scene _sceneUI = null;
 
-    public void BindIngameUI()
+    public void Init()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
-        loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
-        loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
-        loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
-        loopEndMarkerSprite = loopEndMarker.GetComponent<Image>();
-        loopStartMarkerSprite.enabled = false;
-        loopEndMarkerSprite.enabled = false;
+        if (currentUIController != null)
+        {
+            Type type = currentUIController.GetType();
+            switch (type.FullName)
+            {
+                case "PracticeModUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<PracticeModUIController>());
+                    break;
+                case "ActualModUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ActualModUIController>());
+                    break;
+                case "ResultUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultUIController>());
+                    break;
+            }
+        }
+
+        switch (Managers.Scene.currentScene)
+        {
+            case Scene.PracticeModScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<PracticeModUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<PracticeModUIController>();
+                break;
+
+            case Scene.ActualModScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<ActualModUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<ActualModUIController>();
+                break;
+
+            case Scene.ResultScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<ResultUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<ResultUIController>();
+                break;
+        }
     }
-
-    public void SetLoopStartMarker()
-    {
-        loopStartMarker.transform.position = songTimeSliderHandle.transform.position;
-        loopStartMarkerSprite.enabled = true;
-    }
-
-    public void SetLoopEndMarker()
-    {
-        loopEndMarker.transform.position = songTimeSliderHandle.transform.position;
-        loopEndMarkerSprite.enabled = true;
-    }
-
-    public void SwapStartEndMarker()
-    {
-        Vector3 temp = loopStartMarker.transform.position;
-        loopStartMarker.transform.position = loopEndMarker.transform.position;
-        loopEndMarker.transform.position = loopStartMarker.transform.position;
-    }
-
-    public void TurnOffLoop()
-    {
-        loopStartMarkerSprite.enabled = false;
-        loopEndMarkerSprite.enabled = false;
-    }
-
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{Managers.Ingame.passedNote}/{Managers.Ingame.totalNote}";
-    }
-
-
 
     public GameObject Root
     {

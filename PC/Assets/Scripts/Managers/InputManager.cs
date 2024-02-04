@@ -34,35 +34,12 @@ public class InputManager
         try
         {
             inputDevice = InputDevice.GetByName("Digital Piano");
-            inputDevice.EventReceived -= OnEventReceived;
-            inputDevice.EventReceived += OnEventReceived;
             inputDevice.StartEventsListening();
             Debug.Log(inputDevice.IsListeningForEvents);
         }
         catch (Exception e)
         {
             Debug.Log(e.Message);
-        }
-    }
-
-    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
-    {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
-        {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-            
-            // 노트 입력 시작
-            if (noteEvent.Velocity != 0)
-            {
-                keyChecks[noteEvent.NoteNumber - 1] = true;
-                Debug.Log(noteEvent);
-            }
-            // 노트 입력 종료
-            else if (noteEvent.Velocity == 0)
-            {
-                keyChecks[noteEvent.NoteNumber - 1] = false;
-            }
         }
     }
 }
