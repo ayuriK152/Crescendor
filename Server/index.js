@@ -5,15 +5,16 @@ const connection = mysql.createConnection(db)
 
 const app = express()
 
-// configuration =========================
 app.set('port', process.env.PORT || 3000)
 
 app.use(express.json())
 
+// ===========================================    API DEFINITION    ===========================================
 app.get('/', (req, res) => {
   res.send('Root')
 })
 
+// =====================================    Users     =====================================
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM Crescendor.users;', (error, rows) => {
     if (error) throw error
@@ -22,6 +23,7 @@ app.get('/users', (req, res) => {
   })
 })
 
+// =====================================    Record    =====================================
 app.get('/record', (req, res) => {
   connection.query('SELECT * from Crescendor.record;', (error, rows) => {
     if (error) throw error
@@ -29,6 +31,7 @@ app.get('/record', (req, res) => {
     res.send(rows)
   })
 })
+
 // getscore API
 app.get('/record/getscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
@@ -41,8 +44,9 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 }) 
+
 // addscore API
-app.post('/record/addscore/:user_id/:music_id/', (req, res) => {
+app.post('/record/addscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
   const { score, date, midi } = req.body
@@ -52,9 +56,10 @@ app.post('/record/addscore/:user_id/:music_id/', (req, res) => {
     console.log('addscore \n user: %s \n music: %d \n', user_id, music_id)
     res.send(rows)
   })
-}) 
+})
+
 // setscore API
-app.put('/record/setscore/:user_id/:music_id/', (req, res) => {
+app.put('/record/setscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
   const { score, date, midi } = req.body
@@ -67,7 +72,7 @@ app.put('/record/setscore/:user_id/:music_id/', (req, res) => {
   })
 }) 
 
-
+// =====================================    Practice    =====================================
 app.get('/practice', (req, res) => {
   connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
     if (error) throw error
@@ -76,6 +81,7 @@ app.get('/practice', (req, res) => {
   })
 })
 
+// =====================================    Music   =====================================
 app.get('/music', (req, res) => {
   connection.query('SELECT * from Crescendor.music;', (error, rows) => {
     if (error) throw error
@@ -83,6 +89,8 @@ app.get('/music', (req, res) => {
     res.send(rows)
   })
 })
+
+
 app.listen(app.get('port'), () => {
   console.log('Express server listening on port ' + app.get('port'))
 })
