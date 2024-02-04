@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using static Define;
 using static Datas;
+using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Multimedia;
 
 public class PracticeModController : MonoBehaviour
 {
@@ -64,6 +66,8 @@ public class PracticeModController : MonoBehaviour
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
+        Managers.Input.inputDevice.EventReceived -= OnEventReceived;
+        Managers.Input.inputDevice.EventReceived += OnEventReceived;
     }
 
     void Update()
@@ -147,6 +151,27 @@ public class PracticeModController : MonoBehaviour
             currentDeltaTime = currentDeltaTimeF - (int)currentDeltaTimeF < 0.5f ? (int)currentDeltaTimeF : (int)currentDeltaTimeF + 1;
         }
         _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
+    }
+
+    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
+    {
+        var midiDevice = (MidiDevice)sender;
+        if (e.Event.EventType != MidiEventType.ActiveSensing)
+        {
+            NoteEvent noteEvent = e.Event as NoteEvent;
+
+            // 노트 입력 시작
+            if (noteEvent.Velocity != 0)
+            {
+                Managers.Input.keyChecks[noteEvent.NoteNumber - 1] = true;
+                Debug.Log(noteEvent);
+            }
+            // 노트 입력 종료
+            else if (noteEvent.Velocity == 0)
+            {
+                Managers.Input.keyChecks[noteEvent.NoteNumber - 1] = false;
+            }
+        }
     }
 
     void InputKeyEvent(KeyCode keyCode)

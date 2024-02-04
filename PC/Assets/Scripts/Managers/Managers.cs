@@ -36,8 +36,7 @@ public class Managers : MonoBehaviour
 
     void Start()
     {
-        UI.Init();
-        Ingame.Init();
+        InitPostSceneLoad();
     }
 
     void Update()

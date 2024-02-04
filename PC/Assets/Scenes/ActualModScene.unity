@@ -1384,7 +1384,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022914000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: 0}
+  m_LocalPosition: {x: -1, y: 0, z: -2.625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1419,12 +1419,15 @@ MonoBehaviour:
   noteText: {fileID: 0}
   tempo: 120
   scrollSpeed: 1
-  notePosOffset: -2.625
+  notePosOffset: 0
   noteScale: 3
   widthValue: 1.5
-  songTitle: For Elise-Beethoven
+  songTitle: for_elise2
   passedNote: 0
   totalNote: 0
+  currentError: 0
+  totalAcc: 0
+  currentAcc: 0
   currentDeltaTime: 0
   currentDeltaTimeF: 0
 --- !u!1 &1162924382

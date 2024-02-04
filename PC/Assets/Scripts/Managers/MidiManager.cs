@@ -20,6 +20,7 @@ public class MidiManager
 
     public int tempo = 120;
     public int songLength = 0;
+    public int totalDeltaTime = 0;
     public float noteScale = 1.0f;
     public float blackNoteWidth = 0.13125f;
     public float whiteNoteWidth = 0.225f;
@@ -35,6 +36,7 @@ public class MidiManager
     public Dictionary<int, List<KeyValuePair<int, bool>>> noteSetBySameTime = new Dictionary<int, List<KeyValuePair<int, bool>>>();
     // 각 건반별 쳐야하는 노트들 모음
     public Dictionary<int, List<KeyValuePair<int, int>>> noteSetByKey = new Dictionary<int, List<KeyValuePair<int, int>>>();
+    public int[] nextKeyIndex = new int[88];
 
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
@@ -87,6 +89,7 @@ public class MidiManager
                         continue;
                     songLength = songLength < eventStartTime ? eventStartTime : songLength;
                     notes.Add(new Notes(track.sequence[j].midiEvent.data1, _tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
+                    totalDeltaTime += notes[notes.Count - 1].deltaTime;
                     _tempNoteData.Remove(track.sequence[j].midiEvent.data1);
                 }
             }
@@ -109,6 +112,12 @@ public class MidiManager
                 noteSetBySameTime.Add(notes[i].startTime, new List<KeyValuePair<int, bool>>());
             }
             noteSetBySameTime[notes[i].startTime].Add(new KeyValuePair<int, bool>(notes[i].keyNum - 1, false));
+
+            if (!noteSetByKey.ContainsKey(notes[i].keyNum - 1))
+            {
+                noteSetByKey.Add(notes[i].keyNum - 1, new List<KeyValuePair<int, int>>());
+            }
+            noteSetByKey[notes[i].keyNum - 1].Add(new KeyValuePair<int, int>(notes[i].startTime, notes[i].endTime));
 
             string noteKeyStr = GetKeyFromKeynum(notes[i].keyNum);
             if (BlackKeyJudge(notes[i].keyNum))
