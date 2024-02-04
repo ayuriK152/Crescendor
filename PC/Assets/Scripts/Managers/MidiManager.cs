@@ -17,6 +17,7 @@ public class MidiManager
     Material whiteKeyTwo;
     Material blackKeyOne;
     Material blackKeyTwo;
+    Transform noteInstantiatePoint;
 
     public int tempo = 120;
     public int songLength = 0;
@@ -49,6 +50,11 @@ public class MidiManager
         whiteKeyTwo = Resources.Load<Material>("Materials/WhiteChannel2");
         blackKeyOne = Resources.Load<Material>("Materials/BlackChannel1");
         blackKeyTwo = Resources.Load<Material>("Materials/BlackChannel2");
+
+        GameObject tempNoteInstantiatePoint = new GameObject("Notes");
+        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, 0, 0);
+        noteInstantiatePoint = tempNoteInstantiatePoint.transform;
     }
 
     public void LoadAndInstantiateMidi(string fileName, GameObject obj)
@@ -124,7 +130,7 @@ public class MidiManager
             {
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
-                instatiateNotes.Add(GameObject.Instantiate(noteObj, obj.transform));
+                instatiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instatiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
                 instatiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
@@ -140,7 +146,7 @@ public class MidiManager
             {
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
-                instatiateNotes.Add(GameObject.Instantiate(noteObj, obj.transform));
+                instatiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instatiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
                 instatiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
@@ -153,7 +159,7 @@ public class MidiManager
                 }
             }
 
-            GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, obj.transform);
+            GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, noteInstantiatePoint);
             tempKeyObject.transform.parent = instatiateNotes[i].transform;
             tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);

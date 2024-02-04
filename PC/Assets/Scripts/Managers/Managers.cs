@@ -34,11 +34,6 @@ public class Managers : MonoBehaviour
         Init();
     }
 
-    void Start()
-    {
-        InitPostSceneLoad();
-    }
-
     void Update()
     {
         Input.Update();
@@ -66,9 +61,17 @@ public class Managers : MonoBehaviour
         Midi.Init();
     }
 
-    static void InitPostSceneLoad()
+    static public void InitPostSceneLoad()
     {
         UI.Init();
         Ingame.Init();
+    }
+
+    static public void CleanManagerChilds()
+    {
+        foreach (Transform child in _managerInstance.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

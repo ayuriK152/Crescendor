@@ -1,14 +1,14 @@
-using SmfLite;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static Define;
-using static Datas;
 using System.Collections;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System;
-using Melanchall.DryWetMidi.Interaction;
+using static Define;
+using static Datas;
+using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 public class ActualModController : MonoBehaviour
 {
@@ -24,14 +24,14 @@ public class ActualModController : MonoBehaviour
 
     public int passedNote;
     public int totalNote;
-    public float currentError;
+    public int currentFail;
     public int totalAcc;
     public float currentAcc = 1;
 
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
-    float[] lastInputTiming = new float[88];
+    int[] lastInputTiming = new int[88];
     ActualModUIController _uiController;
 
     Dictionary<int, KeyValuePair<int, int>> noteRecords;
@@ -40,7 +40,7 @@ public class ActualModController : MonoBehaviour
     {
         passedNote = 0;
         totalNote = 0;
-        currentError = 0;
+        currentFail = 0;
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
@@ -71,12 +71,36 @@ public class ActualModController : MonoBehaviour
             Managers.Input.inputDevice.EventReceived -= OnEventReceived;
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
+
+        Managers.Input.keyChecks[59] = true;
     }
 
     void Update()
     {
         Scroll();
         StartCoroutine(CheckNotesStatus());
+        if (currentDeltaTime > Managers.Midi.songLength && flag)
+            TempSwapScene();
+    }
+
+    bool flag = true;
+
+    void TempSwapScene()
+    {
+        if (!PlayerPrefs.HasKey("trans_SongTitle"))
+            PlayerPrefs.SetString("trans_SongTitle", "");
+        PlayerPrefs.SetString("trans_SongTitle", songTitle);
+
+        if (!PlayerPrefs.HasKey("trans_FailMount"))
+            PlayerPrefs.SetInt("trans_FailMount", 0);
+        PlayerPrefs.SetInt("trans_FailMount", currentFail);
+        if (!PlayerPrefs.HasKey("trans_OutlinerMount"))
+            PlayerPrefs.SetInt("trans_OutlinerMount", 0);
+        PlayerPrefs.SetInt("trans_OutlinerMount", 0);
+
+        Managers.CleanManagerChilds();
+        Managers.Scene.LoadScene(Define.Scene.ResultScene);
+        flag = false;
     }
 
     void Scroll()
@@ -131,8 +155,8 @@ public class ActualModController : MonoBehaviour
             {
                 if (!Managers.Input.keyChecks[keyNum])
                 {
-                    currentError += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - lastInputTiming[keyNum];
-                    currentAcc = (totalAcc - currentError) / totalAcc;
+                    currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - lastInputTiming[keyNum];
+                    currentAcc = (totalAcc - currentFail) / (float)totalAcc;
                 }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;
@@ -148,10 +172,10 @@ public class ActualModController : MonoBehaviour
 
                 if (!Managers.Input.keyChecks[keyNum])
                 {
-                    currentError += currentDeltaTime - lastInputTiming[keyNum];
+                    currentFail += currentDeltaTime - lastInputTiming[keyNum];
                 }
                 lastInputTiming[keyNum] = currentDeltaTime;
-                currentAcc = (totalAcc - currentError) / totalAcc;
+                currentAcc = (totalAcc - currentFail) / (float)totalAcc;
             }
         }
 

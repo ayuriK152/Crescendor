@@ -26,7 +26,7 @@ public class SceneManagerEx
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         System.Enum.TryParse(SceneManager.GetActiveScene().name, true, out currentScene);
-        //Managers.UI.UpdateUIScript();
+        Managers.InitPostSceneLoad();
     }
 
     public string GetSceneName(Define.Scene sceneName)
