@@ -42,7 +42,7 @@ public class MidiManager
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
     public void Init()
-    {
+    {    
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
         keyTextObj = Resources.Load<GameObject>("Prefabs/KeyText");
 
