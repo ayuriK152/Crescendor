@@ -34,7 +34,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
 
   connection.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
     if (error) throw error
-    console.log('score = ?%', rows)
+    console.log('getscore \n user: %s \n music: %d', user_id, music_id)
     res.send(rows)
   })
   
