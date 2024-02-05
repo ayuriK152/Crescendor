@@ -74,8 +74,6 @@ public class ActualModController : MonoBehaviour
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
-        Managers.Input.keyChecks[39] = true;
-
         Managers.InitManagerPosition();
     }
 
@@ -183,8 +181,7 @@ public class ActualModController : MonoBehaviour
             }
         }
 
-        if (Managers.Midi.songLength < currentDeltaTime)
-            Debug.Log($"{Convert.ToInt32(currentAcc * 10000) / 100.0f}");
+        _uiController.UpdateAccuracy();
 
         yield return null;
     }
