@@ -31,7 +31,7 @@ public class MidiManager
 
     public List<Notes> notes = new List<Notes>();
     public List<int> noteTiming = new List<int>();
-    public List<GameObject> instatiateNotes = new List<GameObject>();
+    public List<GameObject> instantiateNotes = new List<GameObject>();
 
     // 같은 시간대에 동시에 쳐야하는 노트들 모음
     public Dictionary<int, List<KeyValuePair<int, bool>>> noteSetBySameTime = new Dictionary<int, List<KeyValuePair<int, bool>>>();
@@ -42,7 +42,7 @@ public class MidiManager
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
     public void Init()
-    {    
+    {
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
         keyTextObj = Resources.Load<GameObject>("Prefabs/KeyText");
 
@@ -50,15 +50,31 @@ public class MidiManager
         whiteKeyTwo = Resources.Load<Material>("Materials/WhiteChannel2");
         blackKeyOne = Resources.Load<Material>("Materials/BlackChannel1");
         blackKeyTwo = Resources.Load<Material>("Materials/BlackChannel2");
+    }
 
-        GameObject tempNoteInstantiatePoint = new GameObject("Notes");
-        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, 0, 0);
-        noteInstantiatePoint = tempNoteInstantiatePoint.transform;
+    void CleanPrevDatas()
+    {
+        totalDeltaTime = 0;
+
+        notes.Clear();
+        noteTiming.Clear();
+        instantiateNotes.Clear();
+        noteSetBySameTime.Clear();
+        noteSetByKey.Clear();
+        _tempNoteData.Clear();
+
+        nextKeyIndex = new int[88];
     }
 
     public void LoadAndInstantiateMidi(string fileName, GameObject obj)
     {
+        CleanPrevDatas();
+
+        GameObject tempNoteInstantiatePoint = new GameObject("Notes");
+        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        noteInstantiatePoint = tempNoteInstantiatePoint.transform;
+
         TextAsset sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
         song = MidiFileLoader.Load(sourceFile.bytes);
         while (song.tracks == null)     // 혹시 모를 비동기 로드 상황에 대비
@@ -82,21 +98,21 @@ public class MidiManager
                 eventStartTime += eventStartTime == -1 ? track.sequence[j].delta + 1 : track.sequence[j].delta;
                 if (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 > 0)
                 {
-                    if (_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
+                    if (_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))
                     {
-                        notes.Add(new Notes(track.sequence[j].midiEvent.data1, _tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
-                        _tempNoteData.Remove(track.sequence[j].midiEvent.data1);
+                        notes.Add(new Notes(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET, _tempNoteData[track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET], eventStartTime, trackNum));
+                        _tempNoteData.Remove(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET);
                     }
-                    _tempNoteData.Add(track.sequence[j].midiEvent.data1, eventStartTime);
+                    _tempNoteData.Add(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET, eventStartTime);
                 }
                 else if (track.sequence[j].midiEvent.status == 128 || (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 == 0))
                 {
-                    if (!_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1))
+                    if (!_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))
                         continue;
                     songLength = songLength < eventStartTime ? eventStartTime : songLength;
-                    notes.Add(new Notes(track.sequence[j].midiEvent.data1, _tempNoteData[track.sequence[j].midiEvent.data1], eventStartTime, trackNum));
+                    notes.Add(new Notes(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET, _tempNoteData[track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET], eventStartTime, trackNum));
                     totalDeltaTime += notes[notes.Count - 1].deltaTime;
-                    _tempNoteData.Remove(track.sequence[j].midiEvent.data1);
+                    _tempNoteData.Remove(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET);
                 }
             }
             if (notes.Count > 0 && trackNum == 0)
@@ -130,37 +146,37 @@ public class MidiManager
             {
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
-                instatiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
-                instatiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instatiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
+                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
+                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
-                    instatiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
+                    instantiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
                 }
                 else
                 {
-                    instatiateNotes[i].GetComponent<Renderer>().material = blackKeyTwo;
+                    instantiateNotes[i].GetComponent<Renderer>().material = blackKeyTwo;
                 }
             }
             else
             {
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
-                instatiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
-                instatiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instatiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
+                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
+                instantiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
-                    instatiateNotes[i].GetComponent<Renderer>().material = whiteKeyOne;
+                    instantiateNotes[i].GetComponent<Renderer>().material = whiteKeyOne;
                 }
                 else
                 {
-                    instatiateNotes[i].GetComponent<Renderer>().material = whiteKeyTwo;
+                    instantiateNotes[i].GetComponent<Renderer>().material = whiteKeyTwo;
                 }
             }
 
             GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, noteInstantiatePoint);
-            tempKeyObject.transform.parent = instatiateNotes[i].transform;
+            tempKeyObject.transform.parent = instantiateNotes[i].transform;
             tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
             tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(notes[i].keyNum);
@@ -180,7 +196,6 @@ public class MidiManager
 
     string GetKeyFromKeynum(int keyNum)
     {
-        keyNum -= 20;
         string key = "";
         string pos = "";
         int offset = -1;
@@ -240,7 +255,6 @@ public class MidiManager
     bool BlackKeyJudge(int keyNum)
     {
         bool flag = false;
-        keyNum -= 20;
         if (keyNum > 3)
             keyNum -= 3;
         else
@@ -290,7 +304,6 @@ public class MidiManager
     int NoteKeyPosOrder(int keyNum)
     {
         int keyPos = 0;
-        keyNum -= 20;
         if (keyNum > 3)
             keyNum -= 3;
         else

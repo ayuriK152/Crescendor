@@ -36,7 +36,7 @@ public class Define
         Unknown,
         ActualModScene,
         PracticeModScene,
-        SongSelectionScene,
+        SongSelectScene,
         ResultScene,
     }
 

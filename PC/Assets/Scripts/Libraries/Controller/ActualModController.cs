@@ -74,7 +74,7 @@ public class ActualModController : MonoBehaviour
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
-        Managers.Input.keyChecks[59] = true;
+        Managers.Input.keyChecks[39] = true;
 
         Managers.InitManagerPosition();
     }
