@@ -66,6 +66,11 @@ public class Managers : MonoBehaviour
         Midi.Init();
     }
 
+    static public void InitManagerPosition()
+    {
+        _managerInstance.transform.position = new Vector3(0, 0, Datas.DEFAULT_NOTE_POSITION_OFFSET);
+    }
+
     static public void InitPostSceneLoad()
     {
         UI.Init();

@@ -13,9 +13,9 @@ public class PracticeModController : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = 0.0f;
-    public float noteScale = 1.0f;
-    public float widthValue = 1.0f;
+    public float notePosOffset = -2.625f;
+    public float noteScale = 3.0f;
+    public float widthValue = 1.5f;
     public string songTitle;
 
     public int passedNote;
@@ -38,6 +38,8 @@ public class PracticeModController : MonoBehaviour
 
     public void Init()
     {
+        songTitle = PlayerPrefs.GetString("trans_SongTitle");
+
         passedNote = 0;
         totalNote = 0;
         currentNoteIndex = 0;
@@ -66,8 +68,14 @@ public class PracticeModController : MonoBehaviour
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
-        Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-        Managers.Input.inputDevice.EventReceived += OnEventReceived;
+
+        if (Managers.Input.inputDevice != null)
+        {
+            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
+            Managers.Input.inputDevice.EventReceived += OnEventReceived;
+        }
+
+        Managers.InitManagerPosition();
     }
 
     void Update()

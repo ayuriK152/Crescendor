@@ -17,9 +17,9 @@ public class ActualModController : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = 0.0f;
-    public float noteScale = 1.0f;
-    public float widthValue = 1.0f;
+    public float notePosOffset = -2.625f;
+    public float noteScale = 1.5f;
+    public float widthValue = 1.5f;
     public string songTitle;
 
     public int passedNote;
@@ -38,6 +38,8 @@ public class ActualModController : MonoBehaviour
 
     public void Init()
     {
+        songTitle = PlayerPrefs.GetString("trans_SongTitle");
+
         passedNote = 0;
         totalNote = 0;
         currentFail = 0;
@@ -73,6 +75,8 @@ public class ActualModController : MonoBehaviour
         }
 
         Managers.Input.keyChecks[59] = true;
+
+        Managers.InitManagerPosition();
     }
 
     void Update()
