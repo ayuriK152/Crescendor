@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -28,7 +25,7 @@ public class UI_SongPopup : UI_Popup
         GetButton((int)Buttons.PracticeBtn).gameObject.BindEvent(PracticeBtnClicked);
         GetButton((int)Buttons.ActualBtn).gameObject.BindEvent(ActualBtnClicked);
         GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
-        
+        transform.Find("Panel/Title").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("trans_SongTitle");
     }
 
     public void PracticeBtnClicked(PointerEventData data)
@@ -45,6 +42,4 @@ public class UI_SongPopup : UI_Popup
     {
         Managers.UI.ClosePopupUI(this);
     }
-
-
 }

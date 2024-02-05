@@ -52,7 +52,7 @@ public class UI_Select : UI_Scene
                 {
                     // 예시로 Song의 songTitle을 버튼에 표시
                     button.GetComponentInChildren<TextMeshProUGUI>().text = SongManager.Instance.songs[i].songTitle;
-                    button.onClick.AddListener(() => OnSongButtonClick());
+                    button.onClick.AddListener(() => OnSongButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                 }
             }
             else
@@ -63,8 +63,12 @@ public class UI_Select : UI_Scene
 
     }
 
-    public void OnSongButtonClick()
+    public void OnSongButtonClick(string songName)
     {
+        if (!PlayerPrefs.HasKey("trans_SongTitle"))
+            PlayerPrefs.SetString("trans_SongTitle", "");
+        PlayerPrefs.SetString("trans_SongTitle", songName);
+
         Managers.UI.ShowPopupUI<UI_SongPopup>();
     }
 
