@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
-
-
-
     static GameObject _managerObj = null;
     public static GameObject ManagerObj { get { return _managerObj; } }
 
@@ -21,6 +18,7 @@ public class Managers : MonoBehaviour
     private static IngameManager _ingame = new IngameManager();
     private static SceneManagerEx _scene = new SceneManagerEx();
     private static ResourceManager _resource = new ResourceManager();
+    private static SongManager _song = new SongManager();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
@@ -28,6 +26,7 @@ public class Managers : MonoBehaviour
     public static IngameManager Ingame { get { return _ingame; } }
     public static SceneManagerEx Scene {  get { return _scene; } }
     public static ResourceManager Resource { get { return _resource; } }
+    public static SongManager Song { get { return _song; } }
 
     void Awake()
     {

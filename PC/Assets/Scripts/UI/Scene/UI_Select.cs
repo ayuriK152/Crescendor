@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SongManager;
 
 public class UI_Select : UI_Scene
 {
@@ -33,12 +32,12 @@ public class UI_Select : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.RankButton).gameObject.BindEvent(OnRankButtonClick);
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
-        SongManager.Instance.LoadSongsFromConvertsFolder();
+        Managers.Song.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
             Managers.Resource.Destroy(child.gameObject);
 
         // SongManager의 곡 정보를 이용하여 버튼 생성
-        for (int i = 0; i < SongManager.Instance.songs.Count; i++)
+        for (int i = 0; i < Managers.Song.songs.Count; i++)
         {
             // SongButton 프리팹 로드
             GameObject songButtonPrefab = Managers.Resource.Instantiate($"UI/Sub/SongButton", songPanel.transform);
@@ -51,7 +50,7 @@ public class UI_Select : UI_Scene
                 if (button != null)
                 {
                     // 예시로 Song의 songTitle을 버튼에 표시
-                    button.GetComponentInChildren<TextMeshProUGUI>().text = SongManager.Instance.songs[i].songTitle;
+                    button.GetComponentInChildren<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
                     button.onClick.AddListener(() => OnSongButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                 }
             }
