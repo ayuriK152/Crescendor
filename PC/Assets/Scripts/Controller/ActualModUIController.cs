@@ -15,6 +15,8 @@ public class ActualModUIController : MonoBehaviour
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
 
+    Button disconnectBtn;
+
     ActualModController actualModController;
 
     public void BindIngameUI()
@@ -26,7 +28,12 @@ public class ActualModUIController : MonoBehaviour
         accuracyTMP = GameObject.Find("MainCanvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+
+        disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
+
         actualModController = Managers.Ingame.controller as ActualModController;
+
+        disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
     }
 
     public void UpdatePassedNote()
@@ -37,5 +44,10 @@ public class ActualModUIController : MonoBehaviour
     public void UpdateAccuracy()
     {
         accuracyTMP.text = $"{Convert.ToInt32(actualModController.currentAcc * 10000.0f) / 100.0f}%";
+    }
+
+    public void DisconnectPianoBtn()
+    {
+        actualModController.DisconnectPiano();
     }
 }

@@ -281,19 +281,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 168591869}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1303965846}
-        m_TargetAssemblyTypeName: TestUI, Assembly-CSharp
-        m_MethodName: ScrollNextBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &168591869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,19 +479,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 258914814}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1303965846}
-        m_TargetAssemblyTypeName: TestUI, Assembly-CSharp
-        m_MethodName: AutoScrollBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &258914814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -933,19 +909,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 571781352}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1303965846}
-        m_TargetAssemblyTypeName: TestUI, Assembly-CSharp
-        m_MethodName: TurnOffLoop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &571781352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1583,19 +1547,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 947102655}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1303965846}
-        m_TargetAssemblyTypeName: TestUI, Assembly-CSharp
-        m_MethodName: DisconnectPianoBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &947102655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2117,6 +2069,7 @@ MonoBehaviour:
   totalNote: 0
   currentNoteIndex: 0
   isLoop: 0
+  isPlaying: 0
   loopStartDeltaTime: 0
   loopEndDeltaTime: 0
   loopStartNoteIndex: 0
