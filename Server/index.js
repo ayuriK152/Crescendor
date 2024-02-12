@@ -22,6 +22,8 @@ app.get('/users', (req, res) => {
     console.log('User info is: ', rows)
     res.send(rows)
   })
+
+  connection.release();
 })
 
 app.post('/signin', async (req, res) => {
@@ -44,6 +46,7 @@ app.post('/signin', async (req, res) => {
     res.status(200).send('SUCCESS')
   })
 
+  connection.release();
 })
 
 app.post('/login', async (req, res) => {
@@ -62,13 +65,15 @@ app.post('/login', async (req, res) => {
 
   if (!matchPassword) {
       res.status(400).send('ERROR: password')
-      return;
+      return
   }
 
   if (matchPassword){
     res.status(200).send('SUCCESS')
-    return;
+    return
   }
+
+  connection.release();
 })
 
 // =====================================    Record    =====================================
@@ -78,6 +83,8 @@ app.get('/record', (req, res) => {
     console.log('Record info is: ', rows)
     res.send(rows)
   })
+
+  connection.release();
 })
 
 // getscore API
@@ -91,6 +98,8 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     console.log(rows)
     res.send(rows)
   })
+
+  connection.release();
 }) 
 
 // addscore API
@@ -104,6 +113,8 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
     console.log('addscore \n user: %s \n music: %d \n', user_id, music_id)
     res.send(rows)
   })
+
+  connection.release();
 })
 
 // setscore API
@@ -118,6 +129,8 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
     console.log(rows)
     res.send(rows)
   })
+
+  connection.release();
 }) 
 
 // =====================================    Practice    =====================================
@@ -127,6 +140,8 @@ app.get('/practice', (req, res) => {
     console.log('Practice info is: ', rows)
     res.send(rows)
   })
+
+  connection.release();
 })
 
 // =====================================    Music   =====================================
@@ -136,6 +151,8 @@ app.get('/music', (req, res) => {
     console.log('Music info is: ', rows)
     res.send(rows)
   })
+  
+  connection.release();
 })
 
 
