@@ -71,7 +71,7 @@ app.post('/login', async (req, res) => {
       res.status(400).send(`ERROR: id`)
       return
     }
-    console.log(rows[0].RowDataPacket)
+    console.log(rows[0][0])
     user_password = rows.data[0].password
   })
 
