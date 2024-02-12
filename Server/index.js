@@ -26,7 +26,7 @@ app.get('/users', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 })
 
 app.post('/signin', async (req, res) => {
@@ -55,7 +55,7 @@ app.post('/signin', async (req, res) => {
     res.status(200).send('SUCCESS')
   })
 
-  connection.release();
+  connection.end();
 })
 
 app.post('/login', async (req, res) => {
@@ -74,7 +74,7 @@ app.post('/login', async (req, res) => {
     user_password = rows[0].password
   })
 
-  const matchPassword = await bcrypt.compare(password, user_password)
+  const matchPassword = bcrypt.compare(password, user_password)
 
   if (!matchPassword) {
       res.status(400).send('ERROR: password')
@@ -86,7 +86,7 @@ app.post('/login', async (req, res) => {
     return
   }
 
-  connection.release();
+  connection.end();
 })
 
 // =====================================    Record    =====================================
@@ -100,7 +100,7 @@ app.get('/record', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 })
 
 // getscore API
@@ -118,7 +118,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 }) 
 
 // addscore API
@@ -136,7 +136,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 })
 
 // setscore API
@@ -155,7 +155,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 }) 
 
 // =====================================    Practice    =====================================
@@ -169,7 +169,7 @@ app.get('/practice', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 })
 
 // =====================================    Music   =====================================
@@ -183,7 +183,7 @@ app.get('/music', (req, res) => {
     res.send(rows)
   })
 
-  connection.release();
+  connection.end();
 })
 
 
