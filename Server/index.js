@@ -73,7 +73,7 @@ app.post('/login', (req, res) => {
       return
     }
     console.log(rows[0])
-    const { user_password } = rows[0]
+    const { user_password } = rows.RowDataPacket
     console.log(user_password)
     matchPassword = bcrypt.compare(password, user_password)
     
