@@ -23,6 +23,52 @@ app.get('/users', (req, res) => {
   })
 })
 
+app.post('/signin', async (req, res) => {
+  const { id, password } = req.body;
+
+  connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
+    if (error) throw error
+    if (rows != 0){
+      res.status(400).send(`ERROR: exist`)
+      return
+    }
+  })
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
+  connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
+    if (error) throw error
+    console.log('signin \n id: %s \n', id)
+    res.status(200).send('SUCCESS')
+  })
+
+})
+
+app.post('/login', async (req, res) => {
+  const { id, password } = req.body
+
+  connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
+    if (error) throw error
+    if (rows == null){
+      res.status(400).send(`ERROR: id`)
+      return
+    }
+    const {user_password} = rows
+  })
+
+  const matchPassword = await bcrypt.compare(password, user_password)
+
+  if (!matchPassword) {
+      res.status(400).send('ERROR: password')
+      return;
+  }
+
+  if (matchPassword){
+    res.status(200).send('SUCCESS')
+    return;
+  }
+})
+
 // =====================================    Record    =====================================
 app.get('/record', (req, res) => {
   connection.query('SELECT * from Crescendor.record;', (error, rows) => {
