@@ -26,7 +26,7 @@ app.get('/users', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 app.post('/signin', async (req, res) => {
@@ -55,7 +55,7 @@ app.post('/signin', async (req, res) => {
     res.status(200).send('SUCCESS')
   })
 
-  connection.end();
+  
 })
 
 app.post('/login', async (req, res) => {
@@ -87,7 +87,7 @@ app.post('/login', async (req, res) => {
     return
   }
 
-  connection.end();
+  
 })
 
 // =====================================    Record    =====================================
@@ -101,7 +101,7 @@ app.get('/record', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // getscore API
@@ -119,7 +119,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 }) 
 
 // addscore API
@@ -137,7 +137,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // setscore API
@@ -156,7 +156,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 }) 
 
 // =====================================    Practice    =====================================
@@ -170,7 +170,7 @@ app.get('/practice', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // =====================================    Music   =====================================
@@ -184,7 +184,7 @@ app.get('/music', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 
