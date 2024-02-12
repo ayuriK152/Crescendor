@@ -29,8 +29,9 @@ app.post('/signin', async (req, res) => {
 
   connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error) throw error
-    if (rows != 0){
-      res.status(400).send(`ERROR: exist`)
+    console.log('sign count:', rows)
+    if (rows > 0){
+      res.status(400).send(`ERROR: exist id`)
       return
     }
   })
