@@ -72,7 +72,7 @@ app.post('/login', (req, res) => {
       res.status(400).send(`ERROR: id`)
       return
     }
-    user_password = rows[0].password
+    const { user_password } = rows[0]
     console.log(user_password)
     matchPassword = bcrypt.compare(password, user_password)
     
