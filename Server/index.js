@@ -73,7 +73,6 @@ app.post('/login', (req, res) => {
 
     const user_password = rows[0].password
     const matchPassword =  bcrypt.compareSync(password, user_password)
-    console.log(matchPassword)
 
     if (!matchPassword) {
         res.status(400).send('ERROR: password')
@@ -81,6 +80,7 @@ app.post('/login', (req, res) => {
     }
     
     if (matchPassword){
+      console.log('Login: %s',id)
       res.status(200).send('SUCCESS')
       return
     }
