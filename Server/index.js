@@ -71,7 +71,8 @@ app.post('/login', async (req, res) => {
       res.status(400).send(`ERROR: id`)
       return
     }
-    user_password = rows[0].password
+    console.log(rows)
+    user_password = rows.data[0].password
   })
 
   const matchPassword = bcrypt.compare(password, user_password)
