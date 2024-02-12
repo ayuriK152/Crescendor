@@ -78,7 +78,7 @@ app.post('/login', (req, res) => {
     
   })
 
-  matchPassword = bcrypt.compare(password, user_password)
+  matchPassword = bcrypt.compareSync(password, user_password)
 
   if (!matchPassword) {
       res.status(400).send('ERROR: password')
