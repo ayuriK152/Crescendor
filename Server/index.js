@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM Crescendor.users;', (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('User info is: ', rows)
@@ -34,7 +34,7 @@ app.post('/signin', async (req, res) => {
 
   connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('sign count:', rows)
@@ -48,7 +48,7 @@ app.post('/signin', async (req, res) => {
   
   connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('signin \n id: %s \n', id)
@@ -63,7 +63,7 @@ app.post('/login', async (req, res) => {
 
   connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     if (rows == null){
@@ -92,7 +92,7 @@ app.post('/login', async (req, res) => {
 app.get('/record', (req, res) => {
   connection.query('SELECT * from Crescendor.record;', (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('Record info is: ', rows)
@@ -109,7 +109,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
 
   connection.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('getscore \n user: %s \n music: %d \n', user_id, music_id)
@@ -128,7 +128,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
 
   connection.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('addscore \n user: %s \n music: %d \n', user_id, music_id)
@@ -146,7 +146,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
 
   connection.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
       console.log('setscore \n user: %s \n music: %d \n', user_id, music_id)
@@ -161,7 +161,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
 app.get('/practice', (req, res) => {
   connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('Practice info is: ', rows)
@@ -175,7 +175,7 @@ app.get('/practice', (req, res) => {
 app.get('/music', (req, res) => {
   connection.query('SELECT * from Crescendor.music;', (error, rows) => {
     if (error){
-      res.send(err)
+      res.send(error)
       return
     }
     console.log('Music info is: ', rows)
