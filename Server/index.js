@@ -26,7 +26,7 @@ app.get('/users', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 app.post('/signin', async (req, res) => {
@@ -55,12 +55,11 @@ app.post('/signin', async (req, res) => {
     res.status(200).send('SUCCESS')
   })
 
-  connection.end();
+  
 })
 
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
   const { id, password } = req.body
-  const user_password = null
 
   connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
@@ -71,23 +70,21 @@ app.post('/login', async (req, res) => {
       res.status(400).send(`ERROR: id`)
       return
     }
-    console.log(rows)
-    user_password = rows.data[0].password
-  })
 
-  const matchPassword = bcrypt.compare(password, user_password)
+    const user_password = rows[0].password
+    const matchPassword =  bcrypt.compareSync(password, user_password)
 
-  if (!matchPassword) {
-      res.status(400).send('ERROR: password')
+    if (!matchPassword) {
+        res.status(400).send('ERROR: password')
+        return
+    }
+    
+    if (matchPassword){
+      console.log('Login: %s',id)
+      res.status(200).send('SUCCESS')
       return
-  }
-
-  if (matchPassword){
-    res.status(200).send('SUCCESS')
-    return
-  }
-
-  connection.end();
+    }
+  })
 })
 
 // =====================================    Record    =====================================
@@ -101,7 +98,7 @@ app.get('/record', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // getscore API
@@ -119,7 +116,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 }) 
 
 // addscore API
@@ -137,7 +134,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // setscore API
@@ -156,7 +153,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 }) 
 
 // =====================================    Practice    =====================================
@@ -170,7 +167,7 @@ app.get('/practice', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 // =====================================    Music   =====================================
@@ -184,7 +181,7 @@ app.get('/music', (req, res) => {
     res.send(rows)
   })
 
-  connection.end();
+  
 })
 
 
