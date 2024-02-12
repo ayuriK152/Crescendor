@@ -60,8 +60,8 @@ app.post('/signin', async (req, res) => {
 
 app.post('/login', (req, res) => {
   const { id, password } = req.body
-  const user_password = null
-  const matchPassword = null
+  var user_password = null
+  var matchPassword = null
 
   connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
@@ -73,7 +73,7 @@ app.post('/login', (req, res) => {
       return
     }
     console.log(rows[0].password)
-    const user_password = rows[0].password
+    user_password = rows[0].password
     console.log(user_password)
     matchPassword = bcrypt.compare(password, user_password)
     
