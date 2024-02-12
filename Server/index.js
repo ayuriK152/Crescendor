@@ -2,6 +2,7 @@ const express = require('express')
 const mysql = require('mysql')
 const db = require('./config/database.js')
 const connection = mysql.createConnection(db)
+const bcrypt = require('bcrypt');
 
 const app = express()
 
