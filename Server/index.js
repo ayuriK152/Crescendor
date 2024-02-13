@@ -29,6 +29,8 @@ app.get('/users', (req, res) => {
   
 })
 
+// signin API (회원가입)
+// 실패하면 ERROR, 성공하면 SUCCESS 리턴
 app.post('/signin', async (req, res) => {
   const { id, password } = req.body;
 
@@ -45,7 +47,7 @@ app.post('/signin', async (req, res) => {
   })
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
@@ -58,6 +60,8 @@ app.post('/signin', async (req, res) => {
   
 })
 
+// login API (로그인)
+// 실패하면 ERROR, 성공하면 SUCCESS 리턴
 app.post('/login', (req, res) => {
   const { id, password } = req.body
 
