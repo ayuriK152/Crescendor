@@ -119,9 +119,22 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
     console.log(rows)
     res.send(rows)
   })
+})
 
-  
-}) 
+// ranking API
+app.get('/ranking/:music_id', (req, res) => {
+  const music_id = Number(req.params.music_id)
+
+  connection.query("SELECT * from Crescendor.record where music_id = ? order by 3 DESC, 1 ASC;", music_id, (error, rows) => {
+    if (error){
+      res.send('ERROR: MySQL')
+      return
+    }
+    console.log('Ranking \n music: %d \n', music_id)
+    console.log(rows)
+    res.send(rows)
+  })
+})
 
 // addscore API
 app.post('/record/addscore/:user_id/:music_id', (req, res) => {
