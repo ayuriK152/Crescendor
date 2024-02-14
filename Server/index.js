@@ -130,7 +130,7 @@ app.get('/ranking/:music_name', (req, res) => {
       res.send('ERROR: MySQL')
       return
     }
-    console.log('Ranking \n music: %d \n', music_id)
+    console.log('Ranking \n music: %s \n', music_name)
     console.log(rows)
     res.send(rows)
   })
