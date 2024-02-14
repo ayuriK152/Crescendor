@@ -122,10 +122,10 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
 })
 
 // ranking API
-app.get('/ranking/:music_id', (req, res) => {
-  const music_id = Number(req.params.music_id)
+app.get('/ranking/:music_name', (req, res) => {
+  const music_name = req.params.music_name
 
-  connection.query("SELECT * from Crescendor.record where music_id = ? order by 3 DESC, 1 ASC;", music_id, (error, rows) => {
+  connection.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
