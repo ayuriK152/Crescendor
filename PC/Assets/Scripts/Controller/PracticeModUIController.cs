@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,11 @@ public class PracticeModUIController : MonoBehaviour
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
 
+    Button forceScrollBtn;
+    Button disconnectBtn;
+    Button autoScrollBtn;
+    Button turnOffLoopBtn;
+
     PracticeModController practiceModController;
 
     public void BindIngameUI()
@@ -31,10 +37,22 @@ public class PracticeModUIController : MonoBehaviour
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
         loopEndMarkerSprite = loopEndMarker.GetComponent<Image>();
+
+        forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
+        disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
+        autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
+        turnOffLoopBtn = GameObject.Find("MainCanvas/Buttons/TurnOffLoop").GetComponent<Button>();
+
         practiceModController = Managers.Ingame.controller as PracticeModController;
 
+        songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
+
+        forceScrollBtn.onClick.AddListener(ForceScrollBtn);
+        disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
+        autoScrollBtn.onClick.AddListener(AutoScrollBtn);
+        autoScrollBtn.onClick.AddListener(TurnOffLoop);
     }
 
     public void SetLoopStartMarker()
@@ -58,6 +76,7 @@ public class PracticeModUIController : MonoBehaviour
 
     public void TurnOffLoop()
     {
+        practiceModController.TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
     }
@@ -65,5 +84,30 @@ public class PracticeModUIController : MonoBehaviour
     public void UpdatePassedNote()
     {
         songNoteMountTMP.text = $"{practiceModController.passedNote}/{practiceModController.totalNote}";
+    }
+
+    public void UpdateDeltaTimeBySlider(float sliderValue)
+    {
+        if (practiceModController.isPlaying)
+            practiceModController.isPlaying = false;
+        practiceModController.currentDeltaTime = (int)sliderValue;
+        practiceModController.SyncDeltaTime(true);
+        StartCoroutine(practiceModController.UpdateNotePosByTime());
+    }
+
+    public void ForceScrollBtn()
+    {
+        practiceModController.isPlaying = true;
+        practiceModController.IncreaseCurrentNoteIndex();
+    }
+
+    public void DisconnectPianoBtn()
+    {
+        practiceModController.DisconnectPiano();
+    }
+
+    public void AutoScrollBtn()
+    {
+        practiceModController.AutoScroll();
     }
 }
