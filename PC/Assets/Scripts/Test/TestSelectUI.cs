@@ -7,7 +7,7 @@ public class TestSelectUI : MonoBehaviour
 {
     void Start()
     {
-        Managers.UI.ShowSceneUI<UI_Select>();
+        (Managers.UI.currentUIController as SongSelectUIController).ShowSceneUI<UI_Select>();
     }
 
 }

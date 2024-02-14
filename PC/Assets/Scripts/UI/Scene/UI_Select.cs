@@ -78,13 +78,13 @@ public class UI_Select : UI_Scene
         }
         else if (currentSongTitle == songName)
         {
-            Managers.UI.ShowPopupUI<UI_SongPopup>();
+            (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_SongPopup>();
         }
     }
 
     public void OnRankButtonClick(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_RankPopUp>();
+        (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_RankPopUp>();
     }
 
     void UpdateRankList()
