@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class UI_SongPopup : UI_Popup
 {
-
     enum Buttons
     {
         PracticeBtn,
