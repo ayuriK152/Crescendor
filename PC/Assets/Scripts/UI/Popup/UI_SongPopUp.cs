@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class UI_SongPopup : UI_Popup
 {
-
     enum Buttons
     {
         PracticeBtn,
@@ -40,6 +39,6 @@ public class UI_SongPopup : UI_Popup
 
     public void CloseBtnClicked(PointerEventData data)
     {
-        Managers.UI.ClosePopupUI(this);
+        (Managers.UI.currentUIController as SongSelectUIController).ClosePopupUI(this);
     }
 }

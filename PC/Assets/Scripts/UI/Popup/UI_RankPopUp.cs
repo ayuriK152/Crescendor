@@ -25,6 +25,6 @@ public class UI_RankPopUp : UI_Popup
 
     public void CloseBtnClicked(PointerEventData data)
     {
-        Managers.UI.ClosePopupUI(this);
+        (Managers.UI.currentUIController as SongSelectUIController).ClosePopupUI(this);
     }
 }

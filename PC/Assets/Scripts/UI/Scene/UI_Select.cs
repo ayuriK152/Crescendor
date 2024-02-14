@@ -19,6 +19,8 @@ public class UI_Select : UI_Scene
         RankButton,
     }
 
+    GameObject rankPanel;
+
     void Start()
     {
         Init();
@@ -35,6 +37,8 @@ public class UI_Select : UI_Scene
         Managers.Song.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
             Managers.Resource.Destroy(child.gameObject);
+
+        rankPanel = Get<GameObject>((int)GameObjects.RankPanel);
 
         // SongManager의 곡 정보를 이용하여 버튼 생성
         for (int i = 0; i < Managers.Song.songs.Count; i++)
@@ -66,16 +70,50 @@ public class UI_Select : UI_Scene
     {
         if (!PlayerPrefs.HasKey("trans_SongTitle"))
             PlayerPrefs.SetString("trans_SongTitle", "");
-        PlayerPrefs.SetString("trans_SongTitle", songName);
-
-        Managers.UI.ShowPopupUI<UI_SongPopup>();
+        string currentSongTitle = PlayerPrefs.GetString("trans_SongTitle");
+        if (currentSongTitle != songName)
+        {
+            PlayerPrefs.SetString("trans_SongTitle", songName);
+            UpdateRankList();
+        }
+        else if (currentSongTitle == songName)
+        {
+            (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_SongPopup>();
+        }
     }
 
     public void OnRankButtonClick(PointerEventData data)
     {
-        Managers.UI.ShowPopupUI<UI_RankPopUp>();
+        (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_RankPopUp>();
     }
 
+    void UpdateRankList()
+    {
+        foreach (Transform child in rankPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
 
+        for (int i = 0; i < testSongTitle.Length; i++)
+        {
+            GameObject rankButtonPrefab = Managers.Resource.Instantiate($"UI/Sub/RankButton", rankPanel.transform);
+            if (rankButtonPrefab != null)
+            {
+                Button button = rankButtonPrefab.GetComponent<Button>();
+
+                if (button != null)
+                {
+                    button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
+                    button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"No.{i + 1} people";
+                    button.onClick.AddListener(() => OnSongButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
+                }
+            }
+            else
+            {
+                Debug.LogError($"Failed to load RankButton prefab");
+            }
+        }
+    }
 }
 
