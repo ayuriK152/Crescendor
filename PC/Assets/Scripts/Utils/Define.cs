@@ -33,13 +33,13 @@ public class Define
     {
         public int songNum;
         public string songTitle;
-        public string composer;
+        public string songComposer;
 
         public Song(int songNum, string songTitle, string composer)
         {
             this.songNum = songNum;
             this.songTitle = songTitle;
-            this.composer = composer;
+            this.songComposer = composer;
         }
     }
 
