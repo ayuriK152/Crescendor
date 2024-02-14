@@ -19,32 +19,36 @@ public class UI_Select : UI_Scene
         RankButton,
     }
 
-    GameObject rankPanel;
+    GameObject rankPanelObj;
+    GameObject noRankSignPanelObj;
+    Define.RankRecordList rankRecords;
 
     void Start()
     {
         Init();
     }
-
+    
     public override void Init()
     {
+        PlayerPrefs.SetString("trans_SongTitle", "");
+
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
-        GetButton((int)Buttons.RankButton).gameObject.BindEvent(OnRankButtonClick);
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         Managers.Song.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
-            Managers.Resource.Destroy(child.gameObject);
+            Managers.Data.Destroy(child.gameObject);
 
-        rankPanel = Get<GameObject>((int)GameObjects.RankPanel);
+        rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
+        noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
         // SongManager의 곡 정보를 이용하여 버튼 생성
         for (int i = 0; i < Managers.Song.songs.Count; i++)
         {
             // SongButton 프리팹 로드
-            GameObject songButtonPrefab = Managers.Resource.Instantiate($"UI/Sub/SongButton", songPanel.transform);
+            GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", songPanel.transform);
             // SongButton 생성
             if (songButtonPrefab != null)
             {
@@ -63,7 +67,6 @@ public class UI_Select : UI_Scene
                 Debug.LogError($"Failed to load SongButton prefab");
             }
         }
-
     }
 
     public void OnSongButtonClick(string songName)
@@ -89,23 +92,40 @@ public class UI_Select : UI_Scene
 
     void UpdateRankList()
     {
-        foreach (Transform child in rankPanel.transform)
+        foreach (Transform child in rankPanelObj.transform)
         {
             Destroy(child.gameObject);
         }
-        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
 
-        for (int i = 0; i < testSongTitle.Length; i++)
+        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
+        Managers.Data.GetRankListFromServer(testSongTitle);
+
+        rankRecords = JsonUtility.FromJson<Define.RankRecordList>(Managers.Data.jsonDataFromServer);
+        Managers.Data.jsonDataFromServer = "init data";
+
+        if (rankRecords.records.Count == 0)
         {
-            GameObject rankButtonPrefab = Managers.Resource.Instantiate($"UI/Sub/RankButton", rankPanel.transform);
+            noRankSignPanelObj.SetActive(true);
+        }
+
+        else
+        {
+            noRankSignPanelObj.SetActive(false);
+        }
+
+        for (int i = 0; i < rankRecords.records.Count; i++)
+        {
+            GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
             if (rankButtonPrefab != null)
             {
                 Button button = rankButtonPrefab.GetComponent<Button>();
+                button.gameObject.BindEvent(OnRankButtonClick);
 
                 if (button != null)
                 {
                     button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
-                    button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"No.{i + 1} people";
+                    button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
+                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
                     button.onClick.AddListener(() => OnSongButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                 }
             }

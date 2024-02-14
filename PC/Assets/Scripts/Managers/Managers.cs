@@ -17,7 +17,7 @@ public class Managers : MonoBehaviour
     private static UIManager _ui = new UIManager();
     private static IngameManager _ingame = new IngameManager();
     private static SceneManagerEx _scene = new SceneManagerEx();
-    private static ResourceManager _resource = new ResourceManager();
+    private static DataManager _data = new DataManager();
     private static SongManager _song = new SongManager();
 
     public static InputManager Input { get { return _input; } }
@@ -25,7 +25,7 @@ public class Managers : MonoBehaviour
     public static UIManager UI { get { return _ui; } }
     public static IngameManager Ingame { get { return _ingame; } }
     public static SceneManagerEx Scene {  get { return _scene; } }
-    public static ResourceManager Resource { get { return _resource; } }
+    public static DataManager Data { get { return _data; } }
     public static SongManager Song { get { return _song; } }
 
     void Awake()
@@ -63,6 +63,7 @@ public class Managers : MonoBehaviour
         Scene.Init();
         Input.Init();
         Midi.Init();
+        Data.Init();
     }
 
     static public void InitManagerPosition()
