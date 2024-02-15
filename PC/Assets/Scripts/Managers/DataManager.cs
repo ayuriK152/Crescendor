@@ -1,9 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class ResourceManager
+public class DataManager
 {
+    public string jsonDataFromServer;
+
+    public void Init()
+    {
+        jsonDataFromServer = "init data";
+    }
+
     public T Load<T>(string path) where T : Object
     {
         return Resources.Load<T>(path);
@@ -32,5 +39,23 @@ public class ResourceManager
             return;
 
         Object.Destroy(go);
+    }
+
+    public void GetRankListFromServer(string songFileName)
+    {
+        UnityWebRequest www = UnityWebRequest.Get($"http://15.164.2.49:3000/ranking/{songFileName}");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            Debug.Log("Get Data Success");
+            jsonDataFromServer = $"{{\"records\":{www.downloadHandler.text}}}";
+        }
+        else
+        {
+            Debug.LogError("Error to Get Data");
+        }
     }
 }

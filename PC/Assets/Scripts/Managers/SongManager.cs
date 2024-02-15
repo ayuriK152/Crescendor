@@ -21,12 +21,15 @@ public class SongManager
         foreach (KeyValuePair<string, string> songFile in songFiles)
         {
             // 파일 이름만 추출
-            string songTitle = songFile.Key;
+            string songTitle = songFile.Key.Split('-')[0];
+            songTitle = songTitle.Replace("_", " ");
+            string songComposer = songFile.Key.Split('-')[1];
+            songComposer = songComposer.Replace("_", " ");
 
             // SongManager에 중복 검사 후 곡 정보 추가
             if (!IsSongAlreadyAdded(songTitle))
             {
-                AddSong(songCount, songTitle, "Unknown Composer");
+                AddSong(songCount, songTitle, songComposer);
             }
         }
 

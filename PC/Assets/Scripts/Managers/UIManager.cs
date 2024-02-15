@@ -1,6 +1,8 @@
 /* UI 매니저
  * 작성 - 이원섭
- * 여러 씬에서 사용되는 UI를 일괄 관리하고 바인딩하기 위해 사용하는 객체 */
+ * 여러 씬에서 사용되는 UI를 일괄 관리하고 바인딩하기 위해 사용하는 객체
+ * 현재 사용중인 씬을 확인하고 해당 씬의 UI 컨트롤러를 할당하는 방식
+ * UIController 접근시, (Managers.UI.currentController as ~~Controller)로 접근할 것 */
 
 using System;
 using Unity.VisualScripting;

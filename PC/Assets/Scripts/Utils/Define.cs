@@ -33,13 +33,45 @@ public class Define
     {
         public int songNum;
         public string songTitle;
-        public string composer;
+        public string songComposer;
 
         public Song(int songNum, string songTitle, string composer)
         {
             this.songNum = songNum;
             this.songTitle = songTitle;
-            this.composer = composer;
+            this.songComposer = composer;
+        }
+    }
+
+    /* 랭크 리스트용 클래스
+     * 변수 명명규칙에 어긋나지만 DB와 이름을 맞춰야하기 때문에 예외사항임.
+     * 절대 변수명 수정하지 말것.*/
+    [Serializable]
+    public class RankRecord
+    {
+        public string name;
+        public string user_id;
+        public float score;
+        public string date;
+        public object midi;
+
+        public RankRecord(string name, string user_id, float score, string date, object midi)
+        {
+            this.name = name;
+            this.user_id = user_id;
+            this.score = score;
+            this.date = date;
+            this.midi = midi;
+        }
+    }
+
+    public class RankRecordList
+    {
+        public List<RankRecord> records;
+
+        public RankRecordList()
+        {
+            records = new List<RankRecord>();
         }
     }
 

@@ -42,7 +42,7 @@ public class SongSelectUIController : MonoBehaviour
         if (string.IsNullOrEmpty(name))
             name = typeof(T).Name;
 
-        GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
+        GameObject go = Managers.Data.Instantiate($"UI/Scene/{name}");
         T sceneUI = Util.GetOrAddComponent<T>(go);
         _sceneUI = sceneUI;
 
@@ -56,7 +56,7 @@ public class SongSelectUIController : MonoBehaviour
         if (string.IsNullOrEmpty(name))
             name = typeof(T).Name;
 
-        GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
+        GameObject go = Managers.Data.Instantiate($"UI/Popup/{name}");
         T popup = Util.GetOrAddComponent<T>(go);
         _popupStack.Push(popup);
 
@@ -85,7 +85,7 @@ public class SongSelectUIController : MonoBehaviour
             return;
 
         UI_Popup popup = _popupStack.Pop();
-        Managers.Resource.Destroy(popup.gameObject);
+        Managers.Data.Destroy(popup.gameObject);
         popup = null;
         _order--;
     }
