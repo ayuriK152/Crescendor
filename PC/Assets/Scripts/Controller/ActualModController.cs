@@ -85,6 +85,7 @@ public class ActualModController : MonoBehaviour
     {
         Scroll();
         StartCoroutine(CheckNotesStatus());
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords);
         if (currentDeltaTime > Managers.Midi.songLength && flag)
             TempSwapScene();
     }

@@ -75,6 +75,17 @@ public class Define
         }
     }
 
+    [Serializable]
+    public class UserReplayRecord
+    {
+        Dictionary<int, KeyValuePair<int, int>> noteRecords;
+
+        public UserReplayRecord(Dictionary<int, KeyValuePair<int, int>> noteRecords)
+        {
+            this.noteRecords = noteRecords;
+        }
+    }
+
     public enum Scene
     {
         Unknown,

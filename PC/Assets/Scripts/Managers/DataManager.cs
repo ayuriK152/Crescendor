@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 public class DataManager
 {
     public string jsonDataFromServer;
+    public Define.UserReplayRecord userReplayRecord;
 
     public void Init()
     {
