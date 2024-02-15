@@ -26,6 +26,6 @@ public class UI_MainMenu : UI_Scene
 
     public void OnLoginButtonClick(PointerEventData data)
     {
-        SceneManager.LoadScene("SelectSongScene");
+        SceneManager.LoadScene("SongSelectScene");
     }
 }
