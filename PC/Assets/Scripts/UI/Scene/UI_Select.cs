@@ -30,8 +30,6 @@ public class UI_Select : UI_Scene
     
     public override void Init()
     {
-        PlayerPrefs.SetString("trans_SongTitle", "");
-
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));

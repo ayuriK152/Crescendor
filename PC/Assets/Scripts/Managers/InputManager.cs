@@ -12,7 +12,7 @@ public class InputManager
     public InputDevice inputDevice;
     public bool[] keyChecks = new bool[88];
 
-    public Action<KeyCode> keyAction;
+    public Action<KeyCode, Define.InputType> keyAction;
 
     public void Init()
     {
@@ -24,9 +24,15 @@ public class InputManager
     {
         // [, ] 입력 이벤트. 구간 반복에 사용
         if (Input.GetKeyDown(KeyCode.LeftBracket))
-            keyAction.Invoke(KeyCode.LeftBracket);
+            keyAction.Invoke(KeyCode.LeftBracket, Define.InputType.OnKeyDown);
         if (Input.GetKeyDown(KeyCode.RightBracket))
-            keyAction.Invoke(KeyCode.RightBracket);
+            keyAction.Invoke(KeyCode.RightBracket, Define.InputType.OnKeyDown);
+
+        // For Test
+        if (Input.GetKeyDown(KeyCode.A))
+            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
+        if (Input.GetKeyUp(KeyCode.A))
+            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
     }
 
     public void ConnectPiano()
