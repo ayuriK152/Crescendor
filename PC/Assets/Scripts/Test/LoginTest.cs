@@ -12,11 +12,15 @@ public class LoginTest : MonoBehaviour
     public TMP_InputField idInput;
     public TMP_InputField passwordInput;
     public Button loginButton;
+    public Button signUpButton;
+    public GameObject signUpPanel;
+
     private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
 
     private void Start()
     {
         loginButton.onClick.AddListener(OnLoginButtonClick);
+        signUpButton.onClick.AddListener(OnSignupButtonClick);
     }
 
     IEnumerator SendRequest(string url, string json, string method)
@@ -68,6 +72,11 @@ public class LoginTest : MonoBehaviour
         string id = idInput.text;
         string password = passwordInput.text;
         StartCoroutine(LoginRequest(id, password));
+    }
+
+    void OnSignupButtonClick()
+    {
+        signUpPanel.SetActive(true);
     }
 
     void MoveToNextScene()
