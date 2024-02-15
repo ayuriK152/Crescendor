@@ -67,7 +67,7 @@ app.post('/login', (req, res) => {
 
   connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
-      res.send('ERROR: MySQL')
+      res.status(400).send('ERROR: MySQL')
       return
     }
     if (rows == null){
