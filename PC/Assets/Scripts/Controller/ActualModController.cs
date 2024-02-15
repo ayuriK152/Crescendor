@@ -7,8 +7,6 @@ using Melanchall.DryWetMidi.Multimedia;
 using System;
 using static Define;
 using static Datas;
-using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
 
 public class ActualModController : MonoBehaviour
 {
@@ -63,7 +61,7 @@ public class ActualModController : MonoBehaviour
 
         _uiController = Managers.UI.currentUIController as ActualModUIController;
         _uiController.BindIngameUI();
-        _uiController.songTitleTMP.text = songTitle;
+        _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{tempo}";
         _uiController.songBeatTMP.text = $"4/4";

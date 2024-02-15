@@ -71,7 +71,7 @@ public class PracticeModController : MonoBehaviour
 
         _uiController = Managers.UI.currentUIController as PracticeModUIController;
         _uiController.BindIngameUI();
-        _uiController.songTitleTMP.text = songTitle;
+        _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
         _uiController.songBeatTMP.text = $"4/4";

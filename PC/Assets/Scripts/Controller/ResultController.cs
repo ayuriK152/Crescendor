@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 public class ResultController : MonoBehaviour
 {
     string _songTitle;
+    string _songComposer;
     int _songLength;
 
     int _totalAcc;
@@ -18,7 +19,8 @@ public class ResultController : MonoBehaviour
 
     public void Init()
     {
-        _songTitle = PlayerPrefs.GetString("trans_SongTitle");
+        _songTitle = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
+        _songComposer = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
         _songLength = Managers.Midi.songLength;
 
         _totalAcc = Managers.Midi.totalDeltaTime;
@@ -29,6 +31,7 @@ public class ResultController : MonoBehaviour
         _uiController = Managers.UI.currentUIController as ResultUIController;
         _uiController.BindIngameUI();
         _uiController.songTitleTMP.text = $"{_songTitle}";
+        _uiController.songComposerTMP.text = $"{_songComposer}";
         _uiController.correctMountTMP.text = $"{_correctMount}";
         _uiController.failMountTMP.text = $"{_failMount}";
         _uiController.outlinerMountTMP.text = $"{_outlinerMount}";
