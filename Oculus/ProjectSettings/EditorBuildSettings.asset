@@ -4,5 +4,22 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/OculusScene.unity
+    guid: 7c800545501b79c46a138afb1f665220
+  - enabled: 1
+    path: Assets/Scenes/SongSelectScene.unity
+    guid: eb1cad2b4dc03a34eb2302d915d8e613
+  - enabled: 1
+    path: Assets/Scenes/ActualModScene.unity
+    guid: 8626d5e5a4a89dc4d9b613007e23913f
+  - enabled: 1
+    path: Assets/Scenes/PracticeModScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/ResultScene.unity
+    guid: 19435be11aad906428766d7cfb1e7663
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 650ec8fc0a17b1b40bc6f9822092d12d, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0a85d9248da3e3d4d80f64344540c402, type: 2}
