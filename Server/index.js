@@ -1,6 +1,13 @@
 const express = require('express')
 const mysql = require('mysql')
 const db = require('./config/database.js')
+const pool = mysql.createPool({
+  connectionLimit : 10,
+  host            : db.host,
+  user            : db.user,
+  password        : db.password,
+  database        : db.database
+})
 const connection = mysql.createConnection(db)
 const bcrypt = require('bcrypt');
 
@@ -17,7 +24,7 @@ app.get('/', (req, res) => {
 
 // =====================================    Users     =====================================
 app.get('/users', (req, res) => {
-  connection.query('SELECT * FROM Crescendor.users;', (error, rows) => {
+  pool.query('SELECT * FROM Crescendor.users;', (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -25,7 +32,6 @@ app.get('/users', (req, res) => {
     console.log('User info is: ', rows)
     res.send(rows)
   })
-
   
 })
 
