@@ -44,14 +44,16 @@ app.post('/signup', (req, res) => {
     connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
       if (error){
         res.status(400).send('ERROR: MySQL')
-        throw error
+        connection.end()
+        return
       }
-      
+
       console.log('sign count:', rows[0]['count(*)'])
 
       if (rows[0]['count(*)'] > 0){
         res.status(400).send('ERROR: exist id')
-        throw error
+        connection.end()
+        return
       }
       connection.release()
     })
@@ -61,7 +63,8 @@ app.post('/signup', (req, res) => {
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
       if (error){
         res.status(400).send('ERROR: MySQL')
-        throw error
+        connection.end()
+        return
       }
       console.log('signup \n id: %s \n', id)
       res.status(200).send('SUCCESS')
