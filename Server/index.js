@@ -29,31 +29,31 @@ app.get('/users', (req, res) => {
   
 })
 
-// signin API (회원가입)
+// signup API (회원가입)
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
-app.post('/signin', async (req, res) => {
+app.post('/signup', (req, res) => {
   const { id, password } = req.body;
 
   connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
-      res.send('ERROR: MySQL')
+      res.status(400).send('ERROR: MySQL')
       return
     }
     console.log('sign count:', rows)
     if (rows > 0){
-      res.status(400).send(`ERROR: exist id`)
+      res.status(400).send('ERROR: exist id')
       return
     }
   })
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = bcrypt.hash(password, 10);
 
   connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
     if (error){
-      res.send('ERROR: MySQL')
+      res.status(400).send('ERROR: MySQL')
       return
     }
-    console.log('signin \n id: %s \n', id)
+    console.log('signup \n id: %s \n', id)
     res.status(200).send('SUCCESS')
   })
 
