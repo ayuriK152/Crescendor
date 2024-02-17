@@ -40,7 +40,7 @@ app.get('/users', (req, res) => {
 app.post('/signup', (req, res) => {
   const { id, password } = req.body;
 
-  connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
+  pool.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: MySQL')
       return
@@ -54,7 +54,7 @@ app.post('/signup', (req, res) => {
 
   const hashedPassword = bcrypt.hash(password, 10);
 
-  connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
+  pool.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
     if (error){
       res.status(400).send('ERROR: MySQL')
       return
@@ -71,7 +71,7 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   const { id, password } = req.body
 
-  connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
+  pool.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: MySQL')
       return
@@ -99,7 +99,7 @@ app.post('/login', (req, res) => {
 
 // =====================================    Record    =====================================
 app.get('/record', (req, res) => {
-  connection.query('SELECT * from Crescendor.record;', (error, rows) => {
+  pool.query('SELECT * from Crescendor.record;', (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -116,7 +116,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
 
-  connection.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
+  pool.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -131,7 +131,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
 app.get('/ranking/:music_name', (req, res) => {
   const music_name = req.params.music_name
 
-  connection.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -148,7 +148,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
   const music_id = Number(req.params.music_id)
   const { score, date, midi } = req.body
 
-  connection.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
+  pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -166,7 +166,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
   const music_id = Number(req.params.music_id)
   const { score, date, midi } = req.body
 
-  connection.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
+  pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -181,7 +181,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
 
 // =====================================    Practice    =====================================
 app.get('/practice', (req, res) => {
-  connection.query('SELECT * from Crescendor.practice;', (error, rows) => {
+  pool.query('SELECT * from Crescendor.practice;', (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -195,7 +195,7 @@ app.get('/practice', (req, res) => {
 
 // =====================================    Music   =====================================
 app.get('/music', (req, res) => {
-  connection.query('SELECT * from Crescendor.music;', (error, rows) => {
+  pool.query('SELECT * from Crescendor.music;', (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
