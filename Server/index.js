@@ -36,11 +36,11 @@ app.post('/signup', (req, res) => {
 
   connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
-      res.status(400).send('ERROR: exist id')
+      res.status(400).send('ERROR: MySQL')
       return
     }
     console.log('sign count:', rows[0]['count(*)'])
-    if (rows > 0){
+    if (rows[0]['count(*)'] > 0){
       res.status(400).send('ERROR: exist id')
       return
     }
