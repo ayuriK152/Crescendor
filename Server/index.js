@@ -48,20 +48,19 @@ app.post('/signup', (req, res) => {
         connection.destroy()
         return
       }
-      
-      console.log('signup available')
     })
 
     check.on('error', function(err) {
       res.status(400).send('ERROR: MySQL')
+      connection.destroy()
       return
     })
 
-    check.on('result', function(err) {
+    check.on('result', function(rows) {
       const hashedPassword = bcrypt.hashSync(password, 10)
       console.log(hashedPassword)
-  
-        connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
+
+      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
           if (error){
             res.status(400).send('ERROR: MySQL')
             return
