@@ -61,13 +61,6 @@ app.post('/signup', (req, res) => {
       return
     })
 
-    // connection.on('result', function(rows) {
-    //   connection.release()
-    //   console.log(hashedPassword)
-      // signup(id,hashedPassword)
-    //   res.status(200).send('SUCCESS')
-    // })
-
   })
 })
 
@@ -75,11 +68,11 @@ function signup(id,password){
   pool.getConnection((err, connection)=>{
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
       if (error){
-        // res.status(400).send('ERROR: MySQL')
+        connection.destroy()
         return
       }
       // console.log('signup \n id: %s \n', id)
-      // res.status(200).send('SUCCESS')
+      connection.release()
     })
   })
 }
