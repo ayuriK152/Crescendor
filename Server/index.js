@@ -57,7 +57,7 @@ app.post('/signup', (req, res) => {
       return
     })
 
-    check.on('end', function(err) {
+    check.on('result', function(err) {
       const hashedPassword = bcrypt.hashSync(password, 10)
       console.log(hashedPassword)
       signup(res,id,hashedPassword)
