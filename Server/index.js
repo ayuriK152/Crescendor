@@ -49,8 +49,9 @@ app.post('/signup', (req, res) => {
         connection.destroy()
         return
       }
-      
+
       console.log(hashedPassword)
+      signup(id,hashedPassword)
       res.status(200).send('SUCCESS')
     })
 
