@@ -65,7 +65,7 @@ app.post('/signup', (req, res) => {
 })
 
 function signup(id, password){
-
+  pool.getConnection((err, connection)=>{
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
       if (error){
         res.status(400).send('ERROR: MySQL')
@@ -74,6 +74,7 @@ function signup(id, password){
       console.log('signup \n id: %s \n', id)
       res.status(200).send('SUCCESS')
     })
+  })
 }
 
 // login API (로그인)
