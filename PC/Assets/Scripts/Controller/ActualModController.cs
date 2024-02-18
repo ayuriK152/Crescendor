@@ -7,6 +7,8 @@ using Melanchall.DryWetMidi.Multimedia;
 using System;
 using static Define;
 using static Datas;
+using System.IO;
+using Newtonsoft.Json;
 
 public class ActualModController : MonoBehaviour
 {
@@ -85,7 +87,6 @@ public class ActualModController : MonoBehaviour
     {
         Scroll();
         StartCoroutine(CheckNotesStatus());
-        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo);
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !isSceneOnSwap)
             TempSwapScene();
     }
@@ -105,6 +106,8 @@ public class ActualModController : MonoBehaviour
             PlayerPrefs.SetInt("trans_OutlinerMount", 0);
         PlayerPrefs.SetInt("trans_OutlinerMount", 0);
 
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo);
+        File.WriteAllText($"{Application.dataPath}/test.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
         isSceneOnSwap = true;
