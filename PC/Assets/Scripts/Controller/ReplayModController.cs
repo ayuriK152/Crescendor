@@ -38,7 +38,7 @@ public class ReplayModController : MonoBehaviour
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
-    PracticeModUIController _uiController;
+    ReplayModUIController _uiController;
 
     public void Init()
     {
@@ -65,10 +65,10 @@ public class ReplayModController : MonoBehaviour
 
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
+        Managers.Midi.LoadAndInstantiateMidi(songTitle);
         totalNote = Managers.Midi.notes.Count;
 
-        _uiController = Managers.UI.currentUIController as PracticeModUIController;
+        _uiController = Managers.UI.currentUIController as ReplayModUIController;
         _uiController.BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
@@ -86,6 +86,8 @@ public class ReplayModController : MonoBehaviour
         }
 
         Managers.InitManagerPosition();
+
+        Managers.Midi.LoadAndInstantiateReplay("test");
     }
 
     void Update()

@@ -35,7 +35,7 @@ public class ActualModController : MonoBehaviour
     int[] lastInputTiming = new int[88];
     ActualModUIController _uiController;
 
-    Dictionary<int, KeyValuePair<int, int>> noteRecords;
+    Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
 
     public void Init()
     {
@@ -55,7 +55,7 @@ public class ActualModController : MonoBehaviour
 
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
+        Managers.Midi.LoadAndInstantiateMidi(songTitle);
 
         totalNote = Managers.Midi.notes.Count;
         totalAcc = Managers.Midi.totalDeltaTime;
@@ -69,7 +69,7 @@ public class ActualModController : MonoBehaviour
         _uiController.songBeatTMP.text = $"4/4";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
-        noteRecords = new Dictionary<int, KeyValuePair<int, int>>();
+        noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
 
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
@@ -106,7 +106,7 @@ public class ActualModController : MonoBehaviour
             PlayerPrefs.SetInt("trans_OutlinerMount", 0);
         PlayerPrefs.SetInt("trans_OutlinerMount", 0);
 
-        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo);
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo, songTitle);
         File.WriteAllText($"{Application.dataPath}/test.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
@@ -206,17 +206,15 @@ public class ActualModController : MonoBehaviour
             {
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                if (!noteRecords.ContainsKey(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET))
-                    noteRecords.Add(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET, new KeyValuePair<int, int>(currentDeltaTime, -1));
-                else
-                    noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = new KeyValuePair<int, int>(currentDeltaTime, -1);
+                if (!noteRecords.ContainsKey(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET))
+                    noteRecords.Add(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET, new List<KeyValuePair<int, int>>());
                 Debug.Log(noteEvent);
             }
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
+                noteRecords[noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
-                noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = new KeyValuePair<int, int>(noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].Key, currentDeltaTime);
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }
         }

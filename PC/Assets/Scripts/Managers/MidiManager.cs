@@ -8,6 +8,8 @@ using TMPro;
 using UnityEngine;
 using static Define;
 using static Datas;
+using Newtonsoft.Json;
+using System.Linq;
 
 public class MidiManager
 {
@@ -15,9 +17,12 @@ public class MidiManager
     GameObject keyTextObj;
     Material whiteKeyOne;
     Material whiteKeyTwo;
+    Material whiteKeyThree;
     Material blackKeyOne;
     Material blackKeyTwo;
+    Material blackKeyThree;
     Transform noteInstantiatePoint;
+    Transform replayInstantiatePoint;
 
     public int tempo = 120;
     public int songLengthDelta = 0;
@@ -40,6 +45,10 @@ public class MidiManager
     public Dictionary<int, List<KeyValuePair<int, int>>> noteSetByKey = new Dictionary<int, List<KeyValuePair<int, int>>>();
     public int[] nextKeyIndex = new int[88];
 
+    public List<Notes> replayNotes = new List<Notes>();
+    public List<int> replayNoteTiming = new List<int>();
+    public List<GameObject> instantiateReplayNotes = new List<GameObject>();
+
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
     public void Init()
@@ -49,8 +58,10 @@ public class MidiManager
 
         whiteKeyOne = Resources.Load<Material>("Materials/WhiteChannel1");
         whiteKeyTwo = Resources.Load<Material>("Materials/WhiteChannel2");
+        whiteKeyThree = Resources.Load<Material>("Materials/WhiteChannel3");
         blackKeyOne = Resources.Load<Material>("Materials/BlackChannel1");
         blackKeyTwo = Resources.Load<Material>("Materials/BlackChannel2");
+        blackKeyThree = Resources.Load<Material>("Materials/BlackChannel3");
     }
 
     void CleanPrevDatas()
@@ -67,7 +78,7 @@ public class MidiManager
         nextKeyIndex = new int[88];
     }
 
-    public void LoadAndInstantiateMidi(string fileName, GameObject obj)
+    public void LoadAndInstantiateMidi(string fileName)
     {
         CleanPrevDatas();
 
@@ -186,6 +197,57 @@ public class MidiManager
         }
 
         noteTiming.Sort();
+    }
+
+    public void LoadAndInstantiateReplay(string replayFile)
+    {
+        GameObject tempNoteInstantiatePoint = new GameObject("ReplayNotes");
+        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        replayInstantiatePoint = tempNoteInstantiatePoint.transform;
+
+        TextAsset sourceFile = Resources.Load<TextAsset>($"Replays/{replayFile}");
+        Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(sourceFile.text);
+
+        List<int> keyNums = userReplayRecord.noteRecords.Keys.ToList<int>();
+        keyNums.Sort();
+
+        foreach(int i in keyNums)
+        {
+            for (int j = 0; j < userReplayRecord.noteRecords[i].Count; j++)
+            {
+                replayNotes.Add(new Notes(i, userReplayRecord.noteRecords[i][j].Key, userReplayRecord.noteRecords[i][j].Value, 1));
+            }
+        }
+
+        for (int i = 0; i < replayNotes.Count; i++)
+        {
+            string noteKeyStr = GetKeyFromKeynum(replayNotes[i].keyNum);
+            if (BlackKeyJudge(replayNotes[i].keyNum))
+            {
+                int keyPos = NoteKeyPosOrder(replayNotes[i].keyNum) - 1;
+                int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
+                instantiateReplayNotes.Add(GameObject.Instantiate(noteObj, replayInstantiatePoint));
+                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale);
+                instantiateReplayNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (replayNotes[i].startTime + replayNotes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateReplayNotes[i].GetComponent<Renderer>().material = blackKeyThree;
+            }
+            else
+            {
+                int keyPos = NoteKeyPosOrder(replayNotes[i].keyNum) - 1;
+                int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
+                instantiateReplayNotes.Add(GameObject.Instantiate(noteObj, replayInstantiatePoint));
+                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale);
+                instantiateReplayNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (replayNotes[i].startTime + replayNotes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateReplayNotes[i].GetComponent<Renderer>().material = whiteKeyThree;
+            }
+
+            GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, replayInstantiatePoint);
+            tempKeyObject.transform.parent = instantiateReplayNotes[i].transform;
+            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
+            tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
+            tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(replayNotes[i].keyNum);
+        }
     }
 
     // 밀리초 데이터를 이용한 곡 템포 계산

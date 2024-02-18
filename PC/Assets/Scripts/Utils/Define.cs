@@ -79,13 +79,15 @@ public class Define
     public class UserReplayRecord
     {
         public int tempo;
+        public string originFileName;
 
-        public Dictionary<int, KeyValuePair<int, int>> noteRecords;
+        public Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
 
-        public UserReplayRecord(Dictionary<int, KeyValuePair<int, int>> noteRecords, int tempo)
+        public UserReplayRecord(Dictionary<int, List<KeyValuePair<int, int>>> noteRecords, int tempo, string originFileName)
         {
             this.noteRecords = noteRecords;
             this.tempo = tempo;
+            this.originFileName = originFileName;
         }
     }
 
@@ -94,6 +96,7 @@ public class Define
         Unknown,
         ActualModScene,
         PracticeModScene,
+        ReplayModScene,
         SongSelectScene,
         ResultScene,
     }

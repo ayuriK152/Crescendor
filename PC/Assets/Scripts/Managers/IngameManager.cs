@@ -25,6 +25,9 @@ public class IngameManager
                 case "ActualModController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ActualModController>());
                     break;
+                case "ReplayModController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ReplayModController>());
+                    break;
                 case "ResultController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultController>());
                     break;
@@ -45,6 +48,13 @@ public class IngameManager
                 if (controller == null)
                     controller = Managers.ManagerInstance.AddComponent<ActualModController>();
                 (controller as ActualModController).Init();
+                break;
+
+            case Scene.ReplayModScene:
+                controller = Managers.ManagerInstance.GetComponent<ReplayModController>();
+                if (controller == null)
+                    controller = Managers.ManagerInstance.AddComponent<ReplayModController>();
+                (controller as ReplayModController).Init();
                 break;
 
             case Scene.ResultScene:

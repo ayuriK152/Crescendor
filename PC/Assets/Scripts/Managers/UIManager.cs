@@ -28,6 +28,9 @@ public class UIManager
                 case "ActualModUIController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ActualModUIController>());
                     break;
+                case "ReplayModUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ReplayModUIController>());
+                    break;
                 case "ResultUIController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultUIController>());
                     break;
@@ -49,6 +52,12 @@ public class UIManager
                 currentUIController = Managers.ManagerInstance.GetComponent<ActualModUIController>();
                 if (currentUIController == null)
                     currentUIController = Managers.ManagerInstance.AddComponent<ActualModUIController>();
+                break;
+
+            case Scene.ReplayModScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<ReplayModUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<ReplayModUIController>();
                 break;
 
             case Scene.ResultScene:

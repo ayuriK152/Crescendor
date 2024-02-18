@@ -66,7 +66,7 @@ public class PracticeModController : MonoBehaviour
 
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
+        Managers.Midi.LoadAndInstantiateMidi(songTitle);
         totalNote = Managers.Midi.notes.Count;
 
         _uiController = Managers.UI.currentUIController as PracticeModUIController;
