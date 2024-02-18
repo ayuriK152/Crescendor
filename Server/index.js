@@ -39,8 +39,6 @@ app.get('/users', (req, res) => {
 app.post('/signup', (req, res) => {
   const { id, password } = req.body;
 
-  const hashedPassword = bcrypt.hashSync(password, 10)
-  console.log(hashedPassword)
 
   pool.getConnection((err, connection)=>{
     
@@ -61,25 +59,27 @@ app.post('/signup', (req, res) => {
     })
 
     connection.on('result', function(rows) {
-      connection.pause()
+      const hashedPassword = bcrypt.hashSync(password, 10)
+      console.log(hashedPassword)
 
-      pool.getConnection((err, connection2)=>{
-        connection2.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
-          if (error){
-            res.status(400).send('ERROR: MySQL')
-            return
-          }
-          console.log('signup \n id: %s \n', id)
-          res.status(200).send('SUCCESS')
-        })
-      })
-      connection.resume()
-
+      signup(res,id,hashedPassword)
     })
 
   })
 })
+function signup(res,id,password){
+  pool.getConnection((err, connection)=>{
+    connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
+      if (error){
+        res.status(400).send('ERROR: MySQL')
+        return
+      }
+      console.log('signup \n id: %s \n', id)
+      res.status(200).send('SUCCESS')
+    })
+  })
 
+}
 // login API (로그인)
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
 app.post('/login', (req, res) => {
