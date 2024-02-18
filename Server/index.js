@@ -32,39 +32,25 @@ app.get('/users', (req, res) => {
     console.log('User info is: ', rows)
     res.status(200).send(rows)
   })
-
   
 })
 
-// signin API (회원가입)
+// signup API (회원가입)
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
-app.post('/signin', async (req, res) => {
+app.post('/signup', (req, res) => {
   const { id, password } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10)
 
-  connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
-    if (error){
-      res.status(400).send('ERROR: Data')
-      return
-    }
-    console.log('sign count:', rows)
-    if (rows > 0){
-      res.status(400).send(`ERROR: exist id`)
-      return
-    }
-  })
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
-    if (error){
-      res.status(400).send('ERROR: Data')
-      return
-    }
-    console.log('signin \n id: %s \n', id)
-    res.status(200).send('SUCCESS')
-  })
-
-  
+    pool.getConnection((err, connection)=>{
+      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
+        if (error){
+          console.log(error)
+          res.status(400).send('ERROR: id')
+          return
+        }
+        res.status(200).send('SUCCESS')
+      })
+    })
 })
 
 // login API (로그인)
@@ -72,13 +58,13 @@ app.post('/signin', async (req, res) => {
 app.post('/login', (req, res) => {
   const { id, password } = req.body
 
-  connection.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
+  pool.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: Data')
       return
     }
     if (rows == null){
-      res.status(400).send(`ERROR: id`)
+      res.status(400).send('ERROR: id')
       return
     }
 
@@ -109,7 +95,6 @@ app.get('/record', (req, res) => {
     res.status(200).send(rows)
   })
 
-  
 })
 
 // getscore API
@@ -127,22 +112,6 @@ app.get('/record/getscore/:user_id/:music_name', (req, res) => {
     res.status(200).send(rows)
   })
 })
-
-// ranking API
-app.get('/ranking/:music_name', (req, res) => {
-  const music_name = req.params.music_name
-
-  pool.query("SELECT music_name, user_id, score, date, midi from Crescendor.record where music_name = ? order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
-    if (error){
-      res.status(400).send('ERROR: Data')
-      return
-    }
-    console.log('Ranking \n music: %s \n', music_name)
-    console.log(rows)
-    res.status(200).send(rows)
-  })
-})
-
 // addscore API
 app.post('/record/addscore/:user_id/:music_name', (req, res) => {
   const user_id = req.params.user_id
@@ -178,6 +147,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
     ).valueOf()
 
   pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_name = ?);", [score, date, midi,user_id, music_name], (error, rows) => {
+
     if (error){
       res.status(400).send('ERROR: Data')
       return
@@ -189,6 +159,21 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
 
   
 }) 
+
+// ranking API
+app.get('/ranking/:music_name', (req, res) => {
+  const music_name = req.params.music_name
+
+  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+    if (error){
+      res.send('ERROR: MySQL')
+      return
+    }
+    console.log('Ranking \n music: %s \n', music_name)
+    console.log(rows)
+    res.send(rows)
+  })
+})
 
 // =====================================    Practice    =====================================
 app.get('/practice', (req, res) => {
