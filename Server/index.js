@@ -61,7 +61,7 @@ app.post('/signup', (req, res) => {
     const hashedPassword = bcrypt.hash(password, 10);
     console.log(hashedPassword)
 
-    connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
+    connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
       if (error){
         console.log(error)
         res.status(400).send('ERROR: MySQL')
