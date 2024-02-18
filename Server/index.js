@@ -39,57 +39,18 @@ app.get('/users', (req, res) => {
 app.post('/signup', (req, res) => {
   const { id, password } = req.body;
   const hashedPassword = bcrypt.hash(password, 10)
-  var available = false;
 
-  pool.getConnection((err, connection)=>{
-    
-    connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
-
-      if (rows[0]['count(*)'] > 0){
-        res.status(400).send('ERROR: exist id')
-        connection.destroy()
-        return
-      }
-
-      console.log(hashedPassword)
-      available = true
-    })
-
-    connection.on('error', function(err) {
-      res.status(400).send('ERROR: MySQL')
-      connection.destroy()
-      return
-    })
-    
-    connection.release()
-    return
-  })
-
-  if(available){
     pool.getConnection((err, connection)=>{
-      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
+      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
         if (error){
-          connection.destroy()
+          res.status(400).send('ERROR: Exist id')
           return
         }
         res.status(200).send('SUCCESS')
       })
     })
-  }
 })
 
-function signup(id,password){
-  pool.getConnection((err, connection)=>{
-    connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
-      if (error){
-        connection.destroy()
-        return
-      }
-      // console.log('signup \n id: %s \n', id)
-      connection.release()
-    })
-  })
-}
 // login API (로그인)
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
 app.post('/login', (req, res) => {
