@@ -42,10 +42,6 @@ app.post('/signup', (req, res) => {
   pool.getConnection((err, connection)=>{
     
     var check = connection.query('SELECT count(*) from Crescendor.users where id = ?;', id, (error, rows) => {
-      if (error){
-        res.status(400).send('ERROR: MySQL')
-        return
-      }
 
       if (rows[0]['count(*)'] > 0){
         res.status(400).send('ERROR: exist id')
@@ -55,14 +51,18 @@ app.post('/signup', (req, res) => {
       console.log('signup available')
     })
 
-    check.on('end', function(err){
+    connection.on('error', function(err) {
+      res.status(400).send('ERROR: MySQL')
+      connection.end();
+    });
+
+    check.on('end', function(){
 
       const hashedPassword = bcrypt.hashSync(password, 10);
       console.log(hashedPassword)
-      
+
       connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
         if (error){
-          console.log(error)
           res.status(400).send('ERROR: MySQL')
           return
         }
