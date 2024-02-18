@@ -144,8 +144,7 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
 
   let today = new Date() 
   const date = new String(
-    today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate() + " " +
-    today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours() + 9) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
   pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ?, score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
@@ -168,7 +167,7 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
 
   let today = new Date() 
   const date = new String(
-    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours() + 9) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
   pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
