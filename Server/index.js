@@ -51,16 +51,16 @@ app.post('/signup', (req, res) => {
       console.log('signup available')
     })
 
-    connection.on('error', function(err) {
+    check.on('error', function(err) {
       res.status(400).send('ERROR: MySQL')
       return
     })
 
-    connection.on('end', function(err) {
+    check.on('end', function(err) {
       const hashedPassword = bcrypt.hashSync(password, 10)
       console.log(hashedPassword)
       signup(id,hashedPassword)
-    })
+    })  
   })
 })
 
