@@ -52,7 +52,7 @@ app.post('/signup', (req, res) => {
 
       console.log(hashedPassword)
       signup(id,hashedPassword)
-      res.status(200).send('SUCCESS')
+      // res.status(200).send('SUCCESS')
     })
 
     connection.on('error', function(err) {
@@ -82,7 +82,6 @@ function signup(id,password){
       // res.status(200).send('SUCCESS')
     })
   })
-  return
 }
 // login API (로그인)
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
