@@ -44,12 +44,28 @@ public class ResultController : MonoBehaviour
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
 
         SaveResultToJson();
+        UpdateBestResult();
     }
 
     void SaveResultToJson()
     {
         RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), "TestUser1", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         File.WriteAllText($"{Application.dataPath}/TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+    }
+
+    void UpdateBestResult()
+    {
+        float bestScoreFromServer = Managers.Data.GetBestRankFromServer("TestUser1", "For_Elise-Beethoven");
+        if (bestScoreFromServer == -2)
+            return;
+        if (bestScoreFromServer == -1 || bestScoreFromServer < _correctMount / (float)_totalAcc)
+        {
+            Debug.Log("점수가 높다!");
+        }
+        else
+        {
+            Debug.Log("점수가 낮다!");
+        }
     }
 
     IEnumerator UnityWebRequestPatchTest(string url, string json)

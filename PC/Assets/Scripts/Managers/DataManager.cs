@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -12,7 +13,7 @@ public class DataManager
         jsonDataFromServer = "init data";
     }
 
-    public T Load<T>(string path) where T : Object
+    public T Load<T>(string path) where T : UnityEngine.Object
     {
         return Resources.Load<T>(path);
     }
@@ -26,7 +27,7 @@ public class DataManager
             return null;
         }
 
-        GameObject go = Object.Instantiate(prefab, parent);
+        GameObject go = UnityEngine.Object.Instantiate(prefab, parent);
         int index = go.name.IndexOf("(Clone)");
         if (index > 0)
             go.name = go.name.Substring(0, index);
@@ -39,7 +40,7 @@ public class DataManager
         if (go == null)
             return;
 
-        Object.Destroy(go);
+        UnityEngine.Object.Destroy(go);
     }
 
     public void GetRankListFromServer(string songFileName)
@@ -57,6 +58,34 @@ public class DataManager
         else
         {
             Debug.LogError("Error to Get Data");
+        }
+    }
+
+    public float GetBestRankFromServer(string userId, string songFileName)
+    {
+        UnityWebRequest www = UnityWebRequest.Get($"http://15.164.2.49:3000/record/getscore/{userId}/{songFileName}");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            Debug.Log("Get Data Success");
+            
+            if (www.downloadHandler.text.Length == 2)
+            {
+                return -1;
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text.Substring(10, www.downloadHandler.text.Length - 12));
+                return float.Parse(www.downloadHandler.text.Substring(10, www.downloadHandler.text.Length - 12));
+            }
+        }
+        else
+        {
+            Debug.LogError("Error to Get Data");
+            return -2;
         }
     }
 }
