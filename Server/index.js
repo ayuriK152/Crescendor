@@ -39,6 +39,7 @@ app.get('/users', (req, res) => {
 app.post('/signup', (req, res) => {
   const { id, password } = req.body;
   const hashedPassword = bcrypt.hash(password, 10)
+  var available = false;
 
   pool.getConnection((err, connection)=>{
     
@@ -51,8 +52,7 @@ app.post('/signup', (req, res) => {
       }
 
       console.log(hashedPassword)
-      signup(id,hashedPassword)
-      // res.status(200).send('SUCCESS')
+      available = true
     })
 
     connection.on('error', function(err) {
@@ -62,6 +62,18 @@ app.post('/signup', (req, res) => {
     })
 
   })
+  
+  if(available){
+    pool.getConnection((err, connection)=>{
+      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
+        if (error){
+          connection.destroy()
+          return
+        }
+        res.status(200).send('SUCCESS')
+      })
+    })
+  }
 })
 
 function signup(id,password){
