@@ -45,6 +45,7 @@ app.post('/signup', (req, res) => {
 
       if (rows[0]['count(*)'] > 0){
         res.status(400).send('ERROR: exist id')
+        connection.destroy()
         return
       }
       
