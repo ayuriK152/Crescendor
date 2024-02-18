@@ -60,6 +60,7 @@ app.post('/signup', (req, res) => {
     connection.on('result', function(rows) {
       const hashedPassword = bcrypt.hash(password, 10)
       console.log(hashedPassword)
+      connection.release()
 
       // signup(id,hashedPassword)
       res.status(200).send('SUCCESS')
