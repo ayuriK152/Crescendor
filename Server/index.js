@@ -60,9 +60,10 @@ app.post('/signup', (req, res) => {
       connection.destroy()
       return
     })
-
+    
+    connection.release()
   })
-  
+
   if(available){
     pool.getConnection((err, connection)=>{
       connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
