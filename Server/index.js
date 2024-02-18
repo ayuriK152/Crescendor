@@ -62,6 +62,7 @@ app.post('/signup', (req, res) => {
     })
     
     connection.release()
+    return
   })
 
   if(available){
