@@ -54,21 +54,19 @@ app.post('/signup', (req, res) => {
     connection.on('error', function(err) {
       res.status(400).send('ERROR: MySQL')
       connection.end();
+      return
     });
 
-    check.on('end', function(){
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    console.log(hashedPassword)
 
-      const hashedPassword = bcrypt.hashSync(password, 10);
-      console.log(hashedPassword)
-
-      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
-        if (error){
-          res.status(400).send('ERROR: MySQL')
-          return
-        }
-        console.log('signup \n id: %s \n', id)
-        res.status(200).send('SUCCESS')
-      })
+    connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
+      if (error){
+        res.status(400).send('ERROR: MySQL')
+        return
+      }
+      console.log('signup \n id: %s \n', id)
+      res.status(200).send('SUCCESS')
     })
 
 
