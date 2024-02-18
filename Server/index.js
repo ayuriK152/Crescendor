@@ -69,8 +69,6 @@ app.post('/signup', (req, res) => {
       }
       console.log('signup \n id: %s \n', id)
       res.status(200).send('SUCCESS')
-
-      connection.release()
     })
   })
   
