@@ -60,18 +60,19 @@ app.post('/signup', (req, res) => {
     check.on('result', function(err) {
       const hashedPassword = bcrypt.hashSync(password, 10)
       console.log(hashedPassword)
-      
-      pool.getConnection((err, connection)=>{
-        connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
+  
+        connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
           if (error){
             res.status(400).send('ERROR: MySQL')
             return
           }
           console.log('signup \n id: %s \n', id)
           res.status(200).send('SUCCESS')
-        })
+        
       })
-    })  
+
+    })
+
   })
 })
 
