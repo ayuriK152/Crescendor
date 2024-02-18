@@ -59,12 +59,12 @@ app.post('/signup', (req, res) => {
     check.on('end', function(err) {
       const hashedPassword = bcrypt.hashSync(password, 10)
       console.log(hashedPassword)
-      signup(id,hashedPassword)
+      signup(res,id,hashedPassword)
     })  
   })
 })
 
-function signup(id, password){
+function signup(res,id, password){
   pool.getConnection((err, connection)=>{
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
       if (error){
