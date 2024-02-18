@@ -113,16 +113,16 @@ app.get('/record', (req, res) => {
 })
 
 // getscore API
-app.get('/record/getscore/:user_id/:music_id', (req, res) => {
+app.get('/record/getscore/:user_id/:music_name', (req, res) => {
   const user_id = req.params.user_id
-  const music_id = Number(req.params.music_id)
+  const music_name = req.params.music_name
 
-  pool.query("SELECT score from Crescendor.record where (user_id = ? && music_id = ?);", [user_id, music_id], (error, rows) => {
+  pool.query("SELECT score from Crescendor.record where (user_id = ? && music_name = ?);", [user_id, music_name], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
     }
-    console.log('getscore \n user: %s \n music: %d \n', user_id, music_id)
+    console.log('getscore \n user: %s \n music: %d \n', user_id, music_name)
     console.log(rows)
     res.send(rows)
   })
@@ -132,7 +132,7 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
 app.get('/ranking/:music_name', (req, res) => {
   const music_name = req.params.music_name
 
-  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+  pool.query("SELECT music_name, user_id, score, date, midi from Crescendor.record where music_name = ? order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
@@ -144,9 +144,9 @@ app.get('/ranking/:music_name', (req, res) => {
 })
 
 // addscore API
-app.post('/record/addscore/:user_id/:music_id', (req, res) => {
+app.post('/record/addscore/:user_id/:music_name', (req, res) => {
   const user_id = req.params.user_id
-  const music_id = Number(req.params.music_id)
+  const music_name = req.params.music_name
   const { score,  midi } = req.body
 
   let today = new Date() 
@@ -154,12 +154,12 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours() + 9) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
-  pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ?, score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
+  pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_name = ?, score = ?, date = ?, midi = ?;", [user_id, music_name, score, date, midi], (error, rows) => {
     if (error){
       res.status(400).send('ERROR: MySQL')
       return
     }
-    console.log('addscore \n user: %s \n music: %d \n', user_id, music_id)
+    console.log('addscore \n user: %s \n music: %d \n', user_id, music_name)
     res.status(200).send("SUCCESS")
   })
 
@@ -167,9 +167,9 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
 })
 
 // setscore API
-app.put('/record/setscore/:user_id/:music_id', (req, res) => {
+app.put('/record/setscore/:user_id/:music_name', (req, res) => {
   const user_id = req.params.user_id
-  const music_id = Number(req.params.music_id)
+  const music_name = req.params.music_name
   const { score, midi } = req.body
 
   let today = new Date() 
@@ -177,12 +177,12 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours() + 9) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
-  pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
+  pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_name = ?);", [score, date, midi,user_id, music_name], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
     }
-      console.log('setscore \n user: %s \n music: %d \n', user_id, music_id)
+      console.log('setscore \n user: %s \n music: %d \n', user_id, music_name)
     console.log(rows)
     res.send(rows)
   })
