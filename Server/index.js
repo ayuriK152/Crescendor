@@ -58,11 +58,13 @@ app.post('/signup', (req, res) => {
     })
 
     connection.on('result', function(rows) {
+      connection.pause()
       const hashedPassword = bcrypt.hash(password, 10)
       console.log(hashedPassword)
 
-      signup(res,id,hashedPassword)
-      // res.status(200).send('SUCCESS')
+      signup(id,hashedPassword)
+      connection.resume()
+      res.status(200).send('SUCCESS')
     })
 
   })
