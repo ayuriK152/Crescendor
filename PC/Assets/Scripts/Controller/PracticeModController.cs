@@ -39,8 +39,8 @@ public class PracticeModController : MonoBehaviour
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
-    List<Material> vPianoKeyMat = new List<Material>();
-    List<GameObject> vPianoKeyObj = new List<GameObject>();
+    public List<Material> vPianoKeyMat = new List<Material>();
+    public List<GameObject> vPianoKeyObj = new List<GameObject>();
     PracticeModUIController _uiController;
 
     public void Init()
@@ -234,20 +234,39 @@ public class PracticeModController : MonoBehaviour
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
-                vPianoKeyMat[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].color = new Color(1, 0, 0);
+                Debug.Log(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET);
+                Debug.Log(vPianoKeyObj[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].name);
+                if (vPianoKeyObj[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].name.Length == 1)
+                {
+                    Debug.Log("1");
+                    vPianoKeyMat[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].color = new Color(1, 0, 0);
+                }
+                else
+                {
+                    Debug.Log("1");
+                    vPianoKeyMat[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].color = new Color(0.7f, 0, 0);
+                }
+                Debug.Log("2");
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
+                Debug.Log("3");
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
                 Debug.Log(noteEvent);
             }
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
+                Debug.Log(noteEvent);
                 if (vPianoKeyObj[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].name.Length == 1)
+                {
                     vPianoKeyMat[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].color = new Color(1, 1, 1);
+                }
                 else
+                {
                     vPianoKeyMat[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].color = new Color(0, 0, 0);
+                }
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
+                Debug.Log(noteEvent);
             }
         }
     }
