@@ -72,8 +72,6 @@ app.post('/signup', (req, res) => {
       connection.release()
     })
   })
-
-
   
 })
 
@@ -119,7 +117,6 @@ app.get('/record', (req, res) => {
     res.send(rows)
   })
 
-  
 })
 
 // getscore API
@@ -138,26 +135,17 @@ app.get('/record/getscore/:user_id/:music_id', (req, res) => {
   })
 })
 
-// ranking API
-app.get('/ranking/:music_name', (req, res) => {
-  const music_name = req.params.music_name
-
-  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
-    if (error){
-      res.send('ERROR: MySQL')
-      return
-    }
-    console.log('Ranking \n music: %s \n', music_name)
-    console.log(rows)
-    res.send(rows)
-  })
-})
-
 // addscore API
 app.post('/record/addscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
-  const { score, date, midi } = req.body
+  const { score,  midi } = req.body
+
+  let today = new Date() 
+  const date = new String(
+    today.getFullYear + '-' + today.getMonth + '-' + today.getDate + " " +
+    today.getHours + ':' + today.getMinutes + ':' + today.getSeconds
+    )
 
   pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
     if (error){
@@ -175,7 +163,13 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
 app.put('/record/setscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
-  const { score, date, midi } = req.body
+  const { score, midi } = req.body
+
+  let today = new Date() 
+  const date = new String(
+    today.getFullYear + '-' + today.getMonth + '-' + today.getDate + " " +
+    today.getHours + ':' + today.getMinutes + ':' + today.getSeconds
+    )
 
   pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_id = ?);", [score, date, midi,user_id, music_id], (error, rows) => {
     if (error){
@@ -189,6 +183,21 @@ app.put('/record/setscore/:user_id/:music_id', (req, res) => {
 
   
 }) 
+
+// ranking API
+app.get('/ranking/:music_name', (req, res) => {
+  const music_name = req.params.music_name
+
+  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+    if (error){
+      res.send('ERROR: MySQL')
+      return
+    }
+    console.log('Ranking \n music: %s \n', music_name)
+    console.log(rows)
+    res.send(rows)
+  })
+})
 
 // =====================================    Practice    =====================================
 app.get('/practice', (req, res) => {
