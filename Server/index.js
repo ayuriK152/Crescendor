@@ -44,7 +44,7 @@ app.post('/signup', (req, res) => {
       connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
         if (error){
           console.log(error)
-          res.status(400).send('ERROR: Exist id')
+          res.status(400).send('ERROR: id')
           return
         }
         res.status(200).send('SUCCESS')
@@ -63,7 +63,7 @@ app.post('/login', (req, res) => {
       return
     }
     if (rows == null){
-      res.status(400).send(`ERROR: id`)
+      res.status(400).send('ERROR: id')
       return
     }
 
