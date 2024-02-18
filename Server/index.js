@@ -164,14 +164,14 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
 app.get('/ranking/:music_name', (req, res) => {
   const music_name = req.params.music_name
 
-  pool.query("SELECT name, user_id, score, date, record.midi from Crescendor.record, Crescendor.music where name = ? and record.music_id = music.id order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+  pool.query("SELECT music_name, user_id, score, date, midi from Crescendor.record where music_name = ? order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
     if (error){
-      res.send('ERROR: MySQL')
+      res.status(400).send('ERROR: Data')
       return
     }
     console.log('Ranking \n music: %s \n', music_name)
     console.log(rows)
-    res.send(rows)
+    res.status(200).send(rows)
   })
 })
 
