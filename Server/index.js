@@ -48,13 +48,13 @@ app.post('/signup', (req, res) => {
         return
       }
 
-      console.log('sign count:', rows[0]['count(*)'])
-
       if (rows[0]['count(*)'] > 0){
         res.status(400).send('ERROR: exist id')
         connection.end()
         return
       }
+      
+      console.log('signup available')
       connection.release()
     })
 
@@ -62,6 +62,7 @@ app.post('/signup', (req, res) => {
 
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
       if (error){
+        console.log(rows)
         res.status(400).send('ERROR: MySQL')
         return
       }
