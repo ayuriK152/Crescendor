@@ -142,7 +142,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
   const music_name = req.params.music_name
   const { score, midi } = req.body
 
-  let today = new Date().toISOString()
+  let today = new Date()
   const date = new String(
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
