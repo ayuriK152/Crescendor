@@ -58,7 +58,7 @@ app.post('/signup', (req, res) => {
       connection.release()
     })
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = bcrypt.hashSync(password, 10);
     console.log(hashedPassword)
 
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
