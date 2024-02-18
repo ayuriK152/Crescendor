@@ -63,7 +63,6 @@ app.post('/signup', (req, res) => {
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ?;", [id, id, hashedPassword], (error, rows) => {
       if (error){
         res.status(400).send('ERROR: MySQL')
-        connection.end()
         return
       }
       console.log('signup \n id: %s \n', id)
