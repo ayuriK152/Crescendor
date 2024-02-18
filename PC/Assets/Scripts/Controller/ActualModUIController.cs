@@ -14,8 +14,12 @@ public class ActualModUIController : MonoBehaviour
     public TextMeshProUGUI accuracyTMP;
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
+    public GameObject pausePanelObj;
 
     Button disconnectBtn;
+    Button resumeBtn;
+    Button optionBtn;
+    Button exitBtn;
 
     ActualModController actualModController;
 
@@ -29,11 +33,22 @@ public class ActualModUIController : MonoBehaviour
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
 
+        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
+        resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
+        optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
+        exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
+        pausePanelObj.SetActive(false);
+
         disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
 
         actualModController = Managers.Ingame.controller as ActualModController;
 
         disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
+        resumeBtn.onClick.AddListener(TogglePausePanel);
+        exitBtn.onClick.AddListener(OnClickExitBtn);
+
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void UpdatePassedNote()
@@ -49,5 +64,37 @@ public class ActualModUIController : MonoBehaviour
     public void DisconnectPianoBtn()
     {
         actualModController.DisconnectPiano();
+    }
+
+    void TogglePausePanel()
+    {
+        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
+
+        if (pausePanelObj.activeSelf)
+        {
+            actualModController.enabled = false;
+        }
+        else
+        {
+            actualModController.enabled = true;
+        }
+    }
+
+    void OnClickExitBtn()
+    {
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.CleanManagerChilds();
+        Managers.Scene.LoadScene(Define.Scene.ResultScene);
+        Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
+    }
+
+    void InputKeyEvent(KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.Escape:
+                TogglePausePanel();
+                break;
+        }
     }
 }

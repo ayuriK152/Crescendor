@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,11 +18,15 @@ public class PracticeModUIController : MonoBehaviour
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
+    public GameObject pausePanelObj;
 
     Button forceScrollBtn;
     Button disconnectBtn;
     Button autoScrollBtn;
     Button turnOffLoopBtn;
+    Button resumeBtn;
+    Button optionBtn;
+    Button exitBtn;
 
     PracticeModController practiceModController;
 
@@ -43,6 +48,12 @@ public class PracticeModUIController : MonoBehaviour
         autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
         turnOffLoopBtn = GameObject.Find("MainCanvas/Buttons/TurnOffLoop").GetComponent<Button>();
 
+        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
+        resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
+        optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
+        exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
+        pausePanelObj.SetActive(false);
+
         practiceModController = Managers.Ingame.controller as PracticeModController;
 
         songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
@@ -52,7 +63,12 @@ public class PracticeModUIController : MonoBehaviour
         forceScrollBtn.onClick.AddListener(ForceScrollBtn);
         disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
         autoScrollBtn.onClick.AddListener(AutoScrollBtn);
-        autoScrollBtn.onClick.AddListener(TurnOffLoop);
+        turnOffLoopBtn.onClick.AddListener(TurnOffLoop);
+        resumeBtn.onClick.AddListener(TogglePausePanel);
+        exitBtn.onClick.AddListener(OnClickExitBtn);
+
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void SetLoopStartMarker()
@@ -109,5 +125,37 @@ public class PracticeModUIController : MonoBehaviour
     public void AutoScrollBtn()
     {
         practiceModController.AutoScroll();
+    }
+
+    void OnClickExitBtn()
+    {
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.CleanManagerChilds();
+        Managers.Scene.LoadScene(Define.Scene.ResultScene);
+        Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
+    }
+
+    void TogglePausePanel()
+    {
+        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
+
+        if (pausePanelObj.activeSelf)
+        {
+            practiceModController.enabled = false;
+        }
+        else
+        {
+            practiceModController.enabled = true;
+        }
+    }
+
+    void InputKeyEvent(KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.Escape:
+                TogglePausePanel();
+                break;
+        }
     }
 }

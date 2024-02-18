@@ -75,7 +75,7 @@ public class PracticeModController : MonoBehaviour
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
         _uiController.songBeatTMP.text = $"4/4";
-        _uiController.songTimeSlider.maxValue = Managers.Midi.songLength;
+        _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;

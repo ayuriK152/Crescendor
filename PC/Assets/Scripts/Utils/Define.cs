@@ -78,11 +78,14 @@ public class Define
     [Serializable]
     public class UserReplayRecord
     {
-        Dictionary<int, KeyValuePair<int, int>> noteRecords;
+        public int tempo;
 
-        public UserReplayRecord(Dictionary<int, KeyValuePair<int, int>> noteRecords)
+        public Dictionary<int, KeyValuePair<int, int>> noteRecords;
+
+        public UserReplayRecord(Dictionary<int, KeyValuePair<int, int>> noteRecords, int tempo)
         {
             this.noteRecords = noteRecords;
+            this.tempo = tempo;
         }
     }
 

@@ -65,7 +65,7 @@ public class ActualModController : MonoBehaviour
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{tempo}";
         _uiController.songBeatTMP.text = $"4/4";
-        _uiController.songTimeSlider.maxValue = Managers.Midi.songLength;
+        _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
         noteRecords = new Dictionary<int, KeyValuePair<int, int>>();
 
@@ -85,12 +85,12 @@ public class ActualModController : MonoBehaviour
     {
         Scroll();
         StartCoroutine(CheckNotesStatus());
-        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords);
-        if (currentDeltaTime > Managers.Midi.songLength && flag)
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo);
+        if (currentDeltaTime > Managers.Midi.songLengthDelta && !isSceneOnSwap)
             TempSwapScene();
     }
 
-    bool flag = true;
+    bool isSceneOnSwap = false;
 
     void TempSwapScene()
     {
@@ -107,7 +107,7 @@ public class ActualModController : MonoBehaviour
 
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
-        flag = false;
+        isSceneOnSwap = true;
     }
 
     void Scroll()

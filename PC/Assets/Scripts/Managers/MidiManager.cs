@@ -20,7 +20,8 @@ public class MidiManager
     Transform noteInstantiatePoint;
 
     public int tempo = 120;
-    public int songLength = 0;
+    public int songLengthDelta = 0;
+    public float songLengthSecond = 0;
     public int totalDeltaTime = 0;
     public float noteScale = 1.0f;
     public float blackNoteWidth = 0.13125f;
@@ -109,7 +110,7 @@ public class MidiManager
                 {
                     if (!_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))
                         continue;
-                    songLength = songLength < eventStartTime ? eventStartTime : songLength;
+                    songLengthDelta = songLengthDelta < eventStartTime ? eventStartTime : songLengthDelta;
                     notes.Add(new Notes(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET, _tempNoteData[track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET], eventStartTime, trackNum));
                     totalDeltaTime += notes[notes.Count - 1].deltaTime;
                     _tempNoteData.Remove(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET);
@@ -118,6 +119,8 @@ public class MidiManager
             if (notes.Count > 0 && trackNum == 0)
                 trackNum++;
         }
+
+        songLengthSecond = (songLengthDelta / (float)song.division) / (tempo / 60.0f);
 
         notes.Sort();
 

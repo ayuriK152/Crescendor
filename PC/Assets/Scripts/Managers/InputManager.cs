@@ -27,6 +27,9 @@ public class InputManager
             keyAction.Invoke(KeyCode.LeftBracket);
         if (Input.GetKeyDown(KeyCode.RightBracket))
             keyAction.Invoke(KeyCode.RightBracket);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            keyAction.Invoke(KeyCode.Escape);
     }
 
     public void ConnectPiano()

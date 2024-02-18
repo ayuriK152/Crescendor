@@ -21,7 +21,7 @@ public class ResultController : MonoBehaviour
     {
         _songTitle = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
         _songComposer = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
-        _songLength = Managers.Midi.songLength;
+        _songLength = Managers.Midi.songLengthDelta;
 
         _totalAcc = Managers.Midi.totalDeltaTime;
         _failMount = PlayerPrefs.GetInt("trans_FailMount");
@@ -35,6 +35,7 @@ public class ResultController : MonoBehaviour
         _uiController.correctMountTMP.text = $"{_correctMount}";
         _uiController.failMountTMP.text = $"{_failMount}";
         _uiController.outlinerMountTMP.text = $"{_outlinerMount}";
+        _uiController.songLengthTMP.text = $"{(int)(Managers.Midi.songLengthSecond / 60)}:{(int)(Managers.Midi.songLengthSecond % 60)}";
         _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
         _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
