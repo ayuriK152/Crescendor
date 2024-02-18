@@ -58,11 +58,9 @@ app.post('/signup', (req, res) => {
     })
 
     connection.on('result', function(rows) {
-      connection.pause()
+      connection.release()
       console.log(hashedPassword)
       // signup(id,hashedPassword)
-
-      connection.resume()
       res.status(200).send('SUCCESS')
     })
 
