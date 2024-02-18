@@ -62,20 +62,21 @@ app.post('/signup', (req, res) => {
       console.log(hashedPassword)
 
       signup(res,id,hashedPassword)
+      // res.status(200).send('SUCCESS')
     })
 
   })
 })
 
-function signup(res,id,password){
+function signup(id,password){
   pool.getConnection((err, connection)=>{
     connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, password], (error, rows) => {
       if (error){
-        res.status(400).send('ERROR: MySQL')
+        // res.status(400).send('ERROR: MySQL')
         return
       }
-      console.log('signup \n id: %s \n', id)
-      res.status(200).send('SUCCESS')
+      // console.log('signup \n id: %s \n', id)
+      // res.status(200).send('SUCCESS')
     })
   })
   return
