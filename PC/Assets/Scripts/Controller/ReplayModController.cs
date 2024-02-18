@@ -79,12 +79,6 @@ public class ReplayModController : MonoBehaviour
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
 
-        if (Managers.Input.inputDevice != null)
-        {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
-        }
-
         Managers.InitManagerPosition();
 
         Managers.Midi.LoadAndInstantiateReplay("test");

@@ -1,8 +1,11 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Define;
 
 public class ResultController : MonoBehaviour
 {
@@ -39,6 +42,14 @@ public class ResultController : MonoBehaviour
         _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
         _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
+
+        SaveResultToJson();
+    }
+
+    void SaveResultToJson()
+    {
+        RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), "TestUser1", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+        File.WriteAllText($"{Application.dataPath}/TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
     }
 
     IEnumerator UnityWebRequestPatchTest(string url, string json)

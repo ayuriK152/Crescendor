@@ -53,9 +53,9 @@ public class Define
         public string user_id;
         public float score;
         public string date;
-        public object midi;
+        public string midi;
 
-        public RankRecord(string name, string user_id, float score, string date, object midi)
+        public RankRecord(string name, string user_id, float score, string date, string midi)
         {
             this.name = name;
             this.user_id = user_id;

@@ -107,7 +107,6 @@ public class ActualModController : MonoBehaviour
         PlayerPrefs.SetInt("trans_OutlinerMount", 0);
 
         Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo, songTitle);
-        File.WriteAllText($"{Application.dataPath}/test.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
         isSceneOnSwap = true;
