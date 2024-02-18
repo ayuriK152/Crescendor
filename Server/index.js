@@ -150,11 +150,12 @@ app.post('/record/addscore/:user_id/:music_id', (req, res) => {
 
   pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ?, score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
     if (error){
-      res.send('ERROR: MySQL')
+      res.status(400).send('ERROR: MySQL')
+      console.log(error)
       return
     }
     console.log('addscore \n user: %s \n music: %d \n', user_id, music_id)
-    res.send(rows)
+    res.status(200).send("SUCCESS")
   })
 
   
