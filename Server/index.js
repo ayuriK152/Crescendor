@@ -49,6 +49,9 @@ app.post('/signup', (req, res) => {
         connection.destroy()
         return
       }
+      
+      console.log(hashedPassword)
+      res.status(200).send('SUCCESS')
     })
 
     connection.on('error', function(err) {
@@ -57,12 +60,12 @@ app.post('/signup', (req, res) => {
       return
     })
 
-    connection.on('result', function(rows) {
-      connection.release()
-      console.log(hashedPassword)
+    // connection.on('result', function(rows) {
+    //   connection.release()
+    //   console.log(hashedPassword)
       // signup(id,hashedPassword)
-      res.status(200).send('SUCCESS')
-    })
+    //   res.status(200).send('SUCCESS')
+    // })
 
   })
 })
