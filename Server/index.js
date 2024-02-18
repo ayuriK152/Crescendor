@@ -140,9 +140,15 @@ app.get('/ranking/:music_name', (req, res) => {
 app.post('/record/addscore/:user_id/:music_id', (req, res) => {
   const user_id = req.params.user_id
   const music_id = Number(req.params.music_id)
-  const { score, date, midi } = req.body
+  const { date, score,  midi } = req.body
 
-  connection.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
+  let today = new Date() 
+  // const date = new String(
+  //   today.getFullYear + '-' + today.getMonth + '-' + today.getDate + " " +
+  //   today.getHours + ':' + today.getMinutes + ':' + today.getSeconds
+  //   ).valueOf()
+
+  pool.query("INSERT INTO Crescendor.record SET user_id = ?, music_id = ? score = ?, date = ?, midi = ?;", [user_id, music_id, score, date, midi], (error, rows) => {
     if (error){
       res.send('ERROR: MySQL')
       return
