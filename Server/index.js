@@ -38,7 +38,7 @@ app.get('/users', (req, res) => {
 // 실패하면 ERROR, 성공하면 SUCCESS 리턴
 app.post('/signup', (req, res) => {
   const { id, password } = req.body;
-
+  const hashedPassword = bcrypt.hash(password, 10)
 
   pool.getConnection((err, connection)=>{
     
@@ -58,11 +58,11 @@ app.post('/signup', (req, res) => {
     })
 
     connection.on('result', function(rows) {
-      const hashedPassword = bcrypt.hash(password, 10)
+      connection.pause()
       console.log(hashedPassword)
-      connection.release()
-
       // signup(id,hashedPassword)
+
+      connection.resume()
       res.status(200).send('SUCCESS')
     })
 
