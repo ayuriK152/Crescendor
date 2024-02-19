@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -86,6 +88,52 @@ public class DataManager
         {
             Debug.LogError("Error to Get Data");
             return -2;
+        }
+    }
+
+    public void SetBestRankFromServer(string userId, string songFileName, float score, string replayData)
+    {
+        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "PUT");
+        string jsonData = $"{{\"score\":{score}, \"midi\":\"{replayData}\"}}";
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            Debug.Log("Set Data Success");
+        }
+        else
+        {
+            Debug.LogError("Error to Set Data");
+        }
+    }
+
+    public void AddBestRankFromServer(string userId, string songFileName, float score, string replayData)
+    {
+        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "POST");
+        string jsonData = $"{{\"score\":{score}, \"midi\":\"{replayData}\"}}";
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            Debug.Log("Add Data Success");
+        }
+        else
+        {
+            Debug.LogError("Error to Add Data");
         }
     }
 }
