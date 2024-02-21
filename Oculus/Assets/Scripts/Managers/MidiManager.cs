@@ -25,7 +25,8 @@ public class MidiManager
     public float noteScale = 1.0f;
     public float blackNoteWidth = 0.13125f;
     public float whiteNoteWidth = 0.225f;
-    public float virtualPianoWidth = 1.575f;
+    // public float virtualPianoWidth = 1.575f;
+    public float pianoWidth;            // 피아노 너비 인식 테스팅용 변수
     public float widthValue = 1.0f;
     public MidiFileContainer song;
 
@@ -41,6 +42,10 @@ public class MidiManager
 
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
+
+    // 피아노 너비 인식 테스팅용
+    PianoWidth pWidth = new PianoWidth();
+
     public void Init()
     {
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
@@ -50,6 +55,9 @@ public class MidiManager
         whiteKeyTwo = Resources.Load<Material>("Materials/WhiteChannel2");
         blackKeyOne = Resources.Load<Material>("Materials/BlackChannel1");
         blackKeyTwo = Resources.Load<Material>("Materials/BlackChannel2");
+
+        pianoWidth = pWidth.GetWidth();
+        Debug.Log("MidiManager: " + pianoWidth);
     }
 
     void CleanPrevDatas()
@@ -72,7 +80,7 @@ public class MidiManager
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-0.2f, -0.5f, 0);
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         TextAsset sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
@@ -148,7 +156,9 @@ public class MidiManager
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                // instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                
+                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * pianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
                     instantiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
@@ -164,7 +174,9 @@ public class MidiManager
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instantiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                // instantiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                
+                instantiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * pianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
                     instantiateNotes[i].GetComponent<Renderer>().material = whiteKeyOne;

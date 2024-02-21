@@ -18,8 +18,8 @@ public class ActualModController : MonoBehaviour
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
     public float notePosOffset = -2.625f;
-    public float noteScale = 1.5f;
-    public float widthValue = 1.5f;
+    public float noteScale = 1.0f;
+    public float widthValue = 0.35f;    // 0.5f
     public string songTitle;
 
     public int passedNote;
@@ -127,7 +127,7 @@ public class ActualModController : MonoBehaviour
         {
             currentDeltaTime = currentDeltaTimeF - (int)currentDeltaTimeF < 0.5f ? (int)currentDeltaTimeF : (int)currentDeltaTimeF + 1;
         }
-        _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
+        _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);    
     }
 
     IEnumerator CheckNotesStatus()
@@ -181,7 +181,7 @@ public class ActualModController : MonoBehaviour
             }
         }
 
-        _uiController.UpdateAccuracy();
+        _uiController.UpdateAccuracy();    
 
         yield return null;
     }
