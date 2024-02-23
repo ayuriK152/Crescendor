@@ -103,8 +103,6 @@ public class UI_MainMenu : UI_Scene
         {
             Debug.Log("로그인 성공!");
             Debug.Log(www.downloadHandler.text);
-            // 로그인 성공 시 Nav패널에 로그아웃 버튼과 사용자 정보 표시
-            // 마이페이지에 들어갈 수 있게 됨.
             isLogin = true;
         }
         else
