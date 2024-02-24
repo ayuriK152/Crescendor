@@ -50,7 +50,7 @@ public class ResultController : MonoBehaviour
     void SaveResultToJson()
     {
         RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), "TestUser1", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
-        File.WriteAllText($"{Application.dataPath}/RecordReplay/TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
+        File.WriteAllText($"{Application.dataPath}/RecordReplay/TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
     }
 
     string ReturnStringForServer(string origin)
@@ -66,11 +66,11 @@ public class ResultController : MonoBehaviour
             return;
         if (bestScoreFromServer == -1)
         {
-            Managers.Data.AddBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+            Managers.Data.AddBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
         }
         else if(bestScoreFromServer < _correctMount / (float)_totalAcc)
         {
-            Managers.Data.SetBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+            Managers.Data.SetBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
         }
         else
         {
