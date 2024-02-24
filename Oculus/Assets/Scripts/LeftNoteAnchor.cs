@@ -12,6 +12,14 @@ public class LeftNoteAnchor : MonoBehaviour
     [SerializeField]
     OVRHand ovrhand;
 
+    private void Update()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.One))
+        {
+            LeftHandPosition();
+        }
+    }
+
 
     public void LMove(Vector3 HandPos)
     {

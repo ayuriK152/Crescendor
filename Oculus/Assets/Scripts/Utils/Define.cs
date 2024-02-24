@@ -46,7 +46,6 @@ public class Define
     public enum Scene
     {
         Unknown,
-        GetWidthScene,
         ActualModScene,
         PracticeModScene,
         SongSelectScene,
