@@ -133,7 +133,7 @@ public class DataManager
         }
         else
         {
-            Debug.LogError("Error to Add Data");
+            Debug.LogError(www.error);
         }
     }
 }
