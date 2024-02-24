@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
 using UnityEngine.SceneManagement;
+using Oculus.Interaction.Throw;
+using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PianoWidth : MonoBehaviour
 {
@@ -32,11 +35,6 @@ public class PianoWidth : MonoBehaviour
         pianoWidth = Mathf.Abs(leftpos.position.x - rightpos.position.x);
 
         return pianoWidth;
-    }
-
-    public void LoadScene()
-    {
-        SceneManager.LoadScene("ActualModScene");
     }
 }
 

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation;
 
 public class RightNoteAnchor : MonoBehaviour
 {
@@ -12,6 +14,13 @@ public class RightNoteAnchor : MonoBehaviour
     [SerializeField]
     OVRHand ovrhand;
 
+    private void Update()
+    {
+        if(OVRInput.GetDown(OVRInput.Button.One))
+        {
+            RightHandPosition();
+        }
+    }
 
     public void RMove(Vector3 HandPos)
     {

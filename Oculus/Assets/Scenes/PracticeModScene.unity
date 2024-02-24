@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4464,13 +4464,13 @@ MonoBehaviour:
   notePosOffset: -2.625
   noteScale: 3
   widthValue: 1.5
-  songTitle: For Elise-Beethoven
+  songTitle: 
   passedNote: 0
   totalNote: 0
   currentNoteIndex: 0
   isLoop: 0
   loopStartDeltaTime: 0
-  loopEndDeltaTime: 2
+  loopEndDeltaTime: 0
   loopStartNoteIndex: 0
   loopStartPassedNote: 0
   currentDeltaTime: 0
