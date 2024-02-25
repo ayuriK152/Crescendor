@@ -125,7 +125,12 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours()+1)  + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
-  pool.query(`INSERT INTO Crescendor.record SET user_id = ?, music_name = ?, score = ?, date = ?, midi = '\{?\}';`, [user_id, music_name, score, date, midi], (error, rows) => {
+  pool.query(`INSERT INTO Crescendor.record 
+  SET user_id = ${user_id}, 
+  music_name = ${music_name}, 
+  score = ${score}, 
+  date = ${date}, 
+  midi = '\{${midi}\}';`, (error, rows) => {
     if (error){
       console.log(error)
       res.status(400).send('ERROR: Exist Record')
