@@ -42,7 +42,7 @@ app.post('/signup', (req, res) => {
   const hashedPassword = bcrypt.hashSync(password, 10)
 
     pool.getConnection((err, connection)=>{
-      connection.query("INSERT INTO Crescendor.users SET id = ?, nickname = ?, password = ? ;", [id, id, hashedPassword], (error, rows) => {
+      connection.query(`INSERT INTO Crescendor.users SET id = "${id}", nickname = "${id}", password = "${hashedPassword}";`, (error, rows) => {
         if (error){
           console.log(error)
           res.status(400).send('ERROR: id')
@@ -58,7 +58,7 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   const { id, password } = req.body
 
-  pool.query('SELECT password from Crescendor.users where id = ?;', id, (error, rows) => {
+  pool.query(`SELECT password from Crescendor.users where id = ${id};`, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: Data')
       return
@@ -102,7 +102,7 @@ app.get('/record/getscore/:user_id/:music_name', (req, res) => {
   const user_id = req.params.user_id
   const music_name = req.params.music_name
 
-  pool.query("SELECT score from Crescendor.record where (user_id = ? && music_name = ?);", [user_id, music_name], (error, rows) => {
+  pool.query(`SELECT score from Crescendor.record where (user_id = "${user_id}" && music_name = "${music_name}");`, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: Data')
       return
@@ -149,7 +149,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
-  pool.query("UPDATE Crescendor.record SET score = ?, date = ?, midi = ? where (user_id = ? && music_name = ?);", [score, date, midi,user_id, music_name], (error, rows) => {
+  pool.query(`UPDATE Crescendor.record SET score = ${score}, date = '${date}', midi = '\{"tempo" : ${midi.tempo}, "noteRecords" : "${midi.noteRecords}", "originFileName" : "${midi.originFileName}"\}' where (user_id = "${user_id}" and music_name = "${music_name}");`, (error, rows) => {
 
     if (error){
       console.log(error)
@@ -168,7 +168,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
 app.get('/ranking/:music_name', (req, res) => {
   const music_name = req.params.music_name
 
-  pool.query("SELECT music_name, user_id, score, date, midi from Crescendor.record where music_name = ? order by 3 DESC, 4 ASC;", music_name, (error, rows) => {
+  pool.query(`SELECT music_name, user_id, score, date, midi from Crescendor.record where music_name = "${music_name}" order by 3 DESC, 4 ASC;`, (error, rows) => {
     if (error){
       res.status(400).send('ERROR: Data')
       return
