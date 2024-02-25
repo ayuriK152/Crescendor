@@ -128,7 +128,7 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
   music_name = ?, 
   score = ?, 
   date = ?, 
-  midi = '\{"tempo" : ?,"noteRecords" : ?,"originFileName" : ?\}';`, [user_id, music_name, score, date, midi.tempo, midi.noteRecords,midi.originFileName], (error, rows) => {
+  midi = '\{"tempo" : ?\}';`, [user_id, music_name, score, date, midi.tempo, midi.noteRecords], (error, rows) => {
     if (error){
       console.log(error)
       res.status(400).send('ERROR: Exist Record')
