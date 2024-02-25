@@ -118,6 +118,8 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
   const music_name = req.params.music_name
   const { score,  midi } = req.body
 
+  console.log(midi)
+
   let today = new Date() 
   const date = new String(
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours()+1)  + ':' + today.getMinutes() + ':' + today.getSeconds()
@@ -128,7 +130,7 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
   music_name = ?, 
   score = ?, 
   date = ?, 
-  midi = '\{"tempo" : ?,"noteRecords" : "?"\}';`, [user_id, music_name, score, date, midi.tempo, midi.noteRecords], (error, rows) => {
+  midi = '\{"tempo" : ?,"noteRecords" : ?\}';`, [user_id, music_name, score, date, midi.tempo, midi.noteRecords], (error, rows) => {
     if (error){
       console.log(error)
       res.status(400).send('ERROR: Exist Record')
