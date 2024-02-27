@@ -18,7 +18,7 @@ public class ActualModController : MonoBehaviour
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
     public float notePosOffset = -2.625f;
-    public float noteScale = 1.0f;
+    public float noteScale = 0.7f;      // 1.0f
     public float widthValue = 0.35f;    // 0.5f
     public string songTitle;
 

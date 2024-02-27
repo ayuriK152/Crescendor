@@ -22,9 +22,9 @@ public class RightNoteAnchor : MonoBehaviour
         }
     }
 
-    public void RMove(Vector3 HandPos)
+    public void RMove(Vector3 handpos)
     {
-        anchor.transform.position = HandPos;
+        anchor.transform.position = handpos;
     }
 
     public void RightHandPosition()

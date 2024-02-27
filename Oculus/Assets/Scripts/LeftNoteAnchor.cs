@@ -21,9 +21,9 @@ public class LeftNoteAnchor : MonoBehaviour
     }
 
 
-    public void LMove(Vector3 HandPos)
+    public void LMove(Vector3 handpos)
     {
-        anchor.transform.position = HandPos;
+        anchor.transform.position = handpos;
     }
 
     public void LeftHandPosition()

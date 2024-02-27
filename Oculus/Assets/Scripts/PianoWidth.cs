@@ -10,32 +10,38 @@ using UnityEngine.UIElements;
 
 public class PianoWidth : MonoBehaviour
 {
-    GameObject leftNoteAnchor;
-    GameObject rightNoteAnchor;
+    private GameObject leftNoteAnchor;
+    private GameObject rightNoteAnchor;
+
+    Transform leftpos;
+    Transform rightpos;
 
     public float pianoWidth;
 
-    private void Awake()
-    {
-        leftNoteAnchor = GameObject.Find("LeftNoteAnchor");
-        rightNoteAnchor = GameObject.Find("RightNoteAnchor");
-
-        DontDestroyOnLoad(leftNoteAnchor);
-        DontDestroyOnLoad(rightNoteAnchor);
-    }
-
     public float GetWidth()
     {
-        leftNoteAnchor = GameObject.Find("LeftNoteAnchor");
-        rightNoteAnchor = GameObject.Find("RightNoteAnchor");
+        leftNoteAnchor = Resources.Load<GameObject>("Prefabs/LeftNoteAnchor");
+        rightNoteAnchor = Resources.Load<GameObject>("Prefabs/RightNoteAnchor");
 
-        Transform leftpos = leftNoteAnchor.transform;
-        Transform rightpos = rightNoteAnchor.transform;
+        leftpos = leftNoteAnchor.transform;
+        rightpos = rightNoteAnchor.transform;
+
+        Debug.Log("leftpos: " + leftpos.position.x);
+        Debug.Log("rightpos: " + rightpos.position.x);
 
         pianoWidth = Mathf.Abs(leftpos.position.x - rightpos.position.x);
+        
+        Debug.Log("피아노 너비: " + pianoWidth);
 
         return pianoWidth;
     }
+
+    public void LeftClicked()
+    {
+        float x = leftNoteAnchor.transform.position.x;
+        
+        x -= 0.5f;
+
+        Debug.Log(x);
+    }
 }
-
-
