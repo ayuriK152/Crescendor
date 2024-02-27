@@ -13,9 +13,11 @@ public class UI_MainMenu : UI_Scene
 {
     TMP_InputField idInput;
     TMP_InputField passwordInput;
+    Button signUpBtn;
+    Button loginBtn;
     bool isLogin = false; // 로그인 유무
     private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
-    
+
     enum Buttons
     {
         PlayButton,
@@ -39,23 +41,47 @@ public class UI_MainMenu : UI_Scene
         GetButton((int)Buttons.MypageBtn).gameObject.BindEvent(OnMyPageButtonClick);
         idInput = GameObject.Find("MainMenu/NavBar/ID").GetComponent<TMP_InputField>();
         passwordInput = GameObject.Find("MainMenu/NavBar/PASSWORD").GetComponent<TMP_InputField>();
+        signUpBtn = GameObject.Find("MainMenu/NavBar/SignUpBtn").GetComponent<Button>();
+        loginBtn = GameObject.Find("MainMenu/NavBar/LoginBtn").GetComponent<Button>();
     }
-      
+
+    public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
+    {
+        idInput.gameObject.SetActive(false);
+        passwordInput.gameObject.SetActive(false);
+        signUpBtn.gameObject.SetActive(false);
+        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";        
+    }
+
+
     public void OnPlayButtonClick(PointerEventData data)
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
     public void OnLoginButtonClick(PointerEventData data)
     {
-        Debug.Log("로그인 버튼 클릭");
-        string id = idInput.text;
-        string password = passwordInput.text;
-        StartCoroutine(LoginRequest(id, password));
+        if (isLogin) // 로그아웃 버튼 클릭 시 
+        {
+            idInput.gameObject.SetActive(true);
+            passwordInput.gameObject.SetActive(true);
+            signUpBtn.gameObject.SetActive(true);
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            isLogin = false;
+            // 에러메시지 표시
+            ShowErrorMsg("LogOut Successs");
+        }
+        else // 로그인 버튼 클릭 시 
+        {
+            string id = idInput.text;
+            string password = passwordInput.text;
+            idInput.text = null;
+            passwordInput.text = null;
+            StartCoroutine(LoginRequest(id, password));
+        }
     }
 
     public void OnSignupButtonClick(PointerEventData data)
     {
-        Debug.Log("회원가입 버튼 클릭");
         // 회원가입 팝업창 생성
         Managers.ManagerInstance.AddComponent<SongSelectUIController>().ShowPopupUI<UI_SignUp>();
     }
@@ -67,11 +93,16 @@ public class UI_MainMenu : UI_Scene
         }
         else
         {
-            Debug.Log("로그인을 해주세요");
+            ShowErrorMsg("Please log in");
         }
     }
 
-
+    public void ShowErrorMsg(string msg) // 에러 팝업창 생성
+    {
+        GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
+        GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+        loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+    }
 
 
     IEnumerator SendRequest(string url, string json, string method)
@@ -101,14 +132,13 @@ public class UI_MainMenu : UI_Scene
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("로그인 성공!");
-            Debug.Log(www.downloadHandler.text);
             isLogin = true;
+            ShowErrorMsg("Login Success");
+            LoginUpdateNavBar(); // NavBar 변경
         }
         else
         {
-            Debug.Log("로그인 실패!");
-            Debug.Log(www.downloadHandler.text);
+            ShowErrorMsg("Login Failed");
         }
     }
 

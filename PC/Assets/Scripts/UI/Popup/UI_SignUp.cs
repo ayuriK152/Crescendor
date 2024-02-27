@@ -72,11 +72,20 @@ public class UI_SignUp : UI_Popup
             {
                 Debug.Log("Sign Up Successful!");
                 Debug.Log(www.downloadHandler.text);
+                // 에러 메시지 생성
+                GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
+                GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+                loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = "Sign up completed";
+                Destroy(gameObject);
             }
             else
             {
                 Debug.LogError("Sign Up Failed: " + www.error);
                 Debug.Log(www.downloadHandler.text);
+                // 에러 메시지 생성
+                GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
+                GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+                loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = "The ID that already exists";
             }
         }
     }
