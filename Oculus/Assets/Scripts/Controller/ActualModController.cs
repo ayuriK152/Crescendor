@@ -36,8 +36,13 @@ public class ActualModController : MonoBehaviour
 
     Dictionary<int, KeyValuePair<int, int>> noteRecords;
 
+    // 객체 생성을 여기서 하나요?
+    public PianoWidth pWidth = new PianoWidth();
+
     public void Init()
     {
+        widthValue = pWidth.GetWidth() / totalNote;
+
         songTitle = PlayerPrefs.GetString("trans_SongTitle");
 
         passedNote = 0;

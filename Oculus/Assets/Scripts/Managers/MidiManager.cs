@@ -26,7 +26,7 @@ public class MidiManager
     public float blackNoteWidth = 0.13125f;
     public float whiteNoteWidth = 0.225f;
     // public float virtualPianoWidth = 1.575f;
-    public float pianoWidth;            // 인식한 피아노 너비
+    public float pianoWidth = 1.575f;            // 인식한 피아노 너비
     public float widthValue = 1.0f;
     public MidiFileContainer song;
 
@@ -44,7 +44,7 @@ public class MidiManager
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
 
     // 피아노 너비 인식 후 데이터 전달 위한 객체
-    PianoWidth pWidth = new PianoWidth();
+    // public PianoWidth pWidth = new PianoWidth();
 
     public void Init()
     {
@@ -56,7 +56,7 @@ public class MidiManager
         blackKeyOne = Resources.Load<Material>("Materials/BlackChannel1");
         blackKeyTwo = Resources.Load<Material>("Materials/BlackChannel2");
 
-        pianoWidth = pWidth.GetWidth();
+        // pianoWidth = pWidth.GetWidth();
     }
 
     void CleanPrevDatas()

@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation;
 
 public class RightNoteAnchor : MonoBehaviour
 {
     [SerializeField]
-    GameObject anchor;
+    private static Vector3 rightanchor;
 
-    static Vector3 HandPos;
+    public static Vector3 RightAnchor { get => rightanchor; set => rightanchor = value; }
 
     [SerializeField]
     OVRHand ovrhand;
 
+    Vector3 HandPos;
+
     private void Update()
     {
-        if(OVRInput.GetDown(OVRInput.Button.One))
+        if (OVRInput.GetDown(OVRInput.Button.One))
         {
             RightHandPosition();
         }
@@ -24,7 +24,8 @@ public class RightNoteAnchor : MonoBehaviour
 
     public void RMove(Vector3 handpos)
     {
-        anchor.transform.position = handpos;
+        rightanchor = handpos;
+        this.transform.position = handpos;
     }
 
     public void RightHandPosition()
