@@ -34,11 +34,14 @@ public class PracticeModController : MonoBehaviour
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
+    int inputKeyCount;
     int[] _initInputTiming = new int[88];
 
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
+    public List<Material> vPianoKeyMat = new List<Material>();
+    public List<GameObject> vPianoKeyObj = new List<GameObject>();
     PracticeModUIController _uiController;
 
     public void Init()
@@ -58,6 +61,8 @@ public class PracticeModController : MonoBehaviour
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
+
+        inputKeyCount = 0;
 
         for (int i = 0; i < 88; i++)
         {
@@ -86,6 +91,17 @@ public class PracticeModController : MonoBehaviour
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
+        Transform[] tempVPianoMat = GameObject.Find("VirtualPiano").GetComponentsInChildren<Transform>();
+        foreach (Transform t in tempVPianoMat)
+        {
+            MeshRenderer tempVPianoKeyMat;
+            if (t.TryGetComponent<MeshRenderer>(out tempVPianoKeyMat))
+            {
+                vPianoKeyObj.Add(t.gameObject);
+                vPianoKeyMat.Add(tempVPianoKeyMat.material);
+            }
+        }
+
         Managers.InitManagerPosition();
     }
 
@@ -93,6 +109,7 @@ public class PracticeModController : MonoBehaviour
     {
         WaitMidiInput();
         Scroll();
+        StartCoroutine(ToggleKeyHighlight());
     }
     void Scroll()
     {
@@ -221,6 +238,7 @@ public class PracticeModController : MonoBehaviour
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
+                inputKeyCount += 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
                 Debug.Log(noteEvent);
@@ -228,13 +246,76 @@ public class PracticeModController : MonoBehaviour
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
+                inputKeyCount -= 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
+                Debug.Log(noteEvent);
             }
         }
     }
 
-    void InputKeyEvent(KeyCode keyCode)
+    IEnumerator ToggleKeyHighlight()
+    {
+        for (int i = 0; i < 88; i++)
+        {
+            if (Managers.Input.keyChecks[i])
+                TurnOnHighlight(i);
+            else
+                TurnOffHighlight(i);
+        }
+        yield return null;
+    }
+
+    void TurnOnHighlight(int keyNum)
+    {
+        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+        {
+            vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
+        }
+        else
+        {
+            vPianoKeyMat[keyNum].color = new Color(0.7f, 0, 0);
+        }
+    }
+
+    void TurnOffHighlight(int keyNum)
+    {
+        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+        {
+            vPianoKeyMat[keyNum].color = new Color(1, 1, 1);
+        }
+        else
+        {
+            vPianoKeyMat[keyNum].color = new Color(0, 0, 0);
+        }
+    }
+
+    void VisualizeTestOn(bool flag)
+    {
+        if (flag)
+        {
+            Debug.Log(vPianoKeyObj[39].name);
+            Debug.Log(vPianoKeyObj[39].name.Length);
+            if (vPianoKeyObj[39].name.Length == 1)
+                vPianoKeyMat[39].color = new Color(1, 0, 0);
+            else
+                vPianoKeyMat[39].color = new Color(0.7f, 0, 0);
+            _initInputTiming[39] = currentDeltaTime;
+            Managers.Input.keyChecks[39] = true;
+        }
+
+        else
+        {
+            if (vPianoKeyObj[39].name.Length == 1)
+                vPianoKeyMat[39].color = new Color(1, 1, 1);
+            else
+                vPianoKeyMat[39].color = new Color(0, 0, 0);
+            _initInputTiming[39] = -1;
+            Managers.Input.keyChecks[39] = false;
+        }
+    }
+
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
         switch (keyCode)
         {
@@ -243,6 +324,12 @@ public class PracticeModController : MonoBehaviour
                 break;
             case KeyCode.RightBracket:
                 SetEndDeltaTime();
+                break;
+            case KeyCode.A:
+                if (inputType == Define.InputType.OnKeyDown)
+                    VisualizeTestOn(true);
+                else
+                    VisualizeTestOn(false);
                 break;
         }
     }

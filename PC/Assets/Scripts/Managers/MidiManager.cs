@@ -317,7 +317,7 @@ public class MidiManager
         return key;
     }
 
-    bool BlackKeyJudge(int keyNum)
+    public bool BlackKeyJudge(int keyNum)
     {
         bool flag = false;
         if (keyNum > 3)

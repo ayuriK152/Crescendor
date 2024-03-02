@@ -107,5 +107,9 @@ public class Define
         Drag,
     }
 
-
+    public enum InputType
+    {
+        OnKeyDown,
+        OnKeyUp,
+    }
 }
