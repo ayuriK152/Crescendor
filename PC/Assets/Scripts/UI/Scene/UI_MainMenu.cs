@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class UI_MainMenu : UI_Scene
     TMP_InputField passwordInput;
     Button signUpBtn;
     Button loginBtn;
+    TextMeshProUGUI idText;
     bool isLogin = false; // 로그인 유무
     private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
 
@@ -39,18 +41,23 @@ public class UI_MainMenu : UI_Scene
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.MypageBtn).gameObject.BindEvent(OnMyPageButtonClick);
-        idInput = GameObject.Find("MainMenu/NavBar/ID").GetComponent<TMP_InputField>();
+        idInput = GameObject.Find("MainMenu/NavBar/ID").GetComponent<TMP_InputField>(); 
         passwordInput = GameObject.Find("MainMenu/NavBar/PASSWORD").GetComponent<TMP_InputField>();
         signUpBtn = GameObject.Find("MainMenu/NavBar/SignUpBtn").GetComponent<Button>();
         loginBtn = GameObject.Find("MainMenu/NavBar/LoginBtn").GetComponent<Button>();
+        idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
     }
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
     {
+        idText.text = idInput.text;
+        idInput.text = null;
+        passwordInput.text = null;
+        idText.gameObject.SetActive(true);
         idInput.gameObject.SetActive(false);
         passwordInput.gameObject.SetActive(false);
         signUpBtn.gameObject.SetActive(false);
-        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";        
+        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";       
     }
 
 
@@ -65,6 +72,7 @@ public class UI_MainMenu : UI_Scene
             idInput.gameObject.SetActive(true);
             passwordInput.gameObject.SetActive(true);
             signUpBtn.gameObject.SetActive(true);
+            idText.gameObject.SetActive(false); 
             loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
             isLogin = false;
             // 에러메시지 표시
@@ -74,8 +82,6 @@ public class UI_MainMenu : UI_Scene
         {
             string id = idInput.text;
             string password = passwordInput.text;
-            idInput.text = null;
-            passwordInput.text = null;
             StartCoroutine(LoginRequest(id, password));
         }
     }
