@@ -15,15 +15,24 @@ public class PianoWidth : MonoBehaviour
 
     private float pianoWidth;
 
-    public float GetWidth()
+    private void Awake()
     {
-        leftpos = LeftNoteAnchor.LeftAnchor.x;
-        rightpos = RightNoteAnchor.RightAnchor.x;
+        leftpos = GameObject.Find("LeftNoteAnchor").transform.position.x;
+        rightpos = GameObject.Find("RightNoteAnchor").transform.position.x;
+    }
+
+    public void GetWidth()
+    {
+        // 아마 Option에서 연결된 피아노 너비 인식 Scene에 manager로 들어갈 듯
+        
+        leftpos = PlayerPrefs.GetFloat("trans_LeftAnchor");
+        rightpos = PlayerPrefs.GetFloat("trans_RightAnchor");
+        Debug.Log("Left: " + leftpos + " Right: " + rightpos);
 
         pianoWidth = Mathf.Abs(leftpos - rightpos);
         
-        Debug.Log("피아노 너비: " + pianoWidth);
+        Debug.Log("인식한 피아노 너비: " + pianoWidth);
 
-        return pianoWidth;
+        PlayerPrefs.SetFloat("trans_VPianoWidth", pianoWidth);
     }
 }

@@ -7,8 +7,6 @@ using Melanchall.DryWetMidi.Multimedia;
 using System;
 using static Define;
 using static Datas;
-using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
 
 public class ActualModController : MonoBehaviour
 {
@@ -18,8 +16,8 @@ public class ActualModController : MonoBehaviour
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
     public float notePosOffset = -2.625f;
-    public float noteScale = 0.7f;      // 1.0f
-    public float widthValue = 0.35f;    // 0.5f
+    public float noteScale = 1.5f;
+    public float widthValue = 1.5f;
     public string songTitle;
 
     public int passedNote;
@@ -31,18 +29,14 @@ public class ActualModController : MonoBehaviour
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
+    int[] _initInputTiming = new int[88];
     int[] lastInputTiming = new int[88];
     ActualModUIController _uiController;
 
     Dictionary<int, KeyValuePair<int, int>> noteRecords;
 
-    // 객체 생성을 여기서 하나요?
-    public PianoWidth pWidth = new PianoWidth();
-
     public void Init()
     {
-        widthValue = pWidth.GetWidth() / totalNote;
-
         songTitle = PlayerPrefs.GetString("trans_SongTitle");
 
         passedNote = 0;
@@ -52,8 +46,16 @@ public class ActualModController : MonoBehaviour
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
 
+        for (int i = 0; i < 88; i++)
+        {
+            _initInputTiming[i] = -1;
+        }
+
         Managers.Midi.noteScale = noteScale;
-        Managers.Midi.widthValue = widthValue;
+        // Managers.Midi.widthValue = widthValue;
+        Managers.Midi.widthValue = PlayerPrefs.GetFloat("trans_VPianoWidth");
+        Debug.Log("값 넘어감? " + Managers.Midi.widthValue);
+
         Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
 
         totalNote = Managers.Midi.notes.Count;
@@ -62,7 +64,7 @@ public class ActualModController : MonoBehaviour
 
         _uiController = Managers.UI.currentUIController as ActualModUIController;
         _uiController.BindIngameUI();
-        _uiController.songTitleTMP.text = songTitle;
+        _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{tempo}";
         _uiController.songBeatTMP.text = $"4/4";
@@ -132,7 +134,7 @@ public class ActualModController : MonoBehaviour
         {
             currentDeltaTime = currentDeltaTimeF - (int)currentDeltaTimeF < 0.5f ? (int)currentDeltaTimeF : (int)currentDeltaTimeF + 1;
         }
-        _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);    
+        _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
     }
 
     IEnumerator CheckNotesStatus()
@@ -177,7 +179,7 @@ public class ActualModController : MonoBehaviour
                 if (lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                     lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
-                if (!Managers.Input.keyChecks[keyNum])
+                if (!Managers.Input.keyChecks[keyNum] || _initInputTiming[keyNum] < currentDeltaTime)
                 {
                     currentFail += currentDeltaTime - lastInputTiming[keyNum];
                 }
@@ -186,7 +188,7 @@ public class ActualModController : MonoBehaviour
             }
         }
 
-        _uiController.UpdateAccuracy();    
+        _uiController.UpdateAccuracy();
 
         yield return null;
     }
@@ -201,18 +203,20 @@ public class ActualModController : MonoBehaviour
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1] = true;
-                if (!noteRecords.ContainsKey(noteEvent.NoteNumber - 1))
-                    noteRecords.Add(noteEvent.NoteNumber - 1, new KeyValuePair<int, int>(currentDeltaTime, -1));
+                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
+                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
+                if (!noteRecords.ContainsKey(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET))
+                    noteRecords.Add(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET, new KeyValuePair<int, int>(currentDeltaTime, -1));
                 else
-                    noteRecords[noteEvent.NoteNumber - 1] = new KeyValuePair<int, int>(currentDeltaTime, -1);
+                    noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = new KeyValuePair<int, int>(currentDeltaTime, -1);
                 Debug.Log(noteEvent);
             }
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
-                noteRecords[noteEvent.NoteNumber - 1] = new KeyValuePair<int, int>(noteRecords[noteEvent.NoteNumber - 1].Key, currentDeltaTime);
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1] = false;
+                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
+                noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = new KeyValuePair<int, int>(noteRecords[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET].Key, currentDeltaTime);
+                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }
         }
     }

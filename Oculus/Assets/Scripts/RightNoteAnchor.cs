@@ -5,9 +5,7 @@ using UnityEngine;
 public class RightNoteAnchor : MonoBehaviour
 {
     [SerializeField]
-    private static Vector3 rightanchor;
-
-    public static Vector3 RightAnchor { get => rightanchor; set => rightanchor = value; }
+    private GameObject rightanchor;
 
     [SerializeField]
     OVRHand ovrhand;
@@ -24,8 +22,9 @@ public class RightNoteAnchor : MonoBehaviour
 
     public void RMove(Vector3 handpos)
     {
-        rightanchor = handpos;
-        this.transform.position = handpos;
+        rightanchor.transform.position = handpos;
+        PlayerPrefs.SetFloat("trans_RightAnchor", handpos.x);
+        Debug.Log("¿À¸¥ÂÊ ¾ÞÄ¿: " + handpos.x);
     }
 
     public void RightHandPosition()

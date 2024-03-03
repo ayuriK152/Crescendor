@@ -5,14 +5,13 @@ using UnityEngine;
 public class LeftNoteAnchor : MonoBehaviour
 {
     [SerializeField]
-    private static Vector3 leftanchor;
-
-    public static Vector3 LeftAnchor { get => leftanchor; set => leftanchor = value; }
+    private GameObject leftanchor;
 
     [SerializeField]
     OVRHand ovrhand;
 
     Vector3 HandPos;
+
     private void Update()
     {
         if (OVRInput.GetDown(OVRInput.Button.One))
@@ -23,9 +22,9 @@ public class LeftNoteAnchor : MonoBehaviour
 
     public void LMove(Vector3 handpos)
     {
-        leftanchor = handpos;
-        Debug.Log("¾ÞÄ¿ ÀÌµ¿: " + leftanchor);
-        this.transform.position = handpos;
+        leftanchor.transform.position = handpos;
+        PlayerPrefs.SetFloat("trans_LeftAnchor", handpos.x);
+        Debug.Log("¿ÞÂÊ ¾ÞÄ¿: " + handpos.x);
     }
 
     public void LeftHandPosition()

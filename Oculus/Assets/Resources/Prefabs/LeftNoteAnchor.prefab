@@ -118,5 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23c859f00ef52a4f844079a758cdf64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchor: {fileID: 6566041546362205220}
+  leftanchor: {fileID: 6566041546362205220}
   ovrhand: {fileID: 0}
