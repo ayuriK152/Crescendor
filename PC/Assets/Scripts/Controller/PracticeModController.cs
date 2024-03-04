@@ -8,7 +8,7 @@ using Melanchall.DryWetMidi.Multimedia;
 using System;
 using System.Collections;
 
-public class PracticeModController : MonoBehaviour
+public class PracticeModController : IngameController
 {
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
@@ -40,8 +40,6 @@ public class PracticeModController : MonoBehaviour
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
-    public List<Material> vPianoKeyMat = new List<Material>();
-    public List<GameObject> vPianoKeyObj = new List<GameObject>();
     PracticeModUIController _uiController;
 
     public void Init()
@@ -91,16 +89,7 @@ public class PracticeModController : MonoBehaviour
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
-        Transform[] tempVPianoMat = GameObject.Find("VirtualPiano").GetComponentsInChildren<Transform>();
-        foreach (Transform t in tempVPianoMat)
-        {
-            MeshRenderer tempVPianoKeyMat;
-            if (t.TryGetComponent<MeshRenderer>(out tempVPianoKeyMat))
-            {
-                vPianoKeyObj.Add(t.gameObject);
-                vPianoKeyMat.Add(tempVPianoKeyMat.material);
-            }
-        }
+        base.Init();
 
         Managers.InitManagerPosition();
     }
@@ -254,67 +243,6 @@ public class PracticeModController : MonoBehaviour
         }
     }
 
-    IEnumerator ToggleKeyHighlight()
-    {
-        for (int i = 0; i < 88; i++)
-        {
-            if (Managers.Input.keyChecks[i])
-                TurnOnHighlight(i);
-            else
-                TurnOffHighlight(i);
-        }
-        yield return null;
-    }
-
-    void TurnOnHighlight(int keyNum)
-    {
-        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
-        {
-            vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
-        }
-        else
-        {
-            vPianoKeyMat[keyNum].color = new Color(0.7f, 0, 0);
-        }
-    }
-
-    void TurnOffHighlight(int keyNum)
-    {
-        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
-        {
-            vPianoKeyMat[keyNum].color = new Color(1, 1, 1);
-        }
-        else
-        {
-            vPianoKeyMat[keyNum].color = new Color(0, 0, 0);
-        }
-    }
-
-    void VisualizeTestOn(bool flag)
-    {
-        if (flag)
-        {
-            Debug.Log(vPianoKeyObj[39].name);
-            Debug.Log(vPianoKeyObj[39].name.Length);
-            if (vPianoKeyObj[39].name.Length == 1)
-                vPianoKeyMat[39].color = new Color(1, 0, 0);
-            else
-                vPianoKeyMat[39].color = new Color(0.7f, 0, 0);
-            _initInputTiming[39] = currentDeltaTime;
-            Managers.Input.keyChecks[39] = true;
-        }
-
-        else
-        {
-            if (vPianoKeyObj[39].name.Length == 1)
-                vPianoKeyMat[39].color = new Color(1, 1, 1);
-            else
-                vPianoKeyMat[39].color = new Color(0, 0, 0);
-            _initInputTiming[39] = -1;
-            Managers.Input.keyChecks[39] = false;
-        }
-    }
-
     void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
         switch (keyCode)
@@ -324,12 +252,6 @@ public class PracticeModController : MonoBehaviour
                 break;
             case KeyCode.RightBracket:
                 SetEndDeltaTime();
-                break;
-            case KeyCode.A:
-                if (inputType == Define.InputType.OnKeyDown)
-                    VisualizeTestOn(true);
-                else
-                    VisualizeTestOn(false);
                 break;
         }
     }

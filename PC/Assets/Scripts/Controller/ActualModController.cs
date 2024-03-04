@@ -10,7 +10,7 @@ using static Datas;
 using System.IO;
 using Newtonsoft.Json;
 
-public class ActualModController : MonoBehaviour
+public class ActualModController : IngameController
 {
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
@@ -89,6 +89,7 @@ public class ActualModController : MonoBehaviour
         StartCoroutine(CheckNotesStatus());
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !isSceneOnSwap)
             TempSwapScene();
+        StartCoroutine(ToggleKeyHighlight());
     }
 
     bool isSceneOnSwap = false;
