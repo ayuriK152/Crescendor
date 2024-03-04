@@ -19,6 +19,7 @@ public class PracticeModUIController : MonoBehaviour
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
     public GameObject pausePanelObj;
+    public GameObject songEndPanelObj;
 
     Button forceScrollBtn;
     Button disconnectBtn;
@@ -54,6 +55,9 @@ public class PracticeModUIController : MonoBehaviour
         exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
 
+        songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
+        songEndPanelObj.SetActive(false);
+
         practiceModController = Managers.Ingame.controller as PracticeModController;
 
         songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
@@ -66,9 +70,6 @@ public class PracticeModUIController : MonoBehaviour
         turnOffLoopBtn.onClick.AddListener(TurnOffLoop);
         resumeBtn.onClick.AddListener(TogglePausePanel);
         exitBtn.onClick.AddListener(OnClickExitBtn);
-
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void SetLoopStartMarker()
@@ -104,6 +105,11 @@ public class PracticeModUIController : MonoBehaviour
 
     public void UpdateDeltaTimeBySlider(float sliderValue)
     {
+        if (practiceModController.isSongEnd)
+        {
+            songEndPanelObj.SetActive(false);
+            practiceModController.isSongEnd = false;
+        }
         if (practiceModController.isPlaying)
             practiceModController.isPlaying = false;
         practiceModController.currentDeltaTime = (int)sliderValue;
@@ -129,13 +135,11 @@ public class PracticeModUIController : MonoBehaviour
 
     void OnClickExitBtn()
     {
-        Managers.Input.keyAction -= InputKeyEvent;
         Managers.CleanManagerChilds();
-        Managers.Scene.LoadScene(Define.Scene.ResultScene);
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
 
-    void TogglePausePanel()
+    public void TogglePausePanel()
     {
         pausePanelObj.SetActive(!pausePanelObj.activeSelf);
 
@@ -149,20 +153,8 @@ public class PracticeModUIController : MonoBehaviour
         }
     }
 
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
+    public void ToggleSongEndPanel()
     {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        TogglePausePanel();
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
+        songEndPanelObj.SetActive(!songEndPanelObj.activeSelf);
     }
 }

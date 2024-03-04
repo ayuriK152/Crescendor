@@ -33,6 +33,9 @@ public class InputManager
             keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
         if (Input.GetKeyUp(KeyCode.A))
             keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            keyAction.Invoke(KeyCode.Escape, Define.InputType.OnKeyDown);
     }
 
     public void ConnectPiano()

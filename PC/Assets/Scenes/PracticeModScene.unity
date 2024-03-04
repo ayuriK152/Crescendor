@@ -548,7 +548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &258791478
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2758,6 +2758,7 @@ MonoBehaviour:
   loopEndMarker: {fileID: 0}
   loopEndMarkerSprite: {fileID: 0}
   pausePanelObj: {fileID: 0}
+  songEndPanelObj: {fileID: 0}
 --- !u!1 &1162924382
 GameObject:
   m_ObjectHideFlags: 0
