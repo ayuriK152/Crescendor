@@ -145,12 +145,19 @@ public class ReplayModUIController : MonoBehaviour
         }
     }
 
-    void InputKeyEvent(KeyCode keyCode)
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
-        switch (keyCode)
+        switch (inputType)
         {
-            case KeyCode.Escape:
-                TogglePausePanel();
+            case Define.InputType.OnKeyDown:
+                switch (keyCode)
+                {
+                    case KeyCode.Escape:
+                        TogglePausePanel();
+                        break;
+                }
+                break;
+            case Define.InputType.OnKeyUp:
                 break;
         }
     }

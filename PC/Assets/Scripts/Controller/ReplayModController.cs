@@ -229,17 +229,25 @@ public class ReplayModController : MonoBehaviour
         }
     }
 
-    void InputKeyEvent(KeyCode keyCode)
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
-        switch (keyCode)
+        switch (inputType)
         {
-            case KeyCode.LeftBracket:
-                SetStartDeltaTime();
+            case Define.InputType.OnKeyDown:
+                switch (keyCode)
+                {
+                    case KeyCode.LeftBracket:
+                        SetStartDeltaTime();
+                        break;
+                    case KeyCode.RightBracket:
+                        SetEndDeltaTime();
+                        break;
+                }
                 break;
-            case KeyCode.RightBracket:
-                SetEndDeltaTime();
+            case Define.InputType.OnKeyUp:
                 break;
         }
+
     }
 
     void SetStartDeltaTime()
