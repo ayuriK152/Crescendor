@@ -8,7 +8,7 @@ using Oculus.Interaction.Throw;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-public class PianoWidth : MonoBehaviour
+public class PianoWidthController : MonoBehaviour
 {
     private float leftpos;
     private float rightpos;
