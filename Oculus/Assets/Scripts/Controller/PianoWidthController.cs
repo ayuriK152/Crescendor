@@ -6,7 +6,8 @@ using Unity.Mathematics;
 using UnityEngine.SceneManagement;
 using Oculus.Interaction.Throw;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+
+// Option Manager 생성 이후 구조 변경 필요
 
 public class PianoWidthController : MonoBehaviour
 {
@@ -23,15 +24,12 @@ public class PianoWidthController : MonoBehaviour
 
     public void GetWidth()
     {
-        // 아마 Option에서 연결된 피아노 너비 인식 Scene에 manager로 들어갈 듯
-        
+        // confirm 버튼과 연결된 함수
+
         leftpos = PlayerPrefs.GetFloat("trans_LeftAnchor");
         rightpos = PlayerPrefs.GetFloat("trans_RightAnchor");
-        Debug.Log("Left: " + leftpos + " Right: " + rightpos);
 
         pianoWidth = Mathf.Abs(leftpos - rightpos);
-        
-        Debug.Log("인식한 피아노 너비: " + pianoWidth);
 
         PlayerPrefs.SetFloat("trans_VPianoWidth", pianoWidth);
     }

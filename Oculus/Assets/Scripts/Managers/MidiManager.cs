@@ -72,6 +72,7 @@ public class MidiManager
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
+        // ManagerInstance.transform 또한 사용자가 피아노 중앙으로 지정하도록 수정?
         tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, -1, 0);
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 

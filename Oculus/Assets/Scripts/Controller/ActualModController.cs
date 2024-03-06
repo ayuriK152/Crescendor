@@ -54,8 +54,6 @@ public class ActualModController : MonoBehaviour
         Managers.Midi.noteScale = noteScale;
         // Managers.Midi.widthValue = widthValue;
         Managers.Midi.widthValue = PlayerPrefs.GetFloat("trans_VPianoWidth");
-        Debug.Log("값 넘어감? " + Managers.Midi.widthValue);
-
         Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
 
         totalNote = Managers.Midi.notes.Count;

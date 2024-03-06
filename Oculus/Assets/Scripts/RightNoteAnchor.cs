@@ -24,7 +24,6 @@ public class RightNoteAnchor : MonoBehaviour
     {
         rightanchor.transform.position = handpos;
         PlayerPrefs.SetFloat("trans_RightAnchor", handpos.x);
-        Debug.Log("¿À¸¥ÂÊ ¾ÞÄ¿: " + handpos.x);
     }
 
     public void RightHandPosition()
