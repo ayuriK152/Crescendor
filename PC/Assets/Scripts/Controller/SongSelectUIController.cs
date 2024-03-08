@@ -36,7 +36,6 @@ public class SongSelectUIController : MonoBehaviour
         }
     }
 
-
     public T ShowSceneUI<T>(string name = null) where T : UI_Scene
     {
         if (string.IsNullOrEmpty(name))

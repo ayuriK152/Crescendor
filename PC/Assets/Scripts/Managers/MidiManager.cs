@@ -78,14 +78,9 @@ public class MidiManager
         nextKeyIndex = new int[88];
     }
 
-    public void LoadAndInstantiateMidi(string fileName)
+    public void LoadMidi(string fileName)
     {
         CleanPrevDatas();
-
-        GameObject tempNoteInstantiatePoint = new GameObject("Notes");
-        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
-        noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         TextAsset sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
         song = MidiFileLoader.Load(sourceFile.bytes);
@@ -96,6 +91,16 @@ public class MidiManager
         Debug.Log("MIDI data loaded!");
 
         tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
+    }
+
+    public void LoadAndInstantiateMidi(string fileName)
+    {
+        LoadMidi(fileName);
+
+        GameObject tempNoteInstantiatePoint = new GameObject("Notes");
+        tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         int trackNum = 0;
         for (int i = 0; i < song.tracks.Count; i++)
