@@ -23,7 +23,10 @@ public class RightNoteAnchor : MonoBehaviour
     public void RMove(Vector3 handpos)
     {
         rightanchor.transform.position = handpos;
+
         PlayerPrefs.SetFloat("trans_RightAnchor", handpos.x);
+        PlayerPrefs.SetFloat("trans_ypos", handpos.y);
+        PlayerPrefs.SetFloat("trans_zpos", handpos.z);
     }
 
     public void RightHandPosition()

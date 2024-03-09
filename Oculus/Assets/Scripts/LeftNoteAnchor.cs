@@ -14,7 +14,7 @@ public class LeftNoteAnchor : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.One))
+        if (OVRInput.GetDown(OVRInput.Button.Three))
         {
             LeftHandPosition();
         }
@@ -23,6 +23,7 @@ public class LeftNoteAnchor : MonoBehaviour
     public void LMove(Vector3 handpos)
     {
         leftanchor.transform.position = handpos;
+
         PlayerPrefs.SetFloat("trans_LeftAnchor", handpos.x);
     }
 
