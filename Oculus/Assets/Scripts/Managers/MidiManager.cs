@@ -41,8 +41,11 @@ public class MidiManager
 
     // 미디 파싱 로직에서 잠깐 씀. 실사용X
     Dictionary<int, int> _tempNoteData = new Dictionary<int, int>();
+
     public void Init()
     {
+        // 유빈: note prefab에서 scale 변경했음
+
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
         keyTextObj = Resources.Load<GameObject>("Prefabs/KeyText");
 
@@ -70,9 +73,13 @@ public class MidiManager
     {
         CleanPrevDatas();
 
+        float note_ypos = PlayerPrefs.GetFloat("trans_ypos");                                          // GetWidth 씬에서 지정된 y축 좌표
+        float note_zpos = PlayerPrefs.GetFloat("trans_zpos");                                          // GetWidth 씬에서 지정된 z축 좌표
+
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        // tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, note_ypos, note_zpos);               // x, z좌표 확인 필요
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         TextAsset sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
@@ -148,7 +155,7 @@ public class MidiManager
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.022f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);       // y축 값 변경함
                 if (notes[i].channel == 0)
                 {
                     instantiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
