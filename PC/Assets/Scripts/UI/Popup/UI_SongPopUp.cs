@@ -24,7 +24,9 @@ public class UI_SongPopup : UI_Popup
         GetButton((int)Buttons.PracticeBtn).gameObject.BindEvent(PracticeBtnClicked);
         GetButton((int)Buttons.ActualBtn).gameObject.BindEvent(ActualBtnClicked);
         GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
-        transform.Find("Panel/Title").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("trans_SongTitle");
+        string[] fileName = PlayerPrefs.GetString("trans_SongTitle").Replace("_", " ").Split("-");
+        transform.Find("Panel/Title").GetComponent<TextMeshProUGUI>().text = fileName[0];
+        transform.Find("Panel/Composer").GetComponent<TextMeshProUGUI>().text = fileName[1];
     }
 
     public void PracticeBtnClicked(PointerEventData data)
