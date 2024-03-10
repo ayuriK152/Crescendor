@@ -12,6 +12,7 @@ public class UI_Select : UI_Scene
     {
         SongPanel,
         RankPanel,
+        SongInfoPanel,
     }
 
     enum Buttons
@@ -21,6 +22,11 @@ public class UI_Select : UI_Scene
 
     GameObject rankPanelObj;
     GameObject noRankSignPanelObj;
+    GameObject songInfoPanel;
+    TextMeshProUGUI songInfoName;
+    TextMeshProUGUI songInfoComposser;
+    TextMeshProUGUI songInfoLength;
+    TextMeshProUGUI songInfoTempo;
     Define.RankRecordList rankRecords;
 
     void Start()
@@ -30,8 +36,6 @@ public class UI_Select : UI_Scene
     
     public override void Init()
     {
-        PlayerPrefs.SetString("trans_SongTitle", "");
-
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));
@@ -42,7 +46,22 @@ public class UI_Select : UI_Scene
             Managers.Data.Destroy(child.gameObject);
 
         rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
+        songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
+
+        songInfoName = songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
+        songInfoComposser = songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
+        songInfoLength = songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
+        songInfoTempo = songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
+
         noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
+
+        if (!PlayerPrefs.HasKey("trans_SongTitle"))
+        {
+            PlayerPrefs.SetString("trans_SongTitle", "");
+        }
+
+        UpdateRankList();
+        UpdateSongInfo();
 
         // SongManager의 곡 정보를 이용하여 버튼 생성
         for (int i = 0; i < Managers.Song.songs.Count; i++)
@@ -79,6 +98,7 @@ public class UI_Select : UI_Scene
         {
             PlayerPrefs.SetString("trans_SongTitle", songName);
             UpdateRankList();
+            UpdateSongInfo();
         }
         else if (currentSongTitle == songName)
         {
@@ -127,7 +147,7 @@ public class UI_Select : UI_Scene
                     button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                     button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
                     button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
-                    button.onClick.AddListener(() => OnSongButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
+                    //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                 }
             }
             else
@@ -135,6 +155,14 @@ public class UI_Select : UI_Scene
                 Debug.LogError($"Failed to load RankButton prefab");
             }
         }
+    }
+
+    void UpdateSongInfo()
+    {
+        Managers.Midi.LoadMidi(PlayerPrefs.GetString("trans_SongTitle"));
+        songInfoName.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
+        songInfoComposser.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
+        songInfoTempo.text = Managers.Midi.tempo.ToString();
     }
 }
 

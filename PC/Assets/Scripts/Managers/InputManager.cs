@@ -1,6 +1,6 @@
-/* ÀÎÇ² ¸Å´ÏÀú
- * ÀÛ¼º - ÀÌ¿ø¼·
- * ÀÔ·Â ±â±âÀÇ ÀÔÃâ·ÂÀ» Ã³¸®ÇÏ±â À§ÇØ »ç¿ëÇÏ´Â °´Ã¼ */
+/* ï¿½ï¿½Ç² ï¿½Å´ï¿½ï¿½ï¿½
+ * ï¿½Û¼ï¿½ - ï¿½Ì¿ï¿½ï¿½ï¿½
+ * ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã¼ */
 
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
@@ -12,7 +12,7 @@ public class InputManager
     public InputDevice inputDevice;
     public bool[] keyChecks = new bool[88];
 
-    public Action<KeyCode> keyAction;
+    public Action<KeyCode, Define.InputType> keyAction;
 
     public void Init()
     {
@@ -22,11 +22,20 @@ public class InputManager
 
     public void Update()
     {
-        // [, ] ÀÔ·Â ÀÌº¥Æ®. ±¸°£ ¹Ýº¹¿¡ »ç¿ë
+        // [, ] ï¿½Ô·ï¿½ ï¿½Ìºï¿½Æ®. ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (Input.GetKeyDown(KeyCode.LeftBracket))
-            keyAction.Invoke(KeyCode.LeftBracket);
+            keyAction.Invoke(KeyCode.LeftBracket, Define.InputType.OnKeyDown);
         if (Input.GetKeyDown(KeyCode.RightBracket))
-            keyAction.Invoke(KeyCode.RightBracket);
+            keyAction.Invoke(KeyCode.RightBracket, Define.InputType.OnKeyDown);
+
+        // For Test
+        if (Input.GetKeyDown(KeyCode.A))
+            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
+        if (Input.GetKeyUp(KeyCode.A))
+            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            keyAction.Invoke(KeyCode.Escape, Define.InputType.OnKeyDown);
     }
 
     public void ConnectPiano()

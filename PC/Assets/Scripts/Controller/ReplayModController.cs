@@ -5,10 +5,9 @@ using static Define;
 using static Datas;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
-using System;
 using System.Collections;
 
-public class PracticeModController : IngameController
+public class ReplayModController : MonoBehaviour
 {
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
@@ -26,7 +25,6 @@ public class PracticeModController : IngameController
 
     public bool isLoop;
     public bool isPlaying;
-    public bool isSongEnd = false;
     public int loopStartDeltaTime;
     public int loopEndDeltaTime;
     public int loopStartNoteIndex;
@@ -35,13 +33,12 @@ public class PracticeModController : IngameController
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
-    int inputKeyCount;
     int[] _initInputTiming = new int[88];
 
     bool _isInputTiming = false;
     bool _isWaitInput = true;
 
-    PracticeModUIController _uiController;
+    ReplayModUIController _uiController;
 
     public void Init()
     {
@@ -61,8 +58,6 @@ public class PracticeModController : IngameController
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
 
-        inputKeyCount = 0;
-
         for (int i = 0; i < 88; i++)
         {
             _initInputTiming[i] = -1;
@@ -73,7 +68,7 @@ public class PracticeModController : IngameController
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
         totalNote = Managers.Midi.notes.Count;
 
-        _uiController = Managers.UI.currentUIController as PracticeModUIController;
+        _uiController = Managers.UI.currentUIController as ReplayModUIController;
         _uiController.BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
@@ -84,26 +79,19 @@ public class PracticeModController : IngameController
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
 
-        if (Managers.Input.inputDevice != null)
-        {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
-        }
-
-        base.Init();
-
         Managers.InitManagerPosition();
+
+        Managers.Midi.LoadAndInstantiateReplay("test");
     }
 
     void Update()
     {
         WaitMidiInput();
         Scroll();
-        StartCoroutine(ToggleKeyHighlight());
     }
     void Scroll()
     {
-        if (!isPlaying || isSongEnd)
+        if (!isPlaying)
             return;
         if (isLoop)
         {
@@ -136,34 +124,20 @@ public class PracticeModController : IngameController
 
     void WaitMidiInput()
     {
-        if (currentNoteIndex >= Managers.Midi.noteTiming.Count)
-        {
-            if (currentDeltaTime >= Managers.Midi.songLengthDelta)
-            {
-                if (!isSongEnd)
-                {
-                    _uiController.ToggleSongEndPanel();
-                }
-                isSongEnd = true;
-            }
-        }
-        if (!_isInputTiming || isSongEnd)
+        if (!_isInputTiming || currentNoteIndex >= Managers.Midi.noteTiming.Count)
             return;
-        if (currentNoteIndex < Managers.Midi.noteTiming.Count)
+        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
         {
-            for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+            Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
+            if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
             {
-                Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-                if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
-                {
-                    if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
-                        return;
-                    _isInputTiming = false;
+                if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
                     return;
-                }
+                _isInputTiming = false;
+                return;
             }
-            IncreaseCurrentNoteIndex();
         }
+        IncreaseCurrentNoteIndex();
     }
 
     public void IncreaseCurrentNoteIndex()
@@ -220,15 +194,12 @@ public class PracticeModController : IngameController
                     continue;
                 }
             }
-            if (currentNoteIndex < Managers.Midi.noteTiming.Count - 1)
+            if (Managers.Midi.noteTiming[currentNoteIndex] < currentDeltaTime)
             {
-                if (Managers.Midi.noteTiming[currentNoteIndex] < currentDeltaTime)
-                {
-                    passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                    currentNoteIndex++;
-                    _uiController.UpdatePassedNote();
-                    continue;
-                }
+                passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
+                currentNoteIndex++;
+                _uiController.UpdatePassedNote();
+                continue;
             }
             break;
         }
@@ -237,14 +208,6 @@ public class PracticeModController : IngameController
 
     void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
     {
-        if (isSongEnd)
-        {
-            isSongEnd = false;
-            currentDeltaTime = 0;
-            SyncDeltaTime(true);
-            StartCoroutine(UpdateNotePosByTime());
-            _uiController.ToggleSongEndPanel();
-        }
         var midiDevice = (MidiDevice)sender;
         if (e.Event.EventType != MidiEventType.ActiveSensing)
         {
@@ -253,7 +216,6 @@ public class PracticeModController : IngameController
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
-                inputKeyCount += 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
                 Debug.Log(noteEvent);
@@ -261,44 +223,22 @@ public class PracticeModController : IngameController
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
-                inputKeyCount -= 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
-                Debug.Log(noteEvent);
             }
         }
     }
 
     void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
-        if (isSongEnd && keyCode != KeyCode.Escape)
-        {
-            isSongEnd = false;
-            currentDeltaTime = 0;
-            SyncDeltaTime(true);
-            StartCoroutine(UpdateNotePosByTime());
-            _uiController.ToggleSongEndPanel();
-            return;
-        }
         switch (inputType)
         {
             case Define.InputType.OnKeyDown:
                 switch (keyCode)
                 {
-                    case KeyCode.Escape:
-                        if (!isSongEnd)
-                            _uiController.TogglePausePanel();
-                        else
-                        {
-                            Managers.CleanManagerChilds();
-                            Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-                        }
-                        break;
-
                     case KeyCode.LeftBracket:
                         SetStartDeltaTime();
                         break;
-
                     case KeyCode.RightBracket:
                         SetEndDeltaTime();
                         break;
@@ -307,6 +247,7 @@ public class PracticeModController : IngameController
             case Define.InputType.OnKeyUp:
                 break;
         }
+
     }
 
     void SetStartDeltaTime()

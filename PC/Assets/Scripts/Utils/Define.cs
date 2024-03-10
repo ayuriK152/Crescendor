@@ -53,9 +53,9 @@ public class Define
         public string user_id;
         public float score;
         public string date;
-        public object midi;
+        public string midi;
 
-        public RankRecord(string name, string user_id, float score, string date, object midi)
+        public RankRecord(string name, string user_id, float score, string date, string midi)
         {
             this.name = name;
             this.user_id = user_id;
@@ -75,11 +75,28 @@ public class Define
         }
     }
 
+    [Serializable]
+    public class UserReplayRecord
+    {
+        public int tempo;
+        public string originFileName;
+
+        public Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
+
+        public UserReplayRecord(Dictionary<int, List<KeyValuePair<int, int>>> noteRecords, int tempo, string originFileName)
+        {
+            this.noteRecords = noteRecords;
+            this.tempo = tempo;
+            this.originFileName = originFileName;
+        }
+    }
+
     public enum Scene
     {
         Unknown,
         ActualModScene,
         PracticeModScene,
+        ReplayModScene,
         SongSelectScene,
         ResultScene,
     }
@@ -90,5 +107,9 @@ public class Define
         Drag,
     }
 
-
+    public enum InputType
+    {
+        OnKeyDown,
+        OnKeyUp,
+    }
 }
