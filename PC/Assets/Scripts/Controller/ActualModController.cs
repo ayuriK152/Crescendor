@@ -80,6 +80,8 @@ public class ActualModController : IngameController
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
+        base.Init();
+
         Managers.InitManagerPosition();
     }
 
@@ -180,10 +182,11 @@ public class ActualModController : IngameController
                 if (lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                     lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
-                if (!Managers.Input.keyChecks[keyNum] || _initInputTiming[keyNum] < currentDeltaTime)
+                if (!Managers.Input.keyChecks[keyNum] || _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
                     currentFail += currentDeltaTime - lastInputTiming[keyNum];
                 }
+
                 lastInputTiming[keyNum] = currentDeltaTime;
                 currentAcc = (totalAcc - currentFail) / (float)totalAcc;
             }

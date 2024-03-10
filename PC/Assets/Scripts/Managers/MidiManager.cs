@@ -67,6 +67,8 @@ public class MidiManager
     void CleanPrevDatas()
     {
         totalDeltaTime = 0;
+        songLengthDelta = 0;
+        songLengthSecond = 0;
 
         notes.Clear();
         noteTiming.Clear();
