@@ -80,14 +80,16 @@ public class Define
     {
         public int tempo;
         public string originFileName;
+        public float accuracy;
 
         public Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
 
-        public UserReplayRecord(Dictionary<int, List<KeyValuePair<int, int>>> noteRecords, int tempo, string originFileName)
+        public UserReplayRecord(Dictionary<int, List<KeyValuePair<int, int>>> noteRecords, int tempo, string originFileName, float accuracy)
         {
             this.noteRecords = noteRecords;
             this.tempo = tempo;
             this.originFileName = originFileName;
+            this.accuracy = accuracy;
         }
     }
 

@@ -2383,8 +2383,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1022914002}
   - component: {fileID: 1022914004}
-  - component: {fileID: 1022914005}
   - component: {fileID: 1022914006}
+  - component: {fileID: 1022914005}
   m_Layer: 0
   m_Name: '@Manager'
   m_TagString: Untagged
@@ -2428,40 +2428,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1022914000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cc79d35095233144ab36d72dea62986, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deviceText: {fileID: 0}
-  noteText: {fileID: 0}
-  tempo: 120
-  scrollSpeed: 1
-  notePosOffset: -2.625
-  noteScale: 3
-  widthValue: 1.5
-  songTitle: For Elise-Beethoven
-  passedNote: 0
-  totalNote: 0
-  currentNoteIndex: 0
-  isLoop: 0
-  isPlaying: 0
-  loopStartDeltaTime: 0
-  loopEndDeltaTime: 0
-  loopStartNoteIndex: 0
-  loopStartPassedNote: 0
-  currentDeltaTime: 0
-  currentDeltaTimeF: 0
-  vPianoKeyMat: []
-  vPianoKeyObj: []
---- !u!114 &1022914006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022914000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c01fafae9e0b35644be590641778191b, type: 3}
+  m_Script: {fileID: 11500000, guid: e3f7396dbd1cfd2498c36f0bb5e888d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   songTitleTMP: {fileID: 0}
@@ -2475,6 +2442,37 @@ MonoBehaviour:
   loopEndMarker: {fileID: 0}
   loopEndMarkerSprite: {fileID: 0}
   pausePanelObj: {fileID: 0}
+--- !u!114 &1022914006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022914000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2709c759298fcc044a0f487ffaf5cf35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deviceText: {fileID: 0}
+  noteText: {fileID: 0}
+  tempo: 120
+  scrollSpeed: 1
+  notePosOffset: -2.625
+  noteScale: 3
+  widthValue: 1.5
+  songTitle: 
+  passedNote: 0
+  totalNote: 0
+  currentNoteIndex: 0
+  isLoop: 0
+  isPlaying: 0
+  loopStartDeltaTime: 0
+  loopEndDeltaTime: 0
+  loopStartNoteIndex: 0
+  loopStartPassedNote: 0
+  currentDeltaTime: 0
+  currentDeltaTimeF: 0
 --- !u!1 &1134473190
 GameObject:
   m_ObjectHideFlags: 0

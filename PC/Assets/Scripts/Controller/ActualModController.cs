@@ -109,7 +109,7 @@ public class ActualModController : IngameController
             PlayerPrefs.SetInt("trans_OutlinerMount", 0);
         PlayerPrefs.SetInt("trans_OutlinerMount", 0);
 
-        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo, songTitle);
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo, songTitle, currentAcc);
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
         isSceneOnSwap = true;

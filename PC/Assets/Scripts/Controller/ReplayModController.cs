@@ -81,7 +81,7 @@ public class ReplayModController : MonoBehaviour
 
         Managers.InitManagerPosition();
 
-        Managers.Midi.LoadAndInstantiateReplay("test");
+        Managers.Midi.LoadAndInstantiateReplay("CanCan-TestUser120240311071015");
     }
 
     void Update()

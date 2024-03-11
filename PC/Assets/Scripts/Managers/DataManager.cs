@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 public class DataManager
 {
     public string jsonDataFromServer;
+    public bool isServerConnectionComplete = false;
     public Define.UserReplayRecord userReplayRecord;
 
     public void Init()
@@ -54,11 +55,13 @@ public class DataManager
 
         if (www.error == null)  // 에러가 나지 않으면 동작.
         {
+            isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
             jsonDataFromServer = $"{{\"records\":{www.downloadHandler.text}}}";
         }
         else
         {
+            isServerConnectionComplete = false;
             Debug.LogError("Error to Get Data");
         }
     }
@@ -72,6 +75,7 @@ public class DataManager
 
         if (www.error == null)  // 에러가 나지 않으면 동작.
         {
+            isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
             
             if (www.downloadHandler.text.Length == 2)
@@ -86,6 +90,7 @@ public class DataManager
         }
         else
         {
+            isServerConnectionComplete = false;
             Debug.LogError("Error to Get Data");
             return -2;
         }
@@ -106,10 +111,12 @@ public class DataManager
 
         if (www.error == null)  // 에러가 나지 않으면 동작.
         {
+            isServerConnectionComplete = true;
             Debug.Log("Set Data Success");
         }
         else
         {
+            isServerConnectionComplete = false;
             Debug.LogError("Error to Set Data");
         }
     }
@@ -129,10 +136,12 @@ public class DataManager
 
         if (www.error == null)  // 에러가 나지 않으면 동작.
         {
+            isServerConnectionComplete = true;
             Debug.Log("Add Data Success");
         }
         else
         {
+            isServerConnectionComplete = false;
             Debug.LogError(www.error);
         }
     }

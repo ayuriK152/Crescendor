@@ -50,7 +50,7 @@ public class ResultController : MonoBehaviour
     void SaveResultToJson()
     {
         RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), "TestUser1", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
-        File.WriteAllText($"{Application.dataPath}/RecordReplay/TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+        File.WriteAllText($"{Application.dataPath}/RecordReplay/{_songTitle}-TestUser1{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
     }
 
     string ReturnStringForServer(string origin)
