@@ -22,20 +22,23 @@ public class InputManager
 
     public void Update()
     {
-        // [, ] �Է� �̺�Ʈ. ���� �ݺ��� ���
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
-            keyAction.Invoke(KeyCode.LeftBracket, Define.InputType.OnKeyDown);
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-            keyAction.Invoke(KeyCode.RightBracket, Define.InputType.OnKeyDown);
+        if (keyAction != null)
+        {
+            // [, ] �Է� �̺�Ʈ. ���� �ݺ��� ���
+            if (Input.GetKeyDown(KeyCode.LeftBracket))
+                keyAction.Invoke(KeyCode.LeftBracket, Define.InputType.OnKeyDown);
+            if (Input.GetKeyDown(KeyCode.RightBracket))
+                keyAction.Invoke(KeyCode.RightBracket, Define.InputType.OnKeyDown);
 
-        // For Test
-        if (Input.GetKeyDown(KeyCode.A))
-            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
-        if (Input.GetKeyUp(KeyCode.A))
-            keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
+            // For Test
+            if (Input.GetKeyDown(KeyCode.A))
+                keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
+            if (Input.GetKeyUp(KeyCode.A))
+                keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-            keyAction.Invoke(KeyCode.Escape, Define.InputType.OnKeyDown);
+            if (Input.GetKeyDown(KeyCode.Escape))
+                keyAction.Invoke(KeyCode.Escape, Define.InputType.OnKeyDown);
+        }
     }
 
     public void ConnectPiano()

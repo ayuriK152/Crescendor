@@ -325,7 +325,10 @@ public class PracticeModController : IngameController
         }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
         if (loopEndDeltaTime >= 0)
+        {
             isLoop = true;
+            _uiController.ActiveLoopBtn();
+        }
     }
 
     void SetEndDeltaTime()
@@ -344,6 +347,9 @@ public class PracticeModController : IngameController
         }
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
         if (loopStartDeltaTime >= 0)
+        {
             isLoop = true;
+            _uiController.ActiveLoopBtn();
+        }
     }
 }
