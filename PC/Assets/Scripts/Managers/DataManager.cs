@@ -96,7 +96,7 @@ public class DataManager
         }
     }
 
-    public void SetBestRankFromServer(string userId, string songFileName, float score, string replayData)
+    public void SetBestRankToServer(string userId, string songFileName, float score, string replayData)
     {
         UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "PUT");
         string jsonData = $"{{\"score\":{score}, \"midi\":\"{replayData}\"}}";
@@ -121,7 +121,7 @@ public class DataManager
         }
     }
 
-    public void AddBestRankFromServer(string userId, string songFileName, float score, string replayData)
+    public void AddBestRankToServer(string userId, string songFileName, float score, string replayData)
     {
         UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "POST");
         string jsonData = $"{{\"score\":{score}, \"midi\":\"{replayData}\"}}";

@@ -27,6 +27,8 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI songInfoComposser;
     TextMeshProUGUI songInfoLength;
     TextMeshProUGUI songInfoTempo;
+    Dropdown rankListDropdown;
+    Dropdown songListDropdown;
     Define.RankRecordList rankRecords;
 
     void Start()
@@ -52,6 +54,9 @@ public class UI_Select : UI_Scene
         songInfoComposser = songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
         songInfoLength = songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         songInfoTempo = songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
+
+        rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<Dropdown>();
+        songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<Dropdown>();
 
         noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
@@ -102,16 +107,70 @@ public class UI_Select : UI_Scene
         }
         else if (currentSongTitle == songName)
         {
-            (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_SongPopup>();
+            (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_SongPopup>();
         }
     }
 
     public void OnRankButtonClick(PointerEventData data)
     {
-        (Managers.UI.currentUIController as SongSelectUIController).ShowPopupUI<UI_RankPopUp>();
+        (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>();
     }
 
     void UpdateRankList()
+    {
+        foreach (Transform child in rankPanelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
+        Managers.Data.GetRankListFromServer(testSongTitle);
+
+        if (Managers.Data.isServerConnectionComplete)
+        {
+            rankRecords = JsonUtility.FromJson<Define.RankRecordList>(Managers.Data.jsonDataFromServer);
+            Managers.Data.jsonDataFromServer = "init data";
+
+            if (rankRecords.records.Count == 0)
+            {
+                noRankSignPanelObj.SetActive(true);
+            }
+
+            else
+            {
+                noRankSignPanelObj.SetActive(false);
+            }
+
+            for (int i = 0; i < rankRecords.records.Count; i++)
+            {
+                GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
+                if (rankButtonPrefab != null)
+                {
+                    Button button = rankButtonPrefab.GetComponent<Button>();
+                    button.gameObject.BindEvent(OnRankButtonClick);
+
+                    if (button != null)
+                    {
+                        button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
+                        button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
+                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
+                        //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load RankButton prefab");
+                }
+            }
+        }
+
+        else
+        {
+            noRankSignPanelObj.SetActive(false);
+        }
+    }
+
+    void UpdateLocalRankList()
     {
         foreach (Transform child in rankPanelObj.transform)
         {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SongSelectUIController : MonoBehaviour
+public class OutGameUIController : MonoBehaviour
 {
     int _order = 10;
     Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();

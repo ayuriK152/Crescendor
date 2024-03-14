@@ -66,38 +66,15 @@ public class ResultController : MonoBehaviour
             return;
         if (bestScoreFromServer == -1)
         {
-            Managers.Data.AddBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
+            Managers.Data.AddBestRankToServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
         }
         else if(bestScoreFromServer < _correctMount / (float)_totalAcc)
         {
-            Managers.Data.SetBestRankFromServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
+            Managers.Data.SetBestRankToServer("test2", PlayerPrefs.GetString("trans_SongTitle"), _correctMount / (float)_totalAcc, ReturnStringForServer(JsonConvert.SerializeObject(Managers.Data.userReplayRecord)));
         }
         else
         {
             Debug.Log("점수가 낮다!");
-        }
-    }
-
-    IEnumerator UnityWebRequestPatchTest(string url, string json)
-    {
-
-        // PUT 방식
-        UnityWebRequest www = UnityWebRequest.Put(url, json);
-
-        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-        www.uploadHandler = new UploadHandlerRaw(jsonToSend);
-        www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-
-        yield return www.SendWebRequest();  // 응답이 올때까지 대기한다.
-
-        if (www.error == null)  // 에러가 나지 않으면 동작.
-        {
-            Debug.Log(www.downloadHandler.text);
-        }
-        else
-        {
-            Debug.Log("error");
         }
     }
 }

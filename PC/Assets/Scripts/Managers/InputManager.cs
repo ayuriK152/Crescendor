@@ -41,7 +41,7 @@ public class InputManager
         }
     }
 
-    public void ConnectPiano()
+    void ConnectPiano()
     {
         try
         {

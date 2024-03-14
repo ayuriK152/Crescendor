@@ -32,10 +32,10 @@ public class ActualModController : IngameController
     public float currentDeltaTimeF;
 
     int[] _initInputTiming = new int[88];
-    int[] lastInputTiming = new int[88];
+    int[] _lastInputTiming = new int[88];
     ActualModUIController _uiController;
 
-    Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
+    Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
 
     public void Init()
     {
@@ -69,7 +69,7 @@ public class ActualModController : IngameController
         _uiController.songBeatTMP.text = $"4/4";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
-        noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
+        _noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
 
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
@@ -109,7 +109,7 @@ public class ActualModController : IngameController
             PlayerPrefs.SetInt("trans_OutlinerMount", 0);
         PlayerPrefs.SetInt("trans_OutlinerMount", 0);
 
-        Managers.Data.userReplayRecord = new Define.UserReplayRecord(noteRecords, tempo, songTitle, currentAcc);
+        Managers.Data.userReplayRecord = new Define.UserReplayRecord(_noteRecords, tempo, songTitle, currentAcc);
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
         isSceneOnSwap = true;
@@ -158,16 +158,16 @@ public class ActualModController : IngameController
 
     IEnumerator CheckNotesStatus(int keyNum)
     {
-        if (lastInputTiming[keyNum] == 0 && Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key != 0)
-            lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
+        if (_lastInputTiming[keyNum] == 0 && Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key != 0)
+            _lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
         if (Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - currentDeltaTime < 0)
         {
-            if (lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value)
+            if (_lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value)
             {
                 if (!Managers.Input.keyChecks[keyNum])
                 {
-                    currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - lastInputTiming[keyNum];
+                    currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - _lastInputTiming[keyNum];
                     currentAcc = (totalAcc - currentFail) / (float)totalAcc;
                 }
             }
@@ -179,15 +179,15 @@ public class ActualModController : IngameController
         {
             if (Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - currentDeltaTime < 0)
             {
-                if (lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
-                    lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
+                if (_lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
+                    _lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
                 if (!Managers.Input.keyChecks[keyNum] || _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
-                    currentFail += currentDeltaTime - lastInputTiming[keyNum];
+                    currentFail += currentDeltaTime - _lastInputTiming[keyNum];
                 }
 
-                lastInputTiming[keyNum] = currentDeltaTime;
+                _lastInputTiming[keyNum] = currentDeltaTime;
                 currentAcc = (totalAcc - currentFail) / (float)totalAcc;
             }
         }
@@ -209,14 +209,14 @@ public class ActualModController : IngameController
             {
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                if (!noteRecords.ContainsKey(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET))
-                    noteRecords.Add(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET, new List<KeyValuePair<int, int>>());
+                if (!_noteRecords.ContainsKey(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET))
+                    _noteRecords.Add(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET, new List<KeyValuePair<int, int>>());
                 Debug.Log(noteEvent);
             }
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
-                noteRecords[noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
+                _noteRecords[noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }

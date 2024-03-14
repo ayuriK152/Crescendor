@@ -16,15 +16,14 @@ public class ReplayModUIController : MonoBehaviour
     public Image loopEndMarkerSprite;
     public GameObject pausePanelObj;
 
-    Button forceScrollBtn;
-    Button disconnectBtn;
-    Button autoScrollBtn;
-    Button turnOffLoopBtn;
-    Button resumeBtn;
-    Button optionBtn;
-    Button exitBtn;
+    Button _forceScrollBtn;
+    Button _autoScrollBtn;
+    Button _turnOffLoopBtn;
+    Button _resumeBtn;
+    Button _optionBtn;
+    Button _exitBtn;
 
-    PracticeModController practiceModController;
+    ReplayModController _controller;
 
     public void BindIngameUI()
     {
@@ -39,29 +38,27 @@ public class ReplayModUIController : MonoBehaviour
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
         loopEndMarkerSprite = loopEndMarker.GetComponent<Image>();
 
-        forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
-        disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
-        autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
-        turnOffLoopBtn = GameObject.Find("MainCanvas/Buttons/TurnOffLoop").GetComponent<Button>();
+        _forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
+        _autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
+        _turnOffLoopBtn = GameObject.Find("MainCanvas/Buttons/TurnOffLoop").GetComponent<Button>();
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
+        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
+        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
+        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
 
-        practiceModController = Managers.Ingame.controller as PracticeModController;
+        _controller = Managers.Ingame.currentController as ReplayModController;
 
         songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
 
-        forceScrollBtn.onClick.AddListener(ForceScrollBtn);
-        disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
-        autoScrollBtn.onClick.AddListener(AutoScrollBtn);
-        turnOffLoopBtn.onClick.AddListener(TurnOffLoop);
-        resumeBtn.onClick.AddListener(TogglePausePanel);
-        exitBtn.onClick.AddListener(OnClickExitBtn);
+        _forceScrollBtn.onClick.AddListener(ForceScrollBtn);
+        _autoScrollBtn.onClick.AddListener(AutoScrollBtn);
+        _turnOffLoopBtn.onClick.AddListener(TurnOffLoop);
+        _resumeBtn.onClick.AddListener(TogglePausePanel);
+        _exitBtn.onClick.AddListener(OnClickExitBtn);
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
@@ -86,41 +83,36 @@ public class ReplayModUIController : MonoBehaviour
         loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
 
-    public void TurnOffLoop()
+    void TurnOffLoop()
     {
-        practiceModController.TurnOffLoop();
+        _controller.TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
     }
 
     public void UpdatePassedNote()
     {
-        songNoteMountTMP.text = $"{practiceModController.passedNote}/{practiceModController.totalNote}";
+        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
     }
 
-    public void UpdateDeltaTimeBySlider(float sliderValue)
+    void UpdateDeltaTimeBySlider(float sliderValue)
     {
-        if (practiceModController.isPlaying)
-            practiceModController.isPlaying = false;
-        practiceModController.currentDeltaTime = (int)sliderValue;
-        practiceModController.SyncDeltaTime(true);
-        StartCoroutine(practiceModController.UpdateNotePosByTime());
+        if (_controller.isPlaying)
+            _controller.isPlaying = false;
+        _controller.currentDeltaTime = (int)sliderValue;
+        _controller.SyncDeltaTime(true);
+        StartCoroutine(_controller.UpdateNotePosByTime());
     }
 
-    public void ForceScrollBtn()
+    void ForceScrollBtn()
     {
-        practiceModController.isPlaying = true;
-        practiceModController.IncreaseCurrentNoteIndex();
+        _controller.isPlaying = true;
+        _controller.IncreaseCurrentNoteIndex();
     }
 
-    public void DisconnectPianoBtn()
+    void AutoScrollBtn()
     {
-        practiceModController.DisconnectPiano();
-    }
-
-    public void AutoScrollBtn()
-    {
-        practiceModController.AutoScroll();
+        _controller.AutoScroll();
     }
 
     void OnClickExitBtn()
@@ -137,11 +129,11 @@ public class ReplayModUIController : MonoBehaviour
 
         if (pausePanelObj.activeSelf)
         {
-            practiceModController.enabled = false;
+            _controller.enabled = false;
         }
         else
         {
-            practiceModController.enabled = true;
+            _controller.enabled = true;
         }
     }
 

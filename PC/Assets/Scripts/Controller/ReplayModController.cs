@@ -149,23 +149,6 @@ public class ReplayModController : MonoBehaviour
         currentNoteIndex += 1;
     }
 
-    public void DisconnectPiano()
-    {
-        Managers.Input.inputDevice.StopEventsListening();
-    }
-
-    public void AutoScroll()
-    {
-        _isWaitInput = !_isWaitInput;
-    }
-
-    public void TurnOffLoop()
-    {
-        isLoop = false;
-        loopStartDeltaTime = -1;
-        loopEndDeltaTime = -1;
-    }
-
     public void SyncDeltaTime(bool isIntToFloat)
     {
         if (isIntToFloat)
@@ -206,29 +189,6 @@ public class ReplayModController : MonoBehaviour
         yield return null;
     }
 
-    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
-    {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
-        {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-
-            // 노트 입력 시작
-            if (noteEvent.Velocity != 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                Debug.Log(noteEvent);
-            }
-            // 노트 입력 종료
-            else if (noteEvent.Velocity == 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
-            }
-        }
-    }
-
     void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
         switch (inputType)
@@ -248,6 +208,18 @@ public class ReplayModController : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void AutoScroll()
+    {
+        _isWaitInput = !_isWaitInput;
+    }
+
+    public void TurnOffLoop()
+    {
+        isLoop = false;
+        loopStartDeltaTime = -1;
+        loopEndDeltaTime = -1;
     }
 
     void SetStartDeltaTime()

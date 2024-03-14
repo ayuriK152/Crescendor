@@ -24,7 +24,7 @@ public class ResultUIController : MonoBehaviour
 
     public Button songSelectBtn;
 
-    ResultController resultController;
+    ResultController _controller;
 
     public void BindIngameUI()
     {

@@ -35,7 +35,6 @@ public class PracticeModController : IngameController
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
-    int inputKeyCount;
     int[] _initInputTiming = new int[88];
 
     bool _isInputTiming = false;
@@ -60,8 +59,6 @@ public class PracticeModController : IngameController
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
-
-        inputKeyCount = 0;
 
         for (int i = 0; i < 88; i++)
         {
@@ -253,7 +250,6 @@ public class PracticeModController : IngameController
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
-                inputKeyCount += 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
                 Debug.Log(noteEvent);
@@ -261,7 +257,6 @@ public class PracticeModController : IngameController
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
-                inputKeyCount -= 1;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
                 Debug.Log(noteEvent);

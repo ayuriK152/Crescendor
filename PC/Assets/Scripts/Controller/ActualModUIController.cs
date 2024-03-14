@@ -14,12 +14,12 @@ public class ActualModUIController : MonoBehaviour
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
 
-    Button disconnectBtn;
-    Button resumeBtn;
-    Button optionBtn;
-    Button exitBtn;
+    Button _disconnectBtn;
+    Button _resumeBtn;
+    Button _optionBtn;
+    Button _exitBtn;
 
-    ActualModController actualModController;
+    ActualModController _controller;
 
     public void BindIngameUI()
     {
@@ -32,18 +32,18 @@ public class ActualModUIController : MonoBehaviour
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
+        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
+        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
+        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
 
-        disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
+        _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
 
-        actualModController = Managers.Ingame.controller as ActualModController;
+        _controller = Managers.Ingame.currentController as ActualModController;
 
-        disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
-        resumeBtn.onClick.AddListener(TogglePausePanel);
-        exitBtn.onClick.AddListener(OnClickExitBtn);
+        _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
+        _resumeBtn.onClick.AddListener(TogglePausePanel);
+        _exitBtn.onClick.AddListener(OnClickExitBtn);
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
@@ -51,17 +51,17 @@ public class ActualModUIController : MonoBehaviour
 
     public void UpdatePassedNote()
     {
-        songNoteMountTMP.text = $"{actualModController.passedNote}/{actualModController.totalNote}";
+        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
     }
 
     public void UpdateAccuracy()
     {
-        accuracyTMP.text = $"{Convert.ToInt32(actualModController.currentAcc * 10000.0f) / 100.0f}%";
+        accuracyTMP.text = $"{Convert.ToInt32(_controller.currentAcc * 10000.0f) / 100.0f}%";
     }
 
     public void DisconnectPianoBtn()
     {
-        actualModController.DisconnectPiano();
+        _controller.DisconnectPiano();
     }
 
     void TogglePausePanel()
@@ -70,11 +70,11 @@ public class ActualModUIController : MonoBehaviour
 
         if (pausePanelObj.activeSelf)
         {
-            actualModController.enabled = false;
+            _controller.enabled = false;
         }
         else
         {
-            actualModController.enabled = true;
+            _controller.enabled = true;
         }
     }
 
