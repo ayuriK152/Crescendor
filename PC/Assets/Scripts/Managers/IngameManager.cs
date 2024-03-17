@@ -63,6 +63,9 @@ public class IngameManager
                     currentController = Managers.ManagerInstance.AddComponent<ResultController>();
                 (currentController as ResultController).Init();
                 break;
+            case Scene.SongSelectScene:
+                (Managers.UI.currentUIController as OutGameUIController).ShowSceneUI<UI_Select>();
+                break;
         }
     }
 }
