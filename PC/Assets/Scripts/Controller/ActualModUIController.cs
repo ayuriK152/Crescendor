@@ -10,6 +10,7 @@ public class ActualModUIController : MonoBehaviour
     public TextMeshProUGUI songBpmTMP;
     public TextMeshProUGUI songBeatTMP;
     public TextMeshProUGUI accuracyTMP;
+    public TextMeshProUGUI introCountTMP;
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
@@ -28,6 +29,7 @@ public class ActualModUIController : MonoBehaviour
         songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
         songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
         accuracyTMP = GameObject.Find("MainCanvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
+        introCountTMP = GameObject.Find("MainCanvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
 

@@ -33,6 +33,8 @@ public class ActualModController : IngameController
 
     int[] _initInputTiming = new int[88];
     int[] _lastInputTiming = new int[88];
+    bool _isSceneOnSwap = false;
+    bool _isIntro = true;
     ActualModUIController _uiController;
 
     Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
@@ -83,18 +85,28 @@ public class ActualModController : IngameController
         base.Init();
 
         Managers.InitManagerPosition();
+        StartCoroutine(DelayForSeconds(3));
     }
 
     void Update()
     {
         Scroll();
         StartCoroutine(CheckNotesStatus());
-        if (currentDeltaTime > Managers.Midi.songLengthDelta && !isSceneOnSwap)
+        if (currentDeltaTime > Managers.Midi.songLengthDelta && !_isSceneOnSwap)
             TempSwapScene();
         StartCoroutine(ToggleKeyHighlight());
     }
 
-    bool isSceneOnSwap = false;
+    public IEnumerator DelayForSeconds(float seconds)
+    {
+        for (int i = (int)seconds / 1; i > 0; i--)
+        {
+            _uiController.introCountTMP.text = i.ToString();
+            yield return new WaitForSeconds(1);
+        }
+        _uiController.introCountTMP.gameObject.SetActive(false);
+        _isIntro = false;
+    }
 
     void TempSwapScene()
     {
@@ -112,11 +124,13 @@ public class ActualModController : IngameController
         Managers.Data.userReplayRecord = new Define.UserReplayRecord(_noteRecords, tempo, songTitle, currentAcc);
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
-        isSceneOnSwap = true;
+        _isSceneOnSwap = true;
     }
 
     void Scroll()
     {
+        if (_isIntro)
+            return;
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         SyncDeltaTime(false);
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
