@@ -2472,7 +2472,7 @@ GameObject:
   - component: {fileID: 4717102326944424062}
   - component: {fileID: 4572178466893126119}
   m_Layer: 5
-  m_Name: MainmenuBtn
+  m_Name: MainMenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5231,7 +5231,7 @@ GameObject:
   - component: {fileID: 9136285926812182379}
   - component: {fileID: 7423215070027893940}
   m_Layer: 5
-  m_Name: OptionBtn
+  m_Name: OptionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -18,11 +18,16 @@ public class UI_Select : UI_Scene
     enum Buttons
     {
         RankButton,
+        MainMenuButton,
+        OptionButton,
+
     }
 
     GameObject rankPanelObj;
     GameObject noRankSignPanelObj;
     GameObject songInfoPanel;
+    Button mainMenuBtn;
+    Button optionBtn;
     TextMeshProUGUI songInfoName;
     TextMeshProUGUI songInfoComposser;
     TextMeshProUGUI songInfoLength;
@@ -50,7 +55,13 @@ public class UI_Select : UI_Scene
         rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
         songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
 
+        mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
+        optionBtn = Get<Button>((int)Buttons.OptionButton);
+
+        mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
+
         songInfoName = songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
+        songInfoName.text = "good";
         songInfoComposser = songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
         songInfoLength = songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         songInfoTempo = songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
@@ -60,10 +71,7 @@ public class UI_Select : UI_Scene
 
         noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
-        if (!PlayerPrefs.HasKey("trans_SongTitle"))
-        {
-            PlayerPrefs.SetString("trans_SongTitle", "");
-        }
+        PlayerPrefs.SetString("trans_SongTitle", "CanCan-Jacques_Offenbach");
 
         UpdateRankList();
         UpdateSongInfo();
@@ -116,8 +124,23 @@ public class UI_Select : UI_Scene
         (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>();
     }
 
+    public void OnMainMenuButtonClick()
+    {
+        Managers.Scene.LoadScene(Define.Scene.MainMenuScene);
+    }
+
+    public void OnOptionButtonClick()
+    {
+
+    }
+
     void UpdateRankList()
     {
+        if (PlayerPrefs.GetString("trans_SongTitle") == "")
+        {
+            noRankSignPanelObj.SetActive(true);
+            return;
+        }
         foreach (Transform child in rankPanelObj.transform)
         {
             Destroy(child.gameObject);
@@ -226,6 +249,13 @@ public class UI_Select : UI_Scene
 
     void UpdateSongInfo()
     {
+        if (PlayerPrefs.GetString("trans_SongTitle") == "")
+        {
+            songInfoName.text = "";
+            songInfoComposser.text = "";
+            songInfoTempo.text = "";
+            return;
+        }
         Managers.Midi.LoadMidi(PlayerPrefs.GetString("trans_SongTitle"));
         songInfoName.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
         songInfoComposser.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");

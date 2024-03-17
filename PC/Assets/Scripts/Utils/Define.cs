@@ -101,6 +101,8 @@ public class Define
         ReplayModScene,
         SongSelectScene,
         ResultScene,
+        MainMenuScene,
+        MyPageScene,
     }
 
     public enum UIEvent

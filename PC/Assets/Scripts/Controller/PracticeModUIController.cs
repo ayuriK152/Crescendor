@@ -65,9 +65,9 @@ public class PracticeModUIController : MonoBehaviour
         _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
         _autoScrollBtn.onClick.AddListener(AutoScrollBtn);
 #else
-        forceScrollBtn.gameObject.SetActive(false);
-        disconnectBtn.gameObject.SetActive(false);
-        autoScrollBtn.gameObject.SetActive(false);
+        _forceScrollBtn.gameObject.SetActive(false);
+        _disconnectBtn.gameObject.SetActive(false);
+        _autoScrollBtn.gameObject.SetActive(false);
 #endif
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
