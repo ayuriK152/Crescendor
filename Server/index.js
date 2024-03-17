@@ -1,6 +1,3 @@
-const KR_TIME_DIFF = 9*60*60*1000;
-const curr = new Date();
-const utc = curr.getTime + (curr.getTimezoneOffset() * 60 * 1000)
 const express = require('express')
 const mysql = require('mysql')
 const db = require('./config/database.js')
@@ -123,7 +120,7 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
 
   console.log(midi)
 
-  let today = new Date(utc+ KR_TIME_DIFF) 
+  let today = new Date() 
   const date = new String(
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours()+1)  + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
@@ -147,7 +144,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
   const music_name = req.params.music_name
   const { score, midi } = req.body
 
-  let today = new Date(utc+ KR_TIME_DIFF)
+  let today = new Date()
   const date = new String(
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
