@@ -122,7 +122,7 @@ app.post('/record/addscore/:user_id/:music_name', (req, res) => {
 
   let today = new Date() 
   const date = new String(
-    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours()+1)  + ':' + today.getMinutes() + ':' + today.getSeconds()
+    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours()+1)  + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
   pool.query(`INSERT INTO Crescendor.record SET user_id = "${user_id}", music_name = "${music_name}", score = ${score}, date = "${date}", midi = '\{"tempo":${midi.tempo}, "noteRecords": ${midi.noteRecords}, "originFileName": "${midi.originFileName}"\}';`, (error, rows) => {
@@ -146,7 +146,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
 
   let today = new Date()
   const date = new String(
-    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
+    today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
   pool.query(`UPDATE Crescendor.record SET score = ${score}, date = '${date}', midi = '\{"tempo" : ${midi.tempo}, "noteRecords" : ${midi.noteRecords}, "originFileName" : "${midi.originFileName}"\}' where (user_id = "${user_id}" and music_name = "${music_name}");`, (error, rows) => {
