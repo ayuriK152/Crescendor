@@ -1,4 +1,6 @@
 const KR_TIME_DIFF = 9*60*60*1000;
+const curr = new Date();
+const utc = curr.getTime + (curr.getTimezoneOffset() * 60 * 1000)
 const express = require('express')
 const mysql = require('mysql')
 const db = require('./config/database.js')
