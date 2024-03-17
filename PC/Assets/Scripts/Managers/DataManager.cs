@@ -123,7 +123,7 @@ public class DataManager
 
     public void AddBestRankToServer(string userId, string songFileName, float score, Define.UserReplayRecord replayData)
     {
-        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "POST");
+        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/addscore/{userId}/{songFileName}", "POST");
         string jsonData = $"{{\"score\" : {score}, \"midi\" : {{\"tempo\" : {replayData.tempo}, \"noteRecords\" : [\"123\"], \"originFileName\" : \"{replayData.originFileName}\"}}}}";
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
