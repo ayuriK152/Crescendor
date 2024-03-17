@@ -149,7 +149,7 @@ app.put('/record/setscore/:user_id/:music_name', (req, res) => {
     today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " " + (today.getUTCHours() + 1) + ':' + today.getMinutes() + ':' + today.getSeconds()
     ).valueOf()
 
-  pool.query(`UPDATE Crescendor.record SET score = ${score}, date = '${date}', midi = '\{"tempo" : ${midi.tempo}, "noteRecords" : "${midi.noteRecords}", "originFileName" : "${midi.originFileName}"\}' where (user_id = "${user_id}" and music_name = "${music_name}");`, (error, rows) => {
+  pool.query(`UPDATE Crescendor.record SET score = ${score}, date = '${date}', midi = '\{"tempo" : ${midi.tempo}, "noteRecords" : [${midi.noteRecords}], "originFileName" : "${midi.originFileName}"\}' where (user_id = "${user_id}" and music_name = "${music_name}");`, (error, rows) => {
 
     if (error){
       console.log(error)
