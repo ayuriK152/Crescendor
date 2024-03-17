@@ -83,6 +83,8 @@ public class UI_MainMenu : UI_Scene
             string id = idInput.text;
             string password = passwordInput.text;
             StartCoroutine(LoginRequest(id, password));
+            // 현재 씬에서 값 저장
+            PlayerPrefs.SetString("PlayerID", id);
         }
     }
 
