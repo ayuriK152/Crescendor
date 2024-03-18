@@ -58,7 +58,7 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   const { id, password } = req.body
 
-  pool.query(`SELECT password from Crescendor.users where id = ${id};`, (error, rows) => {
+  pool.query(`SELECT password from Crescendor.users where id = "${id}";`, (error, rows) => {
     if (error){
       console.log(error)
       res.status(400).send('ERROR: Data')
