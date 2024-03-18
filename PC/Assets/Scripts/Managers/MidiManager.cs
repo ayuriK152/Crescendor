@@ -10,6 +10,7 @@ using static Define;
 using static Datas;
 using Newtonsoft.Json;
 using System.Linq;
+using System.IO;
 
 public class MidiManager
 {
@@ -213,8 +214,7 @@ public class MidiManager
         tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
         replayInstantiatePoint = tempNoteInstantiatePoint.transform;
 
-        TextAsset sourceFile = Resources.Load<TextAsset>($"Replays/{replayFile}");
-        Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(sourceFile.text);
+        Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(File.ReadAllText($"{Application.dataPath}/RecordReplay/{replayFile}.json"));
 
         List<int> keyNums = userReplayRecord.noteRecords.Keys.ToList<int>();
         keyNums.Sort();

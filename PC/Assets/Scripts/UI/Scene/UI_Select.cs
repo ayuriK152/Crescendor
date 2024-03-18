@@ -23,6 +23,12 @@ public class UI_Select : UI_Scene
         ProfileButton,
     }
 
+    enum Dropdowns
+    {
+        RankCategory,
+        SongCategory,
+    }
+
     GameObject rankPanelObj;
     GameObject noRankSignPanelObj;
     GameObject songInfoPanel;
@@ -33,8 +39,8 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI songInfoComposser;
     TextMeshProUGUI songInfoLength;
     TextMeshProUGUI songInfoTempo;
-    Dropdown rankListDropdown;
-    Dropdown songListDropdown;
+    TMP_Dropdown rankListDropdown;
+    TMP_Dropdown songListDropdown;
     Define.RankRecordList rankRecords;
 
     void Start()
@@ -48,6 +54,7 @@ public class UI_Select : UI_Scene
 
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
+        Bind<TMP_Dropdown>(typeof(Dropdowns));
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         Managers.Song.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
@@ -60,8 +67,13 @@ public class UI_Select : UI_Scene
         optionBtn = Get<Button>((int)Buttons.OptionButton);
         profileBtn = Get<Button>((int)Buttons.ProfileButton);
 
+        rankListDropdown = Get<TMP_Dropdown>((int)Dropdowns.RankCategory);
+        songListDropdown = Get<TMP_Dropdown>((int)Dropdowns.SongCategory);
+
         mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
         profileBtn.onClick.AddListener(OnProfileButtonClick);
+
+        rankListDropdown.onValueChanged.AddListener(OnRankCategoryValueChanged);
 
         songInfoName = songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
         songInfoName.text = "good";
@@ -69,8 +81,8 @@ public class UI_Select : UI_Scene
         songInfoLength = songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         songInfoTempo = songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
 
-        rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<Dropdown>();
-        songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<Dropdown>();
+        rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
+        songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<TMP_Dropdown>();
 
         noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
@@ -149,6 +161,19 @@ public class UI_Select : UI_Scene
         }
     }
 
+    void OnRankCategoryValueChanged(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                UpdateRankList();
+                break;
+            case 1:
+                UpdateLocalRankList();
+                break;
+        }
+    }
+
     void UpdateRankList()
     {
         if (PlayerPrefs.GetString("trans_SongTitle") == "")
@@ -161,8 +186,8 @@ public class UI_Select : UI_Scene
             Destroy(child.gameObject);
         }
 
-        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
-        Managers.Data.GetRankListFromServer(testSongTitle);
+        string songFileName = PlayerPrefs.GetString("trans_SongTitle");
+        Managers.Data.GetRankListFromServer(songFileName);
 
         if (Managers.Data.isServerConnectionComplete)
         {
@@ -215,50 +240,39 @@ public class UI_Select : UI_Scene
             Destroy(child.gameObject);
         }
 
-        string testSongTitle = PlayerPrefs.GetString("trans_SongTitle");
-        Managers.Data.GetRankListFromServer(testSongTitle);
+        string songFileName = PlayerPrefs.GetString("trans_SongTitle");
+        rankRecords = Managers.Data.GetRankListFromLocal(songFileName);
 
-        if (Managers.Data.isServerConnectionComplete)
+        if (rankRecords.records.Count == 0)
         {
-            rankRecords = JsonUtility.FromJson<Define.RankRecordList>(Managers.Data.jsonDataFromServer);
-            Managers.Data.jsonDataFromServer = "init data";
-
-            if (rankRecords.records.Count == 0)
-            {
-                noRankSignPanelObj.SetActive(true);
-            }
-
-            else
-            {
-                noRankSignPanelObj.SetActive(false);
-            }
-
-            for (int i = 0; i < rankRecords.records.Count; i++)
-            {
-                GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
-                if (rankButtonPrefab != null)
-                {
-                    Button button = rankButtonPrefab.GetComponent<Button>();
-                    button.gameObject.BindEvent(OnRankButtonClick);
-
-                    if (button != null)
-                    {
-                        button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
-                        button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
-                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
-                        //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"Failed to load RankButton prefab");
-                }
-            }
+            noRankSignPanelObj.SetActive(true);
         }
 
         else
         {
             noRankSignPanelObj.SetActive(false);
+        }
+
+        for (int i = 0; i < rankRecords.records.Count; i++)
+        {
+            GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
+            if (rankButtonPrefab != null)
+            {
+                Button button = rankButtonPrefab.GetComponent<Button>();
+                button.gameObject.BindEvent(OnRankButtonClick);
+
+                if (button != null)
+                {
+                    button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
+                    button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
+                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
+                    //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
+                }
+            }
+            else
+            {
+                Debug.LogError($"Failed to load RankButton prefab");
+            }
         }
     }
 
