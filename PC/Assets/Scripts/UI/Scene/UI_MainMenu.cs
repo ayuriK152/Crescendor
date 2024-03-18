@@ -17,7 +17,6 @@ public class UI_MainMenu : UI_Scene
     Button signUpBtn;
     Button loginBtn;
     TextMeshProUGUI idText;
-    bool isLogin = false; // 로그인 유무
     private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
 
     enum Buttons
@@ -34,6 +33,7 @@ public class UI_MainMenu : UI_Scene
     {
         Init();
     }
+
     public override void Init()
     {
         Bind<Button>(typeof(Buttons));
@@ -50,7 +50,8 @@ public class UI_MainMenu : UI_Scene
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
     {
-        idText.text = idInput.text;
+        Managers.Data.userId = idInput.text;
+        idText.text = Managers.Data.userId;
         idInput.text = null;
         passwordInput.text = null;
         idText.gameObject.SetActive(true);
@@ -60,21 +61,22 @@ public class UI_MainMenu : UI_Scene
         loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";       
     }
 
-
     public void OnPlayButtonClick(PointerEventData data)
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
+
     public void OnLoginButtonClick(PointerEventData data)
     {
-        if (isLogin) // 로그아웃 버튼 클릭 시 
+        if (Managers.Data.isUserLoggedIn) // 로그아웃 버튼 클릭 시 
         {
             idInput.gameObject.SetActive(true);
             passwordInput.gameObject.SetActive(true);
             signUpBtn.gameObject.SetActive(true);
-            idText.gameObject.SetActive(false); 
+            idText.gameObject.SetActive(false);
+            Managers.Data.userId = "";
             loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
-            isLogin = false;
+            Managers.Data.isUserLoggedIn = false;
             // 에러메시지 표시
             ShowErrorMsg("LogOut Successs");
         }
@@ -91,9 +93,10 @@ public class UI_MainMenu : UI_Scene
         // 회원가입 팝업창 생성
         Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_SignUp>();
     }
+
     public void OnMyPageButtonClick(PointerEventData data)
     {
-        if(isLogin)
+        if(Managers.Data.isUserLoggedIn)
         {
             SceneManager.LoadScene("MyPageScene");
         }
@@ -109,7 +112,6 @@ public class UI_MainMenu : UI_Scene
         GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
         loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
     }
-
 
     IEnumerator SendRequest(string url, string json, string method)
     {
@@ -138,13 +140,14 @@ public class UI_MainMenu : UI_Scene
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            isLogin = true;
+            Managers.Data.isUserLoggedIn = true;
             ShowErrorMsg("Login Success");
             LoginUpdateNavBar(); // NavBar 변경
         }
         else
         {
             ShowErrorMsg("Login Failed");
+            Debug.Log(www.error);
         }
     }
 

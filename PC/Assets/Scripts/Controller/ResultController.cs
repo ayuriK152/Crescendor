@@ -13,7 +13,7 @@ public class ResultController : MonoBehaviour
     string _songComposer;
     int _songLength;
 
-    string _username = "test2";
+    string _username = Managers.Data.userId;
     int _totalAcc;
     int _failMount;
     int _correctMount;
@@ -52,12 +52,6 @@ public class ResultController : MonoBehaviour
     {
         RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), $"{_username}", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         File.WriteAllText($"{Application.dataPath}/RecordReplay/{_songTitle}-{_username}{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
-    }
-
-    string ReturnStringForServer(string origin)
-    {
-        Debug.Log(origin.Replace("\"", "\\\"").Replace("{", "\\{").Replace("}", "\\}").Replace("[", "\\[").Replace("]", "\\]").Replace(":", "\\:").Replace("-", "\\-"));
-        return origin.Replace("\"", "\\\"").Replace("{", "\\{").Replace("}", "\\}").Replace("[", "\\[").Replace("]", "\\]").Replace(":", "\\:").Replace("-", "\\-");
     }
 
     void UpdateBestResult()

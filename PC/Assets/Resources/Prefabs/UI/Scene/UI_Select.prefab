@@ -4190,7 +4190,7 @@ GameObject:
   - component: {fileID: 8221176917435181991}
   - component: {fileID: 4367393148594755989}
   m_Layer: 5
-  m_Name: ProfileBtn
+  m_Name: ProfileButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

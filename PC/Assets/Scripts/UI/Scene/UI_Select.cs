@@ -20,7 +20,7 @@ public class UI_Select : UI_Scene
         RankButton,
         MainMenuButton,
         OptionButton,
-
+        ProfileButton,
     }
 
     GameObject rankPanelObj;
@@ -28,6 +28,7 @@ public class UI_Select : UI_Scene
     GameObject songInfoPanel;
     Button mainMenuBtn;
     Button optionBtn;
+    Button profileBtn;
     TextMeshProUGUI songInfoName;
     TextMeshProUGUI songInfoComposser;
     TextMeshProUGUI songInfoLength;
@@ -57,8 +58,10 @@ public class UI_Select : UI_Scene
 
         mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
         optionBtn = Get<Button>((int)Buttons.OptionButton);
+        profileBtn = Get<Button>((int)Buttons.ProfileButton);
 
         mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
+        profileBtn.onClick.AddListener(OnProfileButtonClick);
 
         songInfoName = songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
         songInfoName.text = "good";
@@ -132,6 +135,18 @@ public class UI_Select : UI_Scene
     public void OnOptionButtonClick()
     {
 
+    }
+
+    public void OnProfileButtonClick()
+    {
+        if (Managers.Data.isUserLoggedIn)
+        {
+            Managers.Scene.LoadScene(Define.Scene.MyPageScene);
+        }
+        else
+        {
+            Debug.Log("로그인 상태가 아닙니다!");
+        }
     }
 
     void UpdateRankList()
