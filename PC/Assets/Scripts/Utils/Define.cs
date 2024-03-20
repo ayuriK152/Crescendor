@@ -76,6 +76,26 @@ public class Define
     }
 
     [Serializable]
+    public class UserReplayRecordForParse
+    {
+        public int tempo;
+        public Dictionary<int, List<KeyValuePair<int, int>>> noteRecords;
+        public string originFileName;
+
+        public UserReplayRecordForParse(Dictionary<int, List<KeyValuePair<int, int>>> noteRecords, int tempo, string originFileName)
+        {
+            this.noteRecords = noteRecords;
+            this.tempo = tempo;
+            this.originFileName = originFileName;
+        }
+
+        public UserReplayRecord ParseToOrigin(float accuracy)
+        {
+            return new UserReplayRecord(noteRecords, tempo, originFileName, accuracy);
+        }
+    }
+
+    [Serializable]
     public class UserReplayRecord
     {
         public int tempo;

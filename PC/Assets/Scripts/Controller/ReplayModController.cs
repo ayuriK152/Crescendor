@@ -82,7 +82,7 @@ public class ReplayModController : MonoBehaviour
         Managers.InitManagerPosition();
 
         Managers.Midi.LoadAndInstantiateReplay(Managers.Data.rankRecord.midi, false);
-        // Managers.Midi.LoadAndInstantiateReplay("CanCan-test2-20240319042100", true);
+        //Managers.Midi.LoadAndInstantiateReplay("CanCan-ayuriK152-20240321011419", true);
     }
 
     void Update()

@@ -211,7 +211,7 @@ public class MidiManager
     {
         GameObject tempNoteInstantiatePoint = new GameObject("ReplayNotes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, -2, 0);
         replayInstantiatePoint = tempNoteInstantiatePoint.transform;
         Define.UserReplayRecord userReplayRecord = null;
 
@@ -221,8 +221,7 @@ public class MidiManager
         }
         else
         {
-            Debug.Log(replayFile);
-            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(replayFile);
+            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecordForParse>(replayFile).ParseToOrigin(Managers.Data.rankRecord.score);
         }
 
         List<int> keyNums = userReplayRecord.noteRecords.Keys.ToList<int>();

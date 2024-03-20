@@ -13,7 +13,7 @@ public class ResultController : MonoBehaviour
     string _songComposer;
     int _songLength;
 
-    string _username = Managers.Data.userId;
+    string _username;
     int _totalAcc;
     int _failMount;
     int _correctMount;
@@ -26,6 +26,11 @@ public class ResultController : MonoBehaviour
         _songTitle = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
         _songComposer = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
         _songLength = Managers.Midi.songLengthDelta;
+
+        if (Managers.Data.isUserLoggedIn)
+            _username = Managers.Data.userId;
+        else
+            _username = "Guest";
 
         _totalAcc = Managers.Midi.totalDeltaTime;
         _failMount = PlayerPrefs.GetInt("trans_FailMount");
@@ -45,7 +50,10 @@ public class ResultController : MonoBehaviour
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
 
         SaveResultToJson();
-        UpdateBestResult();
+        if (Managers.Data.isUserLoggedIn)
+        {
+            UpdateBestResult();
+        }
     }
 
     void SaveResultToJson()

@@ -139,6 +139,25 @@ public class UI_Select : UI_Scene
     {
         int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.name.Split("-")[0]);
         Managers.Data.rankRecord = rankRecords.records[recordIdx];
+        if (_rankListDropdown.itemText.text == "Online Rank")
+        {
+            for (int i = 0; i < Managers.Data.rankRecord.midi.Length; i++)
+            {
+                if (Managers.Data.rankRecord.midi[i] == '[')
+                {
+                    Managers.Data.rankRecord.midi = Managers.Data.rankRecord.midi.Remove(i, 1);
+                    break;
+                }
+            }
+            for (int i = Managers.Data.rankRecord.midi.Length - 1; i >= 0; i--)
+            {
+                if (Managers.Data.rankRecord.midi[i] == ']')
+                {
+                    Managers.Data.rankRecord.midi = Managers.Data.rankRecord.midi.Remove(i, 1);
+                    break;
+                }
+            }
+        }
         (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
     }
 
@@ -146,6 +165,25 @@ public class UI_Select : UI_Scene
     {
         int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.transform.parent.name.Split("-")[0]);
         Managers.Data.rankRecord = rankRecords.records[recordIdx];
+        if (_rankListDropdown.options[_rankListDropdown.value].text == "Online Rank")
+        {
+            for (int i = 0; i < Managers.Data.rankRecord.midi.Length; i++)
+            {
+                if (Managers.Data.rankRecord.midi[i] == '[')
+                {
+                    Managers.Data.rankRecord.midi = Managers.Data.rankRecord.midi.Remove(i, 1);
+                    break;
+                }
+            }
+            for (int i = Managers.Data.rankRecord.midi.Length - 1; i >= 0; i--)
+            {
+                if (Managers.Data.rankRecord.midi[i] == ']')
+                {
+                    Managers.Data.rankRecord.midi = Managers.Data.rankRecord.midi.Remove(i, 1);
+                    break;
+                }
+            }
+        }
         Managers.Scene.LoadScene(Define.Scene.ReplayModScene);
     }
 
