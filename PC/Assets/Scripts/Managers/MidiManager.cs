@@ -207,14 +207,23 @@ public class MidiManager
         noteTiming.Sort();
     }
 
-    public void LoadAndInstantiateReplay(string replayFile)
+    public void LoadAndInstantiateReplay(string replayFile, bool isPath)
     {
         GameObject tempNoteInstantiatePoint = new GameObject("ReplayNotes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
         tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
         replayInstantiatePoint = tempNoteInstantiatePoint.transform;
+        Define.UserReplayRecord userReplayRecord = null;
 
-        Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(File.ReadAllText($"{Application.dataPath}/RecordReplay/{replayFile}.json"));
+        if (isPath)
+        {
+            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(File.ReadAllText($"{Application.dataPath}/RecordReplay/{replayFile}.json"));
+        }
+        else
+        {
+            Debug.Log(replayFile);
+            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(replayFile);
+        }
 
         List<int> keyNums = userReplayRecord.noteRecords.Keys.ToList<int>();
         keyNums.Sort();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,18 +30,18 @@ public class UI_Select : UI_Scene
         SongCategory,
     }
 
-    GameObject rankPanelObj;
-    GameObject noRankSignPanelObj;
-    GameObject songInfoPanel;
-    Button mainMenuBtn;
-    Button optionBtn;
-    Button profileBtn;
-    TextMeshProUGUI songInfoName;
-    TextMeshProUGUI songInfoComposser;
-    TextMeshProUGUI songInfoLength;
-    TextMeshProUGUI songInfoTempo;
-    TMP_Dropdown rankListDropdown;
-    TMP_Dropdown songListDropdown;
+    GameObject _rankPanelObj;
+    GameObject _noRankSignPanelObj;
+    GameObject _songInfoPanel;
+    Button _mainMenuBtn;
+    Button _optionBtn;
+    Button _profileBtn;
+    TextMeshProUGUI _songInfoName;
+    TextMeshProUGUI _songInfoComposser;
+    TextMeshProUGUI _songInfoLength;
+    TextMeshProUGUI _songInfoTempo;
+    TMP_Dropdown _rankListDropdown;
+    TMP_Dropdown _songListDropdown;
     Define.RankRecordList rankRecords;
 
     void Start()
@@ -60,31 +61,31 @@ public class UI_Select : UI_Scene
         foreach (Transform child in songPanel.transform)
             Managers.Data.Destroy(child.gameObject);
 
-        rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
-        songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
+        _rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
+        _songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
 
-        mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
-        optionBtn = Get<Button>((int)Buttons.OptionButton);
-        profileBtn = Get<Button>((int)Buttons.ProfileButton);
+        _mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
+        _optionBtn = Get<Button>((int)Buttons.OptionButton);
+        _profileBtn = Get<Button>((int)Buttons.ProfileButton);
 
-        rankListDropdown = Get<TMP_Dropdown>((int)Dropdowns.RankCategory);
-        songListDropdown = Get<TMP_Dropdown>((int)Dropdowns.SongCategory);
+        _rankListDropdown = Get<TMP_Dropdown>((int)Dropdowns.RankCategory);
+        _songListDropdown = Get<TMP_Dropdown>((int)Dropdowns.SongCategory);
 
-        mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
-        profileBtn.onClick.AddListener(OnProfileButtonClick);
+        _mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
+        _profileBtn.onClick.AddListener(OnProfileButtonClick);
 
-        rankListDropdown.onValueChanged.AddListener(OnRankCategoryValueChanged);
+        _rankListDropdown.onValueChanged.AddListener(OnRankCategoryValueChanged);
 
-        songInfoName = songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
-        songInfoName.text = "good";
-        songInfoComposser = songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
-        songInfoLength = songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
-        songInfoTempo = songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
+        _songInfoName = _songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
+        _songInfoName.text = "good";
+        _songInfoComposser = _songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
+        _songInfoLength = _songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
+        _songInfoTempo = _songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
 
-        rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
-        songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<TMP_Dropdown>();
+        _rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
+        _songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<TMP_Dropdown>();
 
-        noRankSignPanelObj = rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
+        _noRankSignPanelObj = _rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
         PlayerPrefs.SetString("trans_SongTitle", "CanCan-Jacques_Offenbach");
 
@@ -136,7 +137,16 @@ public class UI_Select : UI_Scene
 
     public void OnRankButtonClick(PointerEventData data)
     {
-        (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>();
+        int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.name.Split("-")[0]);
+        Managers.Data.rankRecord = rankRecords.records[recordIdx];
+        (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
+    }
+
+    public void OnInstantReplayButtonClick(PointerEventData data)
+    {
+        int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.transform.parent.name.Split("-")[0]);
+        Managers.Data.rankRecord = rankRecords.records[recordIdx];
+        Managers.Scene.LoadScene(Define.Scene.ReplayModScene);
     }
 
     public void OnMainMenuButtonClick()
@@ -178,10 +188,10 @@ public class UI_Select : UI_Scene
     {
         if (PlayerPrefs.GetString("trans_SongTitle") == "")
         {
-            noRankSignPanelObj.SetActive(true);
+            _noRankSignPanelObj.SetActive(true);
             return;
         }
-        foreach (Transform child in rankPanelObj.transform)
+        foreach (Transform child in _rankPanelObj.transform)
         {
             Destroy(child.gameObject);
         }
@@ -196,28 +206,29 @@ public class UI_Select : UI_Scene
 
             if (rankRecords.records.Count == 0)
             {
-                noRankSignPanelObj.SetActive(true);
+                _noRankSignPanelObj.SetActive(true);
             }
 
             else
             {
-                noRankSignPanelObj.SetActive(false);
+                _noRankSignPanelObj.SetActive(false);
             }
 
             for (int i = 0; i < rankRecords.records.Count; i++)
             {
-                GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
-                if (rankButtonPrefab != null)
+                GameObject rankButtonInstance = Managers.Data.Instantiate($"UI/Sub/RankButton", _rankPanelObj.transform);
+                rankButtonInstance.name = $"{i}";
+                if (rankButtonInstance != null)
                 {
-                    Button button = rankButtonPrefab.GetComponent<Button>();
+                    Button button = rankButtonInstance.GetComponent<Button>();
                     button.gameObject.BindEvent(OnRankButtonClick);
+                    button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
                     if (button != null)
                     {
                         button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                         button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
                         button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
-                        //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                     }
                 }
                 else
@@ -229,13 +240,13 @@ public class UI_Select : UI_Scene
 
         else
         {
-            noRankSignPanelObj.SetActive(false);
+            _noRankSignPanelObj.SetActive(false);
         }
     }
 
     void UpdateLocalRankList()
     {
-        foreach (Transform child in rankPanelObj.transform)
+        foreach (Transform child in _rankPanelObj.transform)
         {
             Destroy(child.gameObject);
         }
@@ -245,28 +256,29 @@ public class UI_Select : UI_Scene
 
         if (rankRecords.records.Count == 0)
         {
-            noRankSignPanelObj.SetActive(true);
+            _noRankSignPanelObj.SetActive(true);
         }
 
         else
         {
-            noRankSignPanelObj.SetActive(false);
+            _noRankSignPanelObj.SetActive(false);
         }
 
         for (int i = 0; i < rankRecords.records.Count; i++)
         {
-            GameObject rankButtonPrefab = Managers.Data.Instantiate($"UI/Sub/RankButton", rankPanelObj.transform);
-            if (rankButtonPrefab != null)
+            GameObject rankButtonInstance = Managers.Data.Instantiate($"UI/Sub/RankButton", _rankPanelObj.transform);
+            rankButtonInstance.name = $"{i}";
+            if (rankButtonInstance != null)
             {
-                Button button = rankButtonPrefab.GetComponent<Button>();
+                Button button = rankButtonInstance.GetComponent<Button>();
                 button.gameObject.BindEvent(OnRankButtonClick);
+                button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
                 if (button != null)
                 {
                     button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                     button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
                     button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
-                    //button.onClick.AddListener(() => OnRankButtonClick(button.GetComponentInChildren<TextMeshProUGUI>().text));
                 }
             }
             else
@@ -280,15 +292,15 @@ public class UI_Select : UI_Scene
     {
         if (PlayerPrefs.GetString("trans_SongTitle") == "")
         {
-            songInfoName.text = "";
-            songInfoComposser.text = "";
-            songInfoTempo.text = "";
+            _songInfoName.text = "";
+            _songInfoComposser.text = "";
+            _songInfoTempo.text = "";
             return;
         }
         Managers.Midi.LoadMidi(PlayerPrefs.GetString("trans_SongTitle"));
-        songInfoName.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
-        songInfoComposser.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
-        songInfoTempo.text = Managers.Midi.tempo.ToString();
+        _songInfoName.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
+        _songInfoComposser.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
+        _songInfoTempo.text = Managers.Midi.tempo.ToString();
     }
 }
 

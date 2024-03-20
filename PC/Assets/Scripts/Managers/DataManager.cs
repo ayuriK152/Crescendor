@@ -16,6 +16,7 @@ public class DataManager
     public string userId = "";
     public bool isServerConnectionComplete = false;
     public bool isUserLoggedIn = false;
+    public Define.RankRecord rankRecord;
     public Define.UserReplayRecord userReplayRecord;
 
     public void Init()
