@@ -46,6 +46,28 @@ public class UI_MainMenu : UI_Scene
         signUpBtn = GameObject.Find("MainMenu/NavBar/SignUpBtn").GetComponent<Button>();
         loginBtn = GameObject.Find("MainMenu/NavBar/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
+
+        if (!Managers.Data.isUserLoggedIn)
+        {
+            idInput.gameObject.SetActive(true);
+            passwordInput.gameObject.SetActive(true);
+            signUpBtn.gameObject.SetActive(true);
+            idText.gameObject.SetActive(false);
+            Managers.Data.userId = "";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            Managers.Data.isUserLoggedIn = false;
+        }
+        else
+        {
+            idText.text = Managers.Data.userId;
+            idInput.text = null;
+            passwordInput.text = null;
+            idText.gameObject.SetActive(true);
+            idInput.gameObject.SetActive(false);
+            passwordInput.gameObject.SetActive(false);
+            signUpBtn.gameObject.SetActive(false);
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
+        }
     }
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
@@ -58,7 +80,7 @@ public class UI_MainMenu : UI_Scene
         idInput.gameObject.SetActive(false);
         passwordInput.gameObject.SetActive(false);
         signUpBtn.gameObject.SetActive(false);
-        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";       
+        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
     }
 
     public void OnPlayButtonClick(PointerEventData data)
