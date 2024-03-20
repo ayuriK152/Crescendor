@@ -36,6 +36,7 @@ public class UI_Select : UI_Scene
     Button _mainMenuBtn;
     Button _optionBtn;
     Button _profileBtn;
+    TextMeshProUGUI _profileName;
     TextMeshProUGUI _songInfoName;
     TextMeshProUGUI _songInfoComposser;
     TextMeshProUGUI _songInfoLength;
@@ -76,6 +77,8 @@ public class UI_Select : UI_Scene
 
         _rankListDropdown.onValueChanged.AddListener(OnRankCategoryValueChanged);
 
+        _profileName = _profileBtn.transform.Find("Name").transform.GetComponent<TextMeshProUGUI>();
+        _profileName.text = Managers.Data.userId;
         _songInfoName = _songInfoPanel.transform.Find("Detail/SongName").GetComponent<TextMeshProUGUI>();
         _songInfoName.text = "good";
         _songInfoComposser = _songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
@@ -266,7 +269,7 @@ public class UI_Select : UI_Scene
                     {
                         button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                         button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
-                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
+                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
                     }
                 }
                 else
@@ -291,6 +294,15 @@ public class UI_Select : UI_Scene
 
         string songFileName = PlayerPrefs.GetString("trans_SongTitle");
         rankRecords = Managers.Data.GetRankListFromLocal(songFileName);
+        // 점수 내림차순 정렬, 람다식 사용함. 동점인 경우 날짜순으로 정렬되도록 수정 필요.(날짜가 지금 문자열이라 넘겨둠)
+        rankRecords.records.Sort((Define.RankRecord a, Define.RankRecord b) => {
+            if (a.score > b.score)
+                return -1;
+            else if (a.score == b.score)
+                return 0;
+            else
+                return 1;
+        });
 
         if (rankRecords.records.Count == 0)
         {
@@ -316,7 +328,7 @@ public class UI_Select : UI_Scene
                 {
                     button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                     button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
-                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {rankRecords.records[i].score}";
+                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
                 }
             }
             else

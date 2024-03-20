@@ -26,7 +26,7 @@ public class UI_MyPage : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.MainMenuBtn).gameObject.BindEvent(OnMainMenuBtnClick);
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
-        _userNameTMP = GameObject.Find("UI_MyPage/UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
+        _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
     }
 
