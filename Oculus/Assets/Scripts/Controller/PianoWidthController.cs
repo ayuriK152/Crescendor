@@ -18,6 +18,8 @@ public class PianoWidthController : MonoBehaviour
     private float r_zpos;
     private float l_zpos;
 
+    [SerializeField]
+    GameObject UI_Confirm;
     
     private void Awake()
     {
@@ -30,6 +32,14 @@ public class PianoWidthController : MonoBehaviour
         l_zpos = GameObject.Find("LeftNoteAnchor").transform.position.z;
     }
     
+    public void DestroyUI()
+    {
+        if(UI_Confirm.activeSelf == true)
+        {
+            UI_Confirm.SetActive(false);
+        }
+    }
+
     public void ConfirmBtn()
     {
         leftpos = PlayerPrefs.GetFloat("trans_LeftAnchor");
@@ -41,8 +51,8 @@ public class PianoWidthController : MonoBehaviour
         PlayerPrefs.SetFloat("trans_ypos", r_ypos);         
         PlayerPrefs.SetFloat("trans_zpos", r_zpos);         
 
-        // Toast Message ¶ç¿ï ¿¹Á¤
-
+        UI_Confirm.SetActive(true);
+        Invoke("DestroyUI", 3f);
     }
 
     public void UpBtn()
