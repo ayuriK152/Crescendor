@@ -98,6 +98,7 @@ public class MidiManager
 
     public void LoadAndInstantiateMidi(string fileName)
     {
+        SwapNoteAlphaValue(Managers.Scene.currentScene == Scene.ReplayModScene);
         LoadMidi(fileName);
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
@@ -262,6 +263,24 @@ public class MidiManager
             tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
             tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(replayNotes[i].keyNum);
+        }
+    }
+
+    void SwapNoteAlphaValue(bool isReplay)
+    {
+        if (isReplay)
+        {
+            whiteKeyOne.color = new Color(whiteKeyOne.color.r, whiteKeyOne.color.g, whiteKeyOne.color.b, 0.5f);
+            whiteKeyTwo.color = new Color(whiteKeyTwo.color.r, whiteKeyTwo.color.g, whiteKeyTwo.color.b, 0.5f);
+            blackKeyOne.color = new Color(blackKeyOne.color.r, blackKeyOne.color.g, blackKeyOne.color.b, 0.5f);
+            blackKeyTwo.color = new Color(blackKeyTwo.color.r, blackKeyTwo.color.g, blackKeyTwo.color.b, 0.5f);
+        }
+        else
+        {
+            whiteKeyOne.color = new Color(whiteKeyOne.color.r, whiteKeyOne.color.g, whiteKeyOne.color.b, 1);
+            whiteKeyTwo.color = new Color(whiteKeyTwo.color.r, whiteKeyTwo.color.g, whiteKeyTwo.color.b, 1);
+            blackKeyOne.color = new Color(blackKeyOne.color.r, blackKeyOne.color.g, blackKeyOne.color.b, 1);
+            blackKeyTwo.color = new Color(blackKeyTwo.color.r, blackKeyTwo.color.g, blackKeyTwo.color.b, 1);
         }
     }
 

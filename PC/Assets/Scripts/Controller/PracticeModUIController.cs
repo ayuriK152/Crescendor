@@ -108,7 +108,6 @@ public class PracticeModUIController : MonoBehaviour
 
     public void SwapStartEndMarker()
     {
-        Vector3 temp = loopStartMarker.transform.position;
         loopStartMarker.transform.position = loopEndMarker.transform.position;
         loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
