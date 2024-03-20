@@ -56,6 +56,8 @@ public class DataManager
 
     public Define.RankRecordList GetRankListFromLocal(string songFileName)
     {
+        if (!Directory.Exists($"{Application.dataPath}/RecordReplay/"))
+            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
         Define.RankRecordList rankRecordList = new Define.RankRecordList();
         DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.dataPath}/RecordReplay");
         foreach (FileInfo file in replayDirInfo.GetFiles())
