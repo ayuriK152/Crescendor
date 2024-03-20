@@ -9,7 +9,8 @@ using UnityEngine.Windows;
 
 public class UI_MyPage : UI_Scene
 {
-    TextMeshProUGUI nickname;
+    TextMeshProUGUI _userNameTMP;
+
     enum Buttons
     {
         MainMenuBtn,
@@ -25,9 +26,8 @@ public class UI_MyPage : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.MainMenuBtn).gameObject.BindEvent(OnMainMenuBtnClick);
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
-        string savedID = PlayerPrefs.GetString("PlayerID");
-        nickname = GameObject.Find("UI_MyPage/UserInfo/Profile/Nickname").GetComponent<TextMeshProUGUI>();
-        nickname.text = savedID;
+        _userNameTMP = GameObject.Find("UI_MyPage/UserInfo/Profile/Nickname").GetComponent<TextMeshProUGUI>();
+        _userNameTMP.text = Managers.Data.userId;
     }
 
     public void OnMainMenuBtnClick(PointerEventData data)
