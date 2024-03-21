@@ -162,6 +162,7 @@ public class PracticeModUIController : MonoBehaviour
 
     void OnClickExitBtn()
     {
+        Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }

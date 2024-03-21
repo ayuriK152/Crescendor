@@ -82,7 +82,7 @@ public class ActualModUIController : MonoBehaviour
 
     void OnClickExitBtn()
     {
-        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.ResultScene);
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);

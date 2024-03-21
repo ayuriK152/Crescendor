@@ -93,7 +93,7 @@ public class ActualModController : IngameController
         Scroll();
         StartCoroutine(CheckNotesStatus());
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !_isSceneOnSwap)
-            TempSwapScene();
+            SwapScene();
         StartCoroutine(ToggleKeyHighlight());
     }
 
@@ -108,8 +108,9 @@ public class ActualModController : IngameController
         _isIntro = false;
     }
 
-    void TempSwapScene()
+    void SwapScene()
     {
+        Managers.Input.keyAction = null;
         if (!PlayerPrefs.HasKey("trans_SongTitle"))
             PlayerPrefs.SetString("trans_SongTitle", "");
         PlayerPrefs.SetString("trans_SongTitle", songTitle);

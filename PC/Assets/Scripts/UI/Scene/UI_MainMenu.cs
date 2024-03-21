@@ -38,6 +38,7 @@ public class UI_MainMenu : UI_Scene
     {
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.PlayButton).gameObject.BindEvent(OnPlayButtonClick);
+        GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnExitButtonClick);
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.MypageBtn).gameObject.BindEvent(OnMyPageButtonClick);
@@ -86,6 +87,15 @@ public class UI_MainMenu : UI_Scene
     public void OnPlayButtonClick(PointerEventData data)
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
+    }
+
+    void OnExitButtonClick(PointerEventData data)
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     public void OnLoginButtonClick(PointerEventData data)

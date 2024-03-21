@@ -16,7 +16,6 @@ public class ReplayModUIController : MonoBehaviour
     public Image loopEndMarkerSprite;
     public GameObject pausePanelObj;
 
-    Button _forceScrollBtn;
     Button _resumeBtn;
     Button _optionBtn;
     Button _exitBtn;
@@ -52,7 +51,6 @@ public class ReplayModUIController : MonoBehaviour
         _originalNotes = GameObject.Find("@Manager/Notes");
 
         _originalNotesToggle = GameObject.Find("MainCanvas/TimeSlider/OriginNoteToggle").GetComponent<Toggle>();
-        _forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
         _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
@@ -64,7 +62,6 @@ public class ReplayModUIController : MonoBehaviour
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
 
-        _forceScrollBtn.onClick.AddListener(ForceScrollBtn);
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
         _toBeginBtn.onClick.AddListener(OnToBeginBtnClick);
@@ -113,22 +110,10 @@ public class ReplayModUIController : MonoBehaviour
         StartCoroutine(_controller.UpdateNotePosByTime());
     }
 
-    void ForceScrollBtn()
-    {
-        _controller.isPlaying = true;
-        _controller.IncreaseCurrentNoteIndex();
-    }
-
-    void AutoScrollBtn()
-    {
-        _controller.AutoScroll();
-    }
-
     void OnClickExitBtn()
     {
-        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
-        Managers.Scene.LoadScene(Define.Scene.ResultScene);
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
 

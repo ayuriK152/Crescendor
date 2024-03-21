@@ -78,6 +78,10 @@ public class MidiManager
         noteSetByKey.Clear();
         _tempNoteData.Clear();
 
+        replayNotes.Clear();
+        replayNoteTiming.Clear();
+        instantiateReplayNotes.Clear();
+
         nextKeyIndex = new int[88];
     }
 

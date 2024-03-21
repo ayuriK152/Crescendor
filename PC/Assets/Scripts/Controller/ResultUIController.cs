@@ -8,6 +8,7 @@ public class ResultUIController : MonoBehaviour
 {
     public TextMeshProUGUI songTitleTMP;
     public TextMeshProUGUI songComposerTMP;
+    public TextMeshProUGUI playerRankTMP;
 
     public TextMeshProUGUI correctMountTMP;
     public TextMeshProUGUI failMountTMP;
@@ -30,6 +31,7 @@ public class ResultUIController : MonoBehaviour
     {
         songTitleTMP = GameObject.Find("MainCanvas/ResultInfo/SongTitle").GetComponent<TextMeshProUGUI>();
         songComposerTMP = GameObject.Find("MainCanvas/ResultInfo/Composer").GetComponent<TextMeshProUGUI>();
+        playerRankTMP = GameObject.Find("MainCanvas/PlayerRank/Value").GetComponent<TextMeshProUGUI>();
 
         correctMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/CorrectValue").GetComponent<TextMeshProUGUI>();
         failMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/FailedValue").GetComponent<TextMeshProUGUI>();

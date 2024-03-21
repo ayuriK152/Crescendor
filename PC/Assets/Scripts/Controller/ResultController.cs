@@ -3,8 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using static Define;
 
 public class ResultController : MonoBehaviour
@@ -20,6 +22,8 @@ public class ResultController : MonoBehaviour
     int _outlinerMount;
 
     ResultUIController _uiController;
+    RankRecordList rankRecords;
+    GameObject _rankPanelObj;
 
     public void Init()
     {
@@ -49,10 +53,28 @@ public class ResultController : MonoBehaviour
         _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
 
+        _rankPanelObj = GameObject.Find("MainCanvas/TopRanks/RankListScrollView/Viewport/RankPanel");
+
         SaveResultToJson();
         if (Managers.Data.isUserLoggedIn)
         {
             UpdateBestResult();
+        }
+        UpdateHighScores();
+        if (Managers.Data.isUserLoggedIn)
+        {
+            for (int i = 0; i < rankRecords.records.Count; i++)
+            {
+                if (rankRecords.records[i].user_id == Managers.Data.userId)
+                {
+                    _uiController.playerRankTMP.text = $"My Rank: # {i + 1}";
+                    break;
+                }
+            }
+        }
+        else
+        {
+            _uiController.playerRankTMP.text = $"My Rank: # --";
         }
     }
 
@@ -78,6 +100,40 @@ public class ResultController : MonoBehaviour
         else
         {
             Debug.Log("Á¡¼ö°¡ ³·´Ù!");
+        }
+    }
+
+    void UpdateHighScores()
+    {
+        string songFileName = PlayerPrefs.GetString("trans_SongTitle");
+        Managers.Data.GetRankListFromServer(songFileName);
+
+        if (Managers.Data.isServerConnectionComplete)
+        {
+            rankRecords = JsonUtility.FromJson<Define.RankRecordList>(Managers.Data.jsonDataFromServer);
+            Managers.Data.jsonDataFromServer = "init data";
+
+            for (int i = 0; i < rankRecords.records.Count && i < 5; i++)
+            {
+                GameObject rankButtonInstance = Managers.Data.Instantiate($"UI/Sub/RankButton", _rankPanelObj.transform);
+                rankButtonInstance.name = $"{i}";
+                if (rankButtonInstance != null)
+                {
+                    Button button = rankButtonInstance.GetComponent<Button>();
+                    button.transform.Find("ReplayButton").gameObject.SetActive(false);
+
+                    if (button != null)
+                    {
+                        button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
+                        button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
+                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load RankButton prefab");
+                }
+            }
         }
     }
 }
