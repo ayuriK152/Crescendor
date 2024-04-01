@@ -234,19 +234,19 @@ public class PracticeModController : IngameController
 
     void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
     {
-        if (isSongEnd)
-        {
-            isSongEnd = false;
-            currentDeltaTime = 0;
-            SyncDeltaTime(true);
-            StartCoroutine(UpdateNotePosByTime());
-            _uiController.ToggleSongEndPanel();
-        }
         var midiDevice = (MidiDevice)sender;
         if (e.Event.EventType != MidiEventType.ActiveSensing)
         {
             NoteEvent noteEvent = e.Event as NoteEvent;
 
+            if (isSongEnd && noteEvent.Velocity != 0)
+            {
+                isSongEnd = false;
+                currentDeltaTime = 0;
+                SyncDeltaTime(true);
+                StartCoroutine(UpdateNotePosByTime());
+                _uiController.ToggleSongEndPanel();
+            }
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
