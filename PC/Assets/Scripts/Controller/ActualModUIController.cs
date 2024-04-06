@@ -15,6 +15,9 @@ public class ActualModUIController : MonoBehaviour
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
 
+    Image _correctGraph;
+    Image _failGraph;
+    Image _outlinerGraph;
     Button _disconnectBtn;
     Button _resumeBtn;
     Button _optionBtn;
@@ -32,6 +35,13 @@ public class ActualModUIController : MonoBehaviour
         introCountTMP = GameObject.Find("MainCanvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+
+        _correctGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
+        _failGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
+        _outlinerGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Outliner/Graph").GetComponent<Image>();
+        _correctGraph.fillAmount = 0;
+        _failGraph.fillAmount = 0;
+        _outlinerGraph.fillAmount = 0;
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
         _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
@@ -59,6 +69,8 @@ public class ActualModUIController : MonoBehaviour
     public void UpdateAccuracy()
     {
         accuracyTMP.text = $"{Convert.ToInt32(_controller.currentAcc * 10000.0f) / 100.0f}%";
+        _correctGraph.fillAmount = (float)_controller.currentCorrect / (_controller.currentFail + _controller.currentCorrect);
+        _failGraph.fillAmount = (float)_controller.currentFail / (_controller.currentFail + _controller.currentCorrect);
     }
 
     public void DisconnectPianoBtn()

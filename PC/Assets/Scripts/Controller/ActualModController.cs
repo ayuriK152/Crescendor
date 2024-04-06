@@ -24,6 +24,7 @@ public class ActualModController : IngameController
 
     public int passedNote;
     public int totalNote;
+    public int currentCorrect;
     public int currentFail;
     public int totalAcc;
     public float currentAcc = 1;
@@ -45,6 +46,7 @@ public class ActualModController : IngameController
 
         passedNote = 0;
         totalNote = 0;
+        currentCorrect = 0;
         currentFail = 0;
 
         currentDeltaTime = -1;
@@ -190,6 +192,7 @@ public class ActualModController : IngameController
             // Debug.Log(Managers.Midi.nextKeyIndex[keyNum]);
         }
 
+        // 일반적인 노트 정확도 검사 부분, 인덱스 오류를 막기위한 조건문
         if (Managers.Midi.noteSetByKey[keyNum].Count > Managers.Midi.nextKeyIndex[keyNum])
         {
             if (Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - currentDeltaTime < 0)
@@ -197,9 +200,14 @@ public class ActualModController : IngameController
                 if (_lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                     _lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
-                if (!Managers.Input.keyChecks[keyNum] || _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
+                // 피아노 입력중인지, 지나친 선입력은 아닌지 체크
+                if ((!Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - Managers.Midi.song.division / 10f) || _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - Managers.Midi.song.division / 10f)
                 {
                     currentFail += currentDeltaTime - _lastInputTiming[keyNum];
+                }
+                else if (_lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
+                {
+                    currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
                 }
 
                 _lastInputTiming[keyNum] = currentDeltaTime;
