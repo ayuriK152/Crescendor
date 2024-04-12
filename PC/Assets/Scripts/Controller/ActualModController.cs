@@ -29,6 +29,7 @@ public class ActualModController : IngameController
     public int totalAcc;
     public float currentAcc = 1;
 
+    public int currentBar = -1;
     public int currentDeltaTime;
     public float currentDeltaTimeF;
 
@@ -134,6 +135,11 @@ public class ActualModController : IngameController
     {
         if (_isIntro)
             return;
+        if (currentBar < currentDeltaTime / Managers.Midi.song.division)
+        {
+            Managers.Sound.metronomeAction.Invoke();
+            currentBar++;
+        }
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         SyncDeltaTime(false);
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
