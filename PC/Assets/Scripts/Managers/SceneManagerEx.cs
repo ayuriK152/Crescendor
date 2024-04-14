@@ -5,14 +5,14 @@
  * 절대로 Ex를 지워서는 안됨.*/
 
 
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class SceneManagerEx
 {
     public Define.Scene currentScene;
-
-    public float progress;
 
     public void Init()
     { 
@@ -22,9 +22,7 @@ public class SceneManagerEx
 
     public void LoadScene(Define.Scene sceneName)
     {
-        // 비동기식으로 변경
-        AsyncOperation op = SceneManager.LoadSceneAsync(GetSceneName(sceneName));
-        op.allowSceneActivation = false;
+        SceneManager.LoadScene(GetSceneName(sceneName));
 
         // System.Enum.TryParse(GetSceneName(sceneName), true, out currentScene);
     }

@@ -5,8 +5,6 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// 앱 실행 시작 시 Loading 화면
-
 public class LoadingController : MonoBehaviour
 {
     [SerializeField]
@@ -15,20 +13,24 @@ public class LoadingController : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI tmp;
 
-    private Sprite img;
+    static string nextScene = "MainMenuScene";
+
+    public static void SceneLoading(string sceneName)
+    {
+        nextScene = sceneName;
+        SceneManager.LoadScene("LoadingScene");
+    }
 
     private void Start()
     {
         StartCoroutine(Loading());
-
-        img = GetComponent<Sprite>();
     }
 
     IEnumerator Loading()
     {
         yield return null;
 
-        AsyncOperation op = SceneManager.LoadSceneAsync("MainMenuScene");
+        AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
 
         float timer = 0.0f;
@@ -38,7 +40,7 @@ public class LoadingController : MonoBehaviour
             yield return null;
 
             timer += Time.unscaledDeltaTime;
-            tmp.text = Mathf.Lerp(90, 100, timer).ToString() + "%";
+            tmp.text = Mathf.Lerp(op.progress * 100, 100, timer).ToString() + "%";
 
             if (op.progress < 0.9f)
             {

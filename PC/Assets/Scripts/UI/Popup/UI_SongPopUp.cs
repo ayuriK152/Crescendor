@@ -31,12 +31,12 @@ public class UI_SongPopup : UI_Popup
 
     public void PracticeBtnClicked(PointerEventData data)
     {
-        SceneManager.LoadScene("PracticeModScene");
+        LoadingController.SceneLoading("PracticeModScene");
     }
     
     public void ActualBtnClicked(PointerEventData data)
     {
-        SceneManager.LoadScene("ActualModScene");
+        LoadingController.SceneLoading("ActualModScene");
     }
 
     public void CloseBtnClicked(PointerEventData data)
