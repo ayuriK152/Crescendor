@@ -1,7 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -12,9 +12,16 @@ public class LoadingController : MonoBehaviour
     [SerializeField]
     Slider progressBar;
 
+    [SerializeField]
+    TextMeshProUGUI tmp;
+
+    private Sprite img;
+
     private void Start()
     {
         StartCoroutine(Loading());
+
+        img = GetComponent<Sprite>();
     }
 
     IEnumerator Loading()
@@ -29,6 +36,9 @@ public class LoadingController : MonoBehaviour
         while (!op.isDone)
         {
             yield return null;
+
+            timer += Time.unscaledDeltaTime;
+            tmp.text = Mathf.Lerp(90, 100, timer).ToString() + "%";
 
             if (op.progress < 0.9f)
             {
