@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,9 +13,9 @@ using UnityEngine.Windows;
 public class UI_MyPage : UI_Scene
 {
     TextMeshProUGUI _userNameTMP;
-
-    public List<Image> grassImages; // 여러 개의 이미지를 담을 리스트
+    public List<Image> grassImages; // 이미지를 담을 리스트
     private string baseURL = "http://15.164.2.49:3000/log/getlog/";
+
     enum Buttons
     {
         MainMenuBtn,
@@ -33,9 +34,8 @@ public class UI_MyPage : UI_Scene
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
         _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
-        FindImages(); // 하이라이키에서  이미지 찾기
+        FindImages(); // 이미지 찾기
         StartCoroutine(GetLogsForUser(Managers.Data.userId));
-
     }
 
     public void OnMainMenuBtnClick(PointerEventData data)
@@ -49,7 +49,7 @@ public class UI_MyPage : UI_Scene
     }
 
     // 이미지 찾아서 리스트에 추가하는 함수
-    private void FindImages() 
+    private void FindImages()
     {
         Transform grassParent = transform.Find("UserInfo/Frequency/Grass");
 
@@ -77,8 +77,8 @@ public class UI_MyPage : UI_Scene
             string jsonResult = www.downloadHandler.text;
             Debug.Log("Logs for User " + userID + ": " + jsonResult);
             // 일주일 동안의 로그 가져와서 이미지로 표시
-            int logCount = GetLogPastWeek(jsonResult);
-            DisplayLog(logCount);
+            int[] logCounts = GetLogPastWeek(jsonResult);
+            DisplayLog(logCounts);
         }
         else
         {
@@ -86,40 +86,61 @@ public class UI_MyPage : UI_Scene
         }
     }
 
-    // 일주일 동안의 로그를 가져오는 함수
-    private int GetLogPastWeek(string jsonResult)
+    private int[] GetLogPastWeek(string jsonResult)
     {
         List<LogEntry> logEntries = JsonUtility.FromJson<LogEntryList>("{\"logs\":" + jsonResult + "}").logs;
-        DateTime currentDate = DateTime.Today;
-        DateTime oneWeekAgo = currentDate.AddDays(-7); // 일주일 전의 날짜 계산
-        int logCount = 0;
+
+        //  배열
+        int[] logCounts = new int[13 * 4];
 
         foreach (var entry in logEntries)
         {
             DateTime date = DateTime.Parse(entry.date).Date;
-            // 기록된 날짜가 일주일 전보다 이후이면서 현재 날짜보다 이전인 경우 로그 횟수 증가
-            if (date >= oneWeekAgo && date <= currentDate)
-            {
-                logCount++;
-            }
-        }
-        return logCount;
-    }
+            int month = date.Month;
+            int week = Mathf.CeilToInt(date.Day / 7.0f);
+            int rowIndex = (week - 1) * 13; // 행 인덱스
+            int colIndex = month - 1; // 열 인덱스
+            int imageIndex = rowIndex + colIndex;
 
-    private void DisplayLog(int practiceCount)
-    {
-        Color greenColor = new Color(0f, 1f, 0f, 1f); 
-
-        for (int i = 0; i < grassImages.Count; i++)
-        {
-            if (i < practiceCount) 
+            // 이미지 인덱스가 배열 범위를 벗어나지 않도록 보정
+            if (imageIndex >= 0 && imageIndex < logCounts.Length)
             {
-                grassImages[i].color = greenColor; // 연습한 횟수만큼 이미지를 연두색으로 색칠
+                logCounts[imageIndex]++;
             }
             else
             {
-                grassImages[i].color = Color.red; // 연습하지 않은 날은 이미지를 빨강색으로 표시
+                Debug.LogWarning("이미지 인덱스가 배열 범위를 벗어남: " + imageIndex);
             }
+        }
+        return logCounts;
+    }
+
+    // 로그 횟수에 따라 색상을 계산하여 이미지에 적용하는 함수
+    private void DisplayLog(int[] logCounts)
+    {
+        for (int i = 0; i < grassImages.Count; i++)
+        {
+            Image grassImage = grassImages[i];
+            int logCount = logCounts[i];
+            Color color = CalculateColor(logCount);
+            grassImage.color = color;
+        }
+    }
+
+    // 로그 횟수에 따라 색상을 계산하는 함수
+    private Color CalculateColor(int logCount)
+    {
+        if (logCount >= 5) // 많은 활동이 있었던 날은 진한 초록색으로 표시
+        {
+            return new Color(0f, 0.5f, 0f); // Dark green
+        }
+        else if (logCount > 0) // 활동이 있었던 날은 연한 초록색으로 표시
+        {
+            return new Color(0.5f, 1f, 0.5f); // Light green
+        }
+        else // 활동이 없었던 날은 회색으로 표시
+        {
+            return new Color(0.75f, 0.75f, 0.75f); // Gray
         }
     }
 
