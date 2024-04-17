@@ -20,6 +20,7 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 
@@ -64,6 +65,24 @@ namespace SmfLite
         {
             this.deltaTime = deltaTime;
             this.milliSecond = milliSecond;
+        }
+    }
+
+    public class Beat
+    {
+        public int deltaTime;
+        public int numerator;
+        public int denominator;
+        public int metronomeTick;
+        public int demisemiquaverCnt;
+
+        public Beat(int deltaTime, int numerator, int denominator, int metronomeTick, int demisemiquaverCnt)
+        {
+            this.deltaTime = deltaTime;
+            this.numerator = numerator;
+            this.denominator = denominator;
+            this.metronomeTick = metronomeTick;
+            this.demisemiquaverCnt = demisemiquaverCnt;
         }
     }
 
@@ -150,12 +169,15 @@ namespace SmfLite
         public List<MidiTrack> tracks;
 
         public List<Tempo> tempoMap;
+
+        public List<Beat> beatMap;
         
-        public MidiFileContainer (int division, List<MidiTrack> tracks, List<Tempo> tempoMap)
+        public MidiFileContainer (int division, List<MidiTrack> tracks, List<Tempo> tempoMap, List<Beat> beatMap)
         {
             this.division = division;
             this.tracks = tracks;
             this.tempoMap = tempoMap;
+            this.beatMap = beatMap;
         }
         
         public override string ToString ()
@@ -264,6 +286,7 @@ namespace SmfLite
         {
             var tracks = new List<MidiTrack> ();
             var tempoMap = new List<Tempo>();
+            var beatMap = new List<Beat>();
             var reader = new MidiDataStreamReader (data);
             
             // Chunk type.
@@ -290,23 +313,28 @@ namespace SmfLite
             
             // Read the tracks.
             for (var trackIndex = 0; trackIndex < trackCount; trackIndex++) {
-                KeyValuePair<MidiTrack, List<Tempo>> result = ReadTrack(reader);
+                KeyValuePair<MidiTrack, KeyValuePair<List<Tempo>, List<Beat>>> result = ReadTrack(reader);
                 tracks.Add(result.Key);
-                if (result.Value.Count > 0)
-                    tempoMap = result.Value;
+                if (result.Value.Key.Count > 0)
+                    tempoMap = result.Value.Key;
+                if (result.Value.Value.Count > 0)
+                    beatMap = result.Value.Value;
             }
+
+
             
-            return new MidiFileContainer (division, tracks, tempoMap);
+            return new MidiFileContainer (division, tracks, tempoMap, beatMap);
         }
 
         #endregion
 
         #region Private members
         
-        static KeyValuePair<MidiTrack, List<Tempo>> ReadTrack (MidiDataStreamReader reader)
+        static KeyValuePair<MidiTrack, KeyValuePair<List<Tempo>, List<Beat>>> ReadTrack (MidiDataStreamReader reader)
         {
             var track = new MidiTrack ();
             var tempoMap = new List<Tempo>();
+            var beatMap = new List<Beat>();
 
             // Chunk type.
             string trackName = new string(reader.ReadChars(4));
@@ -333,7 +361,16 @@ namespace SmfLite
                     // 0xff: Meta event
                     // 템포를 읽기위한 임의 수정 부분
                     ev = reader.ReadByte();
-                    if (ev == 0x51) {
+                    if (ev == 0x58) {
+                        // 0x51: Read Tempo
+                        List<int> datas = new List<int>();
+                        byte length = reader.ReadByte();
+                        for (int i = 0; i < length; i++) {
+                            datas.Add(reader.ReadByte());
+                        }
+                        beatMap.Add(new Beat(delta, datas[0], (int)Math.Pow(2, datas[1]) , datas[2], datas[3]));
+                    } else if (ev == 0x51) {
+                        // 0x51: Read Tempo
                         byte length = reader.ReadByte();
                         int value = 0;
                         for (int i = 0; i < length; i++) {
@@ -357,7 +394,7 @@ namespace SmfLite
                 }
             }
 
-            return new KeyValuePair<MidiTrack, List<Tempo>>(track, tempoMap);
+            return new KeyValuePair<MidiTrack, KeyValuePair<List<Tempo>, List<Beat>>>(track, new KeyValuePair<List<Tempo>, List<Beat>>(tempoMap, beatMap));
         }
 
         #endregion
