@@ -2,19 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ReplayModUIController : MonoBehaviour
+public class ReplayModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
-    public GameObject pausePanelObj;
 
     Button _resumeBtn;
     Button _optionBtn;
@@ -27,16 +20,8 @@ public class ReplayModUIController : MonoBehaviour
     Toggle _originalNotesToggle;
     GameObject _originalNotes;
 
-    ReplayModController _controller;
-
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
         loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
@@ -51,12 +36,6 @@ public class ReplayModUIController : MonoBehaviour
         _originalNotes = GameObject.Find("@Manager/Notes");
 
         _originalNotesToggle = GameObject.Find("MainCanvas/TimeSlider/OriginNoteToggle").GetComponent<Toggle>();
-
-        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
-        pausePanelObj.SetActive(false);
 
         songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
         loopStartMarkerSprite.enabled = false;
@@ -103,11 +82,11 @@ public class ReplayModUIController : MonoBehaviour
 
     void UpdateDeltaTimeBySlider(float sliderValue)
     {
-        if (_controller.isPlaying)
-            _controller.isPlaying = false;
+        if ((_controller as ReplayModController).isPlaying)
+            (_controller as ReplayModController).isPlaying = false;
         _controller.currentDeltaTime = (int)sliderValue;
-        _controller.SyncDeltaTime(true);
-        StartCoroutine(_controller.UpdateNotePosByTime());
+        (_controller as ReplayModController).SyncDeltaTime(true);
+        StartCoroutine((_controller as ReplayModController).UpdateNotePosByTime());
     }
 
     void OnClickExitBtn()
@@ -155,18 +134,18 @@ public class ReplayModUIController : MonoBehaviour
 
     void OnPlayBtnClick()
     {
-        _controller.isPlaying = true;
+        (_controller as ReplayModController).isPlaying = true;
     }
 
     void OnForceProgressBtnClick()
     {
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as ReplayModController).IncreaseCurrentNoteIndex();
     }
 
     void OnToEndBtnClick()
     {
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as ReplayModController).IncreaseCurrentNoteIndex();
     }
 
     public void ActiveLoopBtn()
@@ -176,7 +155,7 @@ public class ReplayModUIController : MonoBehaviour
 
     void TurnOffLoop()
     {
-        _controller.TurnOffLoop();
+        (_controller as ReplayModController).TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
         _loopBtn.interactable = false;

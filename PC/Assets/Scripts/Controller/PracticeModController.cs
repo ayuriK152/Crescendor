@@ -1,41 +1,22 @@
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using static Define;
-using static Datas;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
-using System;
-using System.Collections;
+using static Datas;
 
 public class PracticeModController : IngameController
 {
-    public TextMeshProUGUI deviceText;
-    public TextMeshProUGUI noteText;
-
-    public int tempo = 120;
-    public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 1.5f;
-    public string songTitle;
-
-    public int passedNote;
-    public int totalNote;
     public int currentNoteIndex;
-
-    public bool isLoop;
-    public bool isPlaying;
-    public bool isSongEnd = false;
     public int loopStartDeltaTime;
     public int loopEndDeltaTime;
     public int loopStartNoteIndex;
     public int loopStartPassedNote;
 
-    public int currentDeltaTime;
-    public float currentDeltaTimeF;
-
-    int[] _initInputTiming = new int[88];
+    public bool isLoop;
+    public bool isPlaying;
+    public bool isSongEnd = false;
 
     bool _isInputTiming = false;
     bool _isWaitInput = true;
@@ -44,10 +25,6 @@ public class PracticeModController : IngameController
 
     public void Init()
     {
-        songTitle = PlayerPrefs.GetString("trans_SongTitle");
-
-        passedNote = 0;
-        totalNote = 0;
         currentNoteIndex = 0;
 
         isLoop = false;
@@ -56,19 +33,6 @@ public class PracticeModController : IngameController
         loopEndDeltaTime = -1;
         loopStartNoteIndex = 0;
         loopStartPassedNote = 0;
-
-        currentDeltaTime = -1;
-        currentDeltaTimeF = 0;
-
-        for (int i = 0; i < 88; i++)
-        {
-            _initInputTiming[i] = -1;
-        }
-
-        Managers.Midi.noteScale = noteScale;
-        Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle);
-        totalNote = Managers.Midi.notes.Count;
 
         _uiController = Managers.UI.currentUIController as PracticeModUIController;
         _uiController.BindIngameUI();
@@ -182,11 +146,6 @@ public class PracticeModController : IngameController
         {
             correctNoteKeys.Add(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key);
         }
-    }
-
-    public void DisconnectPiano()
-    {
-        Managers.Input.inputDevice.StopEventsListening();
     }
 
     public void AutoScroll()

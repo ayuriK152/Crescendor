@@ -1,68 +1,33 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
-using System;
-using static Define;
 using static Datas;
-using System.IO;
-using Newtonsoft.Json;
 
 public class ActualModController : IngameController
 {
-    public TextMeshProUGUI deviceText;
-    public TextMeshProUGUI noteText;
-
-    public int tempo = 120;
-    public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 1.5f;
-    public float widthValue = 1.5f;
-    public string songTitle;
-
-    public int passedNote;
-    public int totalNote;
     public int currentCorrect;
     public int currentFail;
     public int totalAcc;
+    public int currentBar = -1;
     public float currentAcc = 1;
 
-    public int currentBar = -1;
-    public int currentDeltaTime;
-    public float currentDeltaTimeF;
-
-    int[] _initInputTiming = new int[88];
     int[] _lastInputTiming = new int[88];
+
     bool _isSceneOnSwap = false;
     bool _isIntro = true;
+
     ActualModUIController _uiController;
 
     Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
 
     public void Init()
     {
-        songTitle = PlayerPrefs.GetString("trans_SongTitle");
-
-        passedNote = 0;
-        totalNote = 0;
         currentCorrect = 0;
         currentFail = 0;
 
-        currentDeltaTime = -1;
-        currentDeltaTimeF = 0;
-
-        for (int i = 0; i < 88; i++)
-        {
-            _initInputTiming[i] = -1;
-        }
-
-        Managers.Midi.noteScale = noteScale;
-        Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle);
-
-        totalNote = Managers.Midi.notes.Count;
         totalAcc = Managers.Midi.totalDeltaTime;
         tempo = Managers.Midi.tempo;
 
@@ -78,12 +43,6 @@ public class ActualModController : IngameController
 
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
-
-        if (Managers.Input.inputDevice != null)
-        {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
-        }
 
         base.Init();
 
@@ -143,11 +102,6 @@ public class ActualModController : IngameController
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         SyncDeltaTime(false);
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
-    }
-
-    public void DisconnectPiano()
-    {
-        Managers.Input.inputDevice.StopEventsListening();
     }
 
     public void SyncDeltaTime(bool isIntToFloat)

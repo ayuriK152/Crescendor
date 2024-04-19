@@ -98,6 +98,9 @@ public class MidiManager
         }
         Debug.Log("MIDI data loaded!");
 
+        song.tempoMap.Sort((Tempo a, Tempo b) => { return a.deltaTime - b.deltaTime; });
+        song.beatMap.Sort((Beat a, Beat b) => { return a.deltaTime - b.deltaTime; });
+
         tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
         beat = new KeyValuePair<int, int>(song.beatMap[0].numerator, song.beatMap[0].denominator);
     }

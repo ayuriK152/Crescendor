@@ -6,19 +6,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PracticeModUIController : MonoBehaviour
+public class PracticeModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
-    public GameObject pausePanelObj;
     public GameObject songEndPanelObj;
 
     Button _forceScrollBtn;
@@ -33,16 +26,9 @@ public class PracticeModUIController : MonoBehaviour
     Button _forceProgressBtn;
     Button _toEndBtn;
 
-    PracticeModController _controller;
-
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+        base.BindIngameUI();
         loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
@@ -56,7 +42,6 @@ public class PracticeModUIController : MonoBehaviour
         _loopBtn.interactable = false;
 
         _forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
-        _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
         _autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
 
 // 런타임에서의 디버그용 기능 버튼 비활성화
@@ -69,12 +54,6 @@ public class PracticeModUIController : MonoBehaviour
         _disconnectBtn.gameObject.SetActive(false);
         _autoScrollBtn.gameObject.SetActive(false);
 #endif
-
-        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
-        pausePanelObj.SetActive(false);
 
         songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
         songEndPanelObj.SetActive(false);
@@ -119,45 +98,35 @@ public class PracticeModUIController : MonoBehaviour
 
     void TurnOffLoop()
     {
-        _controller.TurnOffLoop();
+        (_controller as PracticeModController).TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
         _loopBtn.interactable = false;
     }
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
-    }
-
     void UpdateDeltaTimeBySlider(float sliderValue)
     {
-        if (_controller.isSongEnd)
+        if ((_controller as PracticeModController).isSongEnd)
         {
             songEndPanelObj.SetActive(false);
-            _controller.isSongEnd = false;
+            (_controller as PracticeModController).isSongEnd = false;
         }
-        if (_controller.isPlaying)
-            _controller.isPlaying = false;
-        _controller.currentDeltaTime = (int)sliderValue;
-        _controller.SyncDeltaTime(true);
-        StartCoroutine(_controller.UpdateNotePosByTime());
+        if ((_controller as PracticeModController).isPlaying)
+            (_controller as PracticeModController).isPlaying = false;
+        (_controller as PracticeModController).currentDeltaTime = (int)sliderValue;
+        (_controller as PracticeModController).SyncDeltaTime(true);
+        StartCoroutine((_controller as PracticeModController).UpdateNotePosByTime());
     }
 
     void ForceScrollBtn()
     {
-        _controller.isPlaying = true;
-        _controller.IncreaseCurrentNoteIndex();
-    }
-
-    void DisconnectPianoBtn()
-    {
-        _controller.DisconnectPiano();
+        (_controller as PracticeModController).isPlaying = true;
+        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
     }
 
     void AutoScrollBtn()
     {
-        _controller.AutoScroll();
+        (_controller as PracticeModController).AutoScroll();
     }
 
     void OnClickExitBtn()
@@ -193,17 +162,17 @@ public class PracticeModUIController : MonoBehaviour
 
     void OnPlayBtnClick()
     {
-        _controller.isPlaying = true;
+        (_controller as PracticeModController).isPlaying = true;
     }
 
     void OnForceProgressBtnClick()
     {
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
     }
 
     void OnToEndBtnClick()
     {
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
     }
 }

@@ -3,38 +3,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActualModUIController : MonoBehaviour
+public class ActualModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
     public TextMeshProUGUI accuracyTMP;
     public TextMeshProUGUI introCountTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
-    public GameObject pausePanelObj;
 
-    Image _correctGraph;
-    Image _failGraph;
-    Image _outlinerGraph;
-    Button _disconnectBtn;
-    Button _resumeBtn;
-    Button _optionBtn;
-    Button _exitBtn;
-
-    ActualModController _controller;
+    private Image _correctGraph;
+    private Image _failGraph;
+    private Image _outlinerGraph;
+    private Button _disconnectBtn;
+    private Button _resumeBtn;
+    private Button _optionBtn;
+    private Button _exitBtn;
 
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
+        base.BindIngameUI();
         accuracyTMP = GameObject.Find("MainCanvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
         introCountTMP = GameObject.Find("MainCanvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
 
         _correctGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
         _failGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
@@ -42,14 +28,6 @@ public class ActualModUIController : MonoBehaviour
         _correctGraph.fillAmount = 0;
         _failGraph.fillAmount = 0;
         _outlinerGraph.fillAmount = 0;
-
-        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
-        pausePanelObj.SetActive(false);
-
-        _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
 
         _controller = Managers.Ingame.currentController as ActualModController;
 
@@ -61,21 +39,11 @@ public class ActualModUIController : MonoBehaviour
         Managers.Input.keyAction += InputKeyEvent;
     }
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
-    }
-
     public void UpdateAccuracy()
     {
-        accuracyTMP.text = $"{Convert.ToInt32(_controller.currentAcc * 10000.0f) / 100.0f}%";
-        _correctGraph.fillAmount = (float)_controller.currentCorrect / (_controller.currentFail + _controller.currentCorrect);
-        _failGraph.fillAmount = (float)_controller.currentFail / (_controller.currentFail + _controller.currentCorrect);
-    }
-
-    public void DisconnectPianoBtn()
-    {
-        _controller.DisconnectPiano();
+        accuracyTMP.text = $"{Convert.ToInt32((_controller as ActualModController).currentAcc * 10000.0f) / 100.0f}%";
+        _correctGraph.fillAmount = (float)(_controller as ActualModController).currentCorrect / ((_controller as ActualModController).currentFail + (_controller as ActualModController).currentCorrect);
+        _failGraph.fillAmount = (float)(_controller as ActualModController).currentFail / ((_controller as ActualModController).currentFail + (_controller as ActualModController).currentCorrect);
     }
 
     void TogglePausePanel()
