@@ -29,6 +29,8 @@ public class ActualModController : IngameController
 
     public void Init()
     {
+        base.Init();
+
         currentCorrect = 0;
         currentFail = 0;
 
@@ -47,8 +49,6 @@ public class ActualModController : IngameController
 
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
-
-        base.Init();
 
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));

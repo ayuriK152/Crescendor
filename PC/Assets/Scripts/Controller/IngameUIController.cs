@@ -59,7 +59,7 @@ public class IngameUIController : MonoBehaviour
         _controller.DisconnectPiano();
     }
 
-    void TogglePausePanel()
+    public void TogglePausePanel()
     {
         pausePanelObj.SetActive(!pausePanelObj.activeSelf);
 
@@ -73,15 +73,9 @@ public class IngameUIController : MonoBehaviour
         }
     }
 
-    void OnClickExitBtn()
-    {
-        Managers.Input.keyAction = null;
-        Managers.CleanManagerChilds();
-        Managers.Scene.LoadScene(Define.Scene.ResultScene);
-        Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
+    protected virtual void OnClickExitBtn() { }
 
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
+    protected virtual void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
         switch (inputType)
         {

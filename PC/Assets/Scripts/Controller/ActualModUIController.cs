@@ -49,42 +49,10 @@ public class ActualModUIController : IngameUIController
         _failGraph.fillAmount = (float)(_controller as ActualModController).currentFail / ((_controller as ActualModController).currentFail + (_controller as ActualModController).currentCorrect);
     }
 
-    void TogglePausePanel()
-    {
-        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
-
-        if (pausePanelObj.activeSelf)
-        {
-            _controller.enabled = false;
-        }
-        else
-        {
-            _controller.enabled = true;
-        }
-    }
-
-    void OnClickExitBtn()
+    protected override void OnClickExitBtn()
     {
         Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
-        Managers.Scene.LoadScene(Define.Scene.ResultScene);
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
-
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
-    {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        TogglePausePanel();
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
     }
 }

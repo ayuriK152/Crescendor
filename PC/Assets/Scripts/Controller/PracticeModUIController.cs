@@ -130,25 +130,11 @@ public class PracticeModUIController : IngameUIController
         (_controller as PracticeModController).AutoScroll();
     }
 
-    void OnClickExitBtn()
+    protected override void OnClickExitBtn()
     {
         Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
-
-    public void TogglePausePanel()
-    {
-        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
-
-        if (pausePanelObj.activeSelf)
-        {
-            _controller.enabled = false;
-        }
-        else
-        {
-            _controller.enabled = true;
-        }
     }
 
     public void ToggleSongEndPanel()

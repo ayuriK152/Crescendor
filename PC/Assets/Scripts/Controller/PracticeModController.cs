@@ -256,11 +256,10 @@ public class PracticeModController : IngameController
                 switch (keyCode)
                 {
                     case KeyCode.Escape:
-                        if (!isSongEnd)
-                            _uiController.TogglePausePanel();
-                        else
+                        if (isSongEnd)
                         {
                             Managers.CleanManagerChilds();
+                            Managers.Input.keyAction = null;
                             Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
                         }
                         break;

@@ -79,11 +79,6 @@ public class ReplayModUIController : IngameUIController
         loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
-    }
-
     void UpdateDeltaTimeBySlider(float sliderValue)
     {
         if ((_controller as ReplayModController).isPlaying)
@@ -93,42 +88,11 @@ public class ReplayModUIController : IngameUIController
         StartCoroutine((_controller as ReplayModController).UpdateNotePosByTime());
     }
 
-    void OnClickExitBtn()
+    protected override void OnClickExitBtn()
     {
         Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
-
-    void TogglePausePanel()
-    {
-        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
-
-        if (pausePanelObj.activeSelf)
-        {
-            _controller.enabled = false;
-        }
-        else
-        {
-            _controller.enabled = true;
-        }
-    }
-
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
-    {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        TogglePausePanel();
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
     }
 
     void OnToBeginBtnClick()
