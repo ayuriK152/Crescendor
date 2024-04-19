@@ -26,6 +26,7 @@ public class MidiManager
     Transform replayInstantiatePoint;
 
     public int tempo = 120;
+    public KeyValuePair<int, int> beat = new KeyValuePair<int, int>(4, 4);
     public int songLengthDelta = 0;
     public float songLengthSecond = 0;
     public int totalDeltaTime = 0;
@@ -98,6 +99,7 @@ public class MidiManager
         Debug.Log("MIDI data loaded!");
 
         tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
+        beat = new KeyValuePair<int, int>(song.beatMap[0].numerator, song.beatMap[0].denominator);
     }
 
     public void LoadAndInstantiateMidi(string fileName)

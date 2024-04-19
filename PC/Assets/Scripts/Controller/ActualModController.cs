@@ -71,7 +71,7 @@ public class ActualModController : IngameController
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{tempo}";
-        _uiController.songBeatTMP.text = $"4/4";
+        _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
         _noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
