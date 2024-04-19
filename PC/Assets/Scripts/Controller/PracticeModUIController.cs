@@ -8,23 +8,26 @@ using UnityEngine.UI;
 
 public class PracticeModUIController : IngameUIController
 {
+    #region Public Members
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
     public GameObject songEndPanelObj;
+    #endregion
 
-    Button _forceScrollBtn;
-    Button _disconnectBtn;
-    Button _autoScrollBtn;
-    Button _loopBtn;
-    Button _resumeBtn;
-    Button _optionBtn;
-    Button _exitBtn;
-    Button _toBeginBtn;
-    Button _playBtn;
-    Button _forceProgressBtn;
-    Button _toEndBtn;
+    #region Private Members
+    private Button _forceScrollBtn;
+    private Button _autoScrollBtn;
+    private Button _loopBtn;
+    private Button _resumeBtn;
+    private Button _optionBtn;
+    private Button _exitBtn;
+    private Button _toBeginBtn;
+    private Button _playBtn;
+    private Button _forceProgressBtn;
+    private Button _toEndBtn;
+    #endregion
 
     public void BindIngameUI()
     {
@@ -69,8 +72,6 @@ public class PracticeModUIController : IngameUIController
         _forceProgressBtn.onClick.AddListener(OnForceProgressBtnClick);
         _toEndBtn.onClick.AddListener(OnToEndBtnClick);
         _loopBtn.onClick.AddListener(TurnOffLoop);
-        _resumeBtn.onClick.AddListener(TogglePausePanel);
-        _exitBtn.onClick.AddListener(OnClickExitBtn);
     }
 
     public void SetLoopStartMarker()

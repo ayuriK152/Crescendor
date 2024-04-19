@@ -8,6 +8,7 @@ using static Datas;
 
 public class PracticeModController : IngameController
 {
+    #region Public Members
     public int currentNoteIndex;
     public int loopStartDeltaTime;
     public int loopEndDeltaTime;
@@ -17,14 +18,19 @@ public class PracticeModController : IngameController
     public bool isLoop;
     public bool isPlaying;
     public bool isSongEnd = false;
+    #endregion
 
-    bool _isInputTiming = false;
-    bool _isWaitInput = true;
+    #region Private Members
+    private bool _isInputTiming = false;
+    private bool _isWaitInput = true;
+    #endregion
 
     PracticeModUIController _uiController;
 
     public void Init()
     {
+        base.Init();
+
         currentNoteIndex = 0;
 
         isLoop = false;
@@ -55,8 +61,6 @@ public class PracticeModController : IngameController
             Managers.Input.inputDevice.EventReceived -= OnEventReceived;
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
-
-        base.Init();
 
         Managers.InitManagerPosition();
     }

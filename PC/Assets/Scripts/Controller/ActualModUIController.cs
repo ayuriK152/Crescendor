@@ -5,16 +5,19 @@ using UnityEngine.UI;
 
 public class ActualModUIController : IngameUIController
 {
+    #region Public Members
     public TextMeshProUGUI accuracyTMP;
     public TextMeshProUGUI introCountTMP;
+    #endregion
 
+    #region Private Members
     private Image _correctGraph;
     private Image _failGraph;
     private Image _outlinerGraph;
-    private Button _disconnectBtn;
     private Button _resumeBtn;
     private Button _optionBtn;
     private Button _exitBtn;
+    #endregion
 
     public void BindIngameUI()
     {

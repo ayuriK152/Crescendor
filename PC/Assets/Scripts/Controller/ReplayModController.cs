@@ -9,6 +9,7 @@ using System.Collections;
 
 public class ReplayModController : IngameController
 {
+    #region Public Members
     public int currentNoteIndex;
 
     public bool isLoop;
@@ -17,9 +18,12 @@ public class ReplayModController : IngameController
     public int loopEndDeltaTime;
     public int loopStartNoteIndex;
     public int loopStartPassedNote;
+    #endregion
 
-    bool _isInputTiming = false;
-    bool _isWaitInput = true;
+    #region Private Members
+    private bool _isInputTiming = false;
+    private bool _isWaitInput = true;
+    #endregion
 
     ReplayModUIController _uiController;
 

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class IngameUIController : MonoBehaviour
 {
+    #region Public Members
     public TextMeshProUGUI songTitleTMP;
     public TextMeshProUGUI songNoteMountTMP;
     public TextMeshProUGUI songBpmTMP;
@@ -12,11 +13,14 @@ public class IngameUIController : MonoBehaviour
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
+    #endregion
 
-    private Button _disconnectBtn;
-    private Button _resumeBtn;
-    private Button _optionBtn;
-    private Button _exitBtn;
+    #region Protected Members
+    protected Button _disconnectBtn;
+    protected Button _resumeBtn;
+    protected Button _optionBtn;
+    protected Button _exitBtn;
+    #endregion
 
     protected IngameController _controller;
 

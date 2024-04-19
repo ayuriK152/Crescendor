@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class IngameController : MonoBehaviour
 {
+    #region Public Members
     public TextMeshProUGUI deviceText;
     public TextMeshProUGUI noteText;
 
@@ -20,7 +21,9 @@ public class IngameController : MonoBehaviour
 
     public int currentDeltaTime;
     public float currentDeltaTimeF;
+    #endregion
 
+    #region Protected Members
     protected int[] _initInputTiming = new int[88];
 
     protected List<Material> vPianoKeyMat = new List<Material>();
@@ -28,6 +31,7 @@ public class IngameController : MonoBehaviour
     protected List<SpriteRenderer> vPianoKeyEffect = new List<SpriteRenderer>();
     protected Color[] vPianoKeyEffectColors = new Color[3];
     protected List<int> correctNoteKeys = new List<int>();
+    #endregion
 
     protected void Init()
     {

@@ -8,20 +8,24 @@ using static Datas;
 
 public class ActualModController : IngameController
 {
+    #region Public Members
     public int currentCorrect;
     public int currentFail;
     public int totalAcc;
     public int currentBar = -1;
     public float currentAcc = 1;
+    #endregion
 
-    int[] _lastInputTiming = new int[88];
+    #region Private Members
+    private int[] _lastInputTiming = new int[88];
 
-    bool _isSceneOnSwap = false;
-    bool _isIntro = true;
+    private bool _isSceneOnSwap = false;
+    private bool _isIntro = true;
 
-    ActualModUIController _uiController;
+    private ActualModUIController _uiController;
 
-    Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
+    private Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
+    #endregion
 
     public void Init()
     {

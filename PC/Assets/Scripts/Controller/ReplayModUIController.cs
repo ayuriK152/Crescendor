@@ -4,24 +4,30 @@ using UnityEngine.UI;
 
 public class ReplayModUIController : IngameUIController
 {
+    #region Public Members
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
+    #endregion
 
-    Button _resumeBtn;
-    Button _optionBtn;
-    Button _exitBtn;
-    Button _toBeginBtn;
-    Button _playBtn;
-    Button _forceProgressBtn;
-    Button _toEndBtn;
-    Button _loopBtn;
-    Toggle _originalNotesToggle;
-    GameObject _originalNotes;
+    #region Private Members
+    private Button _resumeBtn;
+    private Button _optionBtn;
+    private Button _exitBtn;
+    private Button _toBeginBtn;
+    private Button _playBtn;
+    private Button _forceProgressBtn;
+    private Button _toEndBtn;
+    private Button _loopBtn;
+    private Toggle _originalNotesToggle;
+    private GameObject _originalNotes;
+    #endregion
 
     public void BindIngameUI()
     {
+        base.BindIngameUI();
+
         loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
@@ -41,8 +47,6 @@ public class ReplayModUIController : IngameUIController
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
 
-        _resumeBtn.onClick.AddListener(TogglePausePanel);
-        _exitBtn.onClick.AddListener(OnClickExitBtn);
         _toBeginBtn.onClick.AddListener(OnToBeginBtnClick);
         _playBtn.onClick.AddListener(OnPlayBtnClick);
         _forceProgressBtn.onClick.AddListener(OnForceProgressBtnClick);
