@@ -123,18 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &416123332 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1599330239850667653, guid: 44a8b86da3b30664b9c00b6c747eadaf, type: 3}
-  m_PrefabInstance: {fileID: 744092869}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1001 &744092869
+--- !u!1001 &1020570444
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -226,14 +215,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4165098790702401208, guid: 44a8b86da3b30664b9c00b6c747eadaf, type: 3}
-      propertyPath: tmp
-      value: 
-      objectReference: {fileID: 2003601080}
-    - target: {fileID: 4165098790702401208, guid: 44a8b86da3b30664b9c00b6c747eadaf, type: 3}
-      propertyPath: progressBar
-      value: 
-      objectReference: {fileID: 416123332}
     - target: {fileID: 4321959828982553208, guid: 44a8b86da3b30664b9c00b6c747eadaf, type: 3}
       propertyPath: m_Name
       value: UI_Loading
@@ -477,14 +458,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &2003601080 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4806811260622089847, guid: 44a8b86da3b30664b9c00b6c747eadaf, type: 3}
-  m_PrefabInstance: {fileID: 744092869}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
