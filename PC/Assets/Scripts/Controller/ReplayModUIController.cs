@@ -12,9 +12,6 @@ public class ReplayModUIController : IngameUIController
     #endregion
 
     #region Private Members
-    private Button _resumeBtn;
-    private Button _optionBtn;
-    private Button _exitBtn;
     private Button _toBeginBtn;
     private Button _playBtn;
     private Button _forceProgressBtn;

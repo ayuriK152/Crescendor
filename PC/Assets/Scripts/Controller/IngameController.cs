@@ -24,13 +24,17 @@ public class IngameController : MonoBehaviour
     #endregion
 
     #region Protected Members
+    protected int _tempoMapIdx = 0;
+    protected int _beatMapIdx = 0;
     protected int[] _initInputTiming = new int[88];
 
-    protected List<Material> vPianoKeyMat = new List<Material>();
-    protected List<GameObject> vPianoKeyObj = new List<GameObject>();
-    protected List<SpriteRenderer> vPianoKeyEffect = new List<SpriteRenderer>();
-    protected Color[] vPianoKeyEffectColors = new Color[3];
-    protected List<int> correctNoteKeys = new List<int>();
+    protected List<Material> _vPianoKeyMat = new List<Material>();
+    protected List<GameObject> _vPianoKeyObj = new List<GameObject>();
+    protected List<SpriteRenderer> _vPianoKeyEffect = new List<SpriteRenderer>();
+    protected Color[] _vPianoKeyEffectColors = new Color[3];
+    protected List<int> _correctNoteKeys = new List<int>();
+
+    protected IngameUIController _uiController;
     #endregion
 
     protected void Init()
@@ -54,9 +58,9 @@ public class IngameController : MonoBehaviour
 
         totalNote = Managers.Midi.notes.Count;
 
-        vPianoKeyEffectColors[0] = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        vPianoKeyEffectColors[1] = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-        vPianoKeyEffectColors[2] = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+        _vPianoKeyEffectColors[0] = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+        _vPianoKeyEffectColors[1] = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+        _vPianoKeyEffectColors[2] = new Color(0.0f, 1.0f, 0.0f, 1.0f);
 
         Transform[] tempVPianoMat = GameObject.Find("VirtualPiano").GetComponentsInChildren<Transform>();
         foreach (Transform t in tempVPianoMat)
@@ -64,10 +68,10 @@ public class IngameController : MonoBehaviour
             MeshRenderer tempVPianoKeyMat;
             if (t.TryGetComponent<MeshRenderer>(out tempVPianoKeyMat))
             {
-                vPianoKeyObj.Add(t.gameObject);
-                vPianoKeyEffect.Add(t.transform.Find("LanePressEffect").GetComponent<SpriteRenderer>());
-                vPianoKeyEffect[vPianoKeyEffect.Count - 1].color = vPianoKeyEffectColors[0];
-                vPianoKeyMat.Add(tempVPianoKeyMat.material);
+                _vPianoKeyObj.Add(t.gameObject);
+                _vPianoKeyEffect.Add(t.transform.Find("LanePressEffect").GetComponent<SpriteRenderer>());
+                _vPianoKeyEffect[_vPianoKeyEffect.Count - 1].color = _vPianoKeyEffectColors[0];
+                _vPianoKeyMat.Add(tempVPianoKeyMat.material);
             }
         }
     }
@@ -88,29 +92,29 @@ public class IngameController : MonoBehaviour
     {
         if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
         {
-            vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
+            _vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
         }
         else
         {
-            vPianoKeyMat[keyNum].color = new Color(0.5f, 0, 0);
+            _vPianoKeyMat[keyNum].color = new Color(0.5f, 0, 0);
         }
-        if (!correctNoteKeys.Contains(keyNum) && vPianoKeyEffect[keyNum].color != vPianoKeyEffectColors[2])
-            vPianoKeyEffect[keyNum].color = vPianoKeyEffectColors[1];
+        if (!_correctNoteKeys.Contains(keyNum) && _vPianoKeyEffect[keyNum].color != _vPianoKeyEffectColors[2])
+            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
         else
-            vPianoKeyEffect[keyNum].color = vPianoKeyEffectColors[2];
+            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
     }
 
     void TurnOffHighlight(int keyNum)
     {
         if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
         {
-            vPianoKeyMat[keyNum].color = new Color(1, 1, 1);
+            _vPianoKeyMat[keyNum].color = new Color(1, 1, 1);
         }
         else
         {
-            vPianoKeyMat[keyNum].color = new Color(0, 0, 0);
+            _vPianoKeyMat[keyNum].color = new Color(0, 0, 0);
         }
-        vPianoKeyEffect[keyNum].color = vPianoKeyEffectColors[0];
+        _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[0];
     }
 
     public void DisconnectPiano()

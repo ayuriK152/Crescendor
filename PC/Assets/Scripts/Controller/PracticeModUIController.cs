@@ -20,9 +20,6 @@ public class PracticeModUIController : IngameUIController
     private Button _forceScrollBtn;
     private Button _autoScrollBtn;
     private Button _loopBtn;
-    private Button _resumeBtn;
-    private Button _optionBtn;
-    private Button _exitBtn;
     private Button _toBeginBtn;
     private Button _playBtn;
     private Button _forceProgressBtn;

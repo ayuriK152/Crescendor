@@ -25,8 +25,6 @@ public class ReplayModController : IngameController
     private bool _isWaitInput = true;
     #endregion
 
-    ReplayModUIController _uiController;
-
     public void Init()
     {
         base.Init();
@@ -41,7 +39,7 @@ public class ReplayModController : IngameController
         loopStartPassedNote = 0;
 
         _uiController = Managers.UI.currentUIController as ReplayModUIController;
-        _uiController.BindIngameUI();
+        (_uiController as ReplayModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
@@ -199,20 +197,20 @@ public class ReplayModController : IngameController
         loopStartDeltaTime = currentDeltaTime;
         loopStartNoteIndex = currentNoteIndex;
         loopStartPassedNote = passedNote;
-        _uiController.SetLoopStartMarker();
+        (_uiController as ReplayModUIController).SetLoopStartMarker();
         if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as ReplayModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
         if (loopEndDeltaTime >= 0)
         {
             isLoop = true;
-            _uiController.ActiveLoopBtn();
+            (_uiController as ReplayModUIController).ActiveLoopBtn();
         }
     }
 
@@ -221,20 +219,20 @@ public class ReplayModController : IngameController
         if (loopStartDeltaTime < 0)
             return;
         loopEndDeltaTime = currentDeltaTime;
-        _uiController.SetLoopEndMarker();
+        (_uiController as ReplayModUIController).SetLoopEndMarker();
         if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as ReplayModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
         if (loopStartDeltaTime >= 0)
         {
             isLoop = true;
-            _uiController.ActiveLoopBtn();
+            (_uiController as ReplayModUIController).ActiveLoopBtn();
         }
     }
 }

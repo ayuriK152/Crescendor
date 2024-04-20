@@ -22,8 +22,6 @@ public class ActualModController : IngameController
     private bool _isSceneOnSwap = false;
     private bool _isIntro = true;
 
-    private ActualModUIController _uiController;
-
     private Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
     #endregion
 
@@ -38,7 +36,7 @@ public class ActualModController : IngameController
         tempo = Managers.Midi.tempo;
 
         _uiController = Managers.UI.currentUIController as ActualModUIController;
-        _uiController.BindIngameUI();
+        (_uiController as ActualModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
         _uiController.songBpmTMP.text = $"{tempo}";
@@ -67,10 +65,10 @@ public class ActualModController : IngameController
     {
         for (int i = (int)seconds / 1; i > 0; i--)
         {
-            _uiController.introCountTMP.text = i.ToString();
+            (_uiController as ActualModUIController).introCountTMP.text = i.ToString();
             yield return new WaitForSeconds(1);
         }
-        _uiController.introCountTMP.gameObject.SetActive(false);
+        (_uiController as ActualModUIController).introCountTMP.gameObject.SetActive(false);
         _isIntro = false;
     }
 
@@ -179,7 +177,7 @@ public class ActualModController : IngameController
             }
         }
 
-        _uiController.UpdateAccuracy();
+        (_uiController as ActualModUIController).UpdateAccuracy();
 
         yield return null;
     }
@@ -208,10 +206,5 @@ public class ActualModController : IngameController
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }
         }
-    }
-
-    IEnumerator JudgeInput(int keyNum)
-    {
-        yield return null;
     }
 }

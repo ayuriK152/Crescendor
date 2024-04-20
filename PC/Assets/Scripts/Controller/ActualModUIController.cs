@@ -14,9 +14,6 @@ public class ActualModUIController : IngameUIController
     private Image _correctGraph;
     private Image _failGraph;
     private Image _outlinerGraph;
-    private Button _resumeBtn;
-    private Button _optionBtn;
-    private Button _exitBtn;
     #endregion
 
     public void BindIngameUI()
