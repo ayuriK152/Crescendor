@@ -156,28 +156,6 @@ public class PracticeModController : IngameController
         }
     }
 
-    public void UpdateTempo()
-    {
-        if (_tempoMapIdx == Managers.Midi.song.tempoMap.Count)
-            return;
-        if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime - currentDeltaTime > 0)
-            return;
-        tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
-        _uiController.UpdateTempoText();
-        _tempoMapIdx += 1;
-    }
-
-    public void UpdateBeat()
-    {
-        if (_beatMapIdx == Managers.Midi.song.beatMap.Count)
-            return;
-        if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime - currentDeltaTime > 0)
-            return;
-        Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
-        _uiController.UpdateBeatText();
-        _beatMapIdx += 1;
-    }
-
     public void AutoScroll()
     {
         _isWaitInput = !_isWaitInput;

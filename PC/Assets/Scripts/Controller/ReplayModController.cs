@@ -107,10 +107,10 @@ public class ReplayModController : IngameController
                 return;
             }
         }
-        IncreaseCurrentNoteIndex();
+        UpdatePassedNote();
     }
 
-    public void IncreaseCurrentNoteIndex()
+    public void UpdatePassedNote()
     {
         if (Managers.Midi.noteTiming[currentNoteIndex] - currentDeltaTime > 0)
             return;

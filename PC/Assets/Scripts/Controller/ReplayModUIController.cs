@@ -104,13 +104,17 @@ public class ReplayModUIController : IngameUIController
 
     void OnForceProgressBtnClick()
     {
-        (_controller as ReplayModController).IncreaseCurrentNoteIndex();
+        (_controller as ReplayModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
     }
 
     void OnToEndBtnClick()
     {
+        (_controller as ReplayModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        (_controller as ReplayModController).IncreaseCurrentNoteIndex();
     }
 
     public void ActiveLoopBtn()
