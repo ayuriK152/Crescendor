@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 6381181670664961522}
   - component: {fileID: 8293284877644278614}
   - component: {fileID: 4165098790702401208}
+  - component: {fileID: 6437452393579022702}
   m_Layer: 5
   m_Name: UI_Loading
   m_TagString: Untagged
@@ -255,6 +256,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressBar: {fileID: 1599330239850667653}
   tmp: {fileID: 4806811260622089847}
+  canvas: {fileID: 6437452393579022702}
+--- !u!225 &6437452393579022702
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4321959828982553208}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4820953834485789458
 GameObject:
   m_ObjectHideFlags: 0

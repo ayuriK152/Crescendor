@@ -13,6 +13,9 @@ public class LoadingController : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI tmp;
 
+    [SerializeField]
+    CanvasGroup canvas;
+
     static string nextScene = "MainMenuScene";
 
     public static void SceneLoading(string sceneName)
@@ -51,6 +54,7 @@ public class LoadingController : MonoBehaviour
             {
                 timer += Time.unscaledDeltaTime;
                 progressBar.value = Mathf.Lerp(0.9f, 1, timer);
+                canvas.alpha -= 0.01f;
 
                 if (progressBar.value >= 1)
                 {
