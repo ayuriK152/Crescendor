@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
+using SmfLite;
 
 public class PracticeModController : IngameController
 {
@@ -42,7 +43,7 @@ public class PracticeModController : IngameController
         (_uiController as PracticeModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
+        _uiController.songTempoTMP.text = $"{Managers.Midi.tempo}";
         _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
@@ -69,6 +70,7 @@ public class PracticeModController : IngameController
         Scroll();
         StartCoroutine(ToggleKeyHighlight());
     }
+
     void Scroll()
     {
         if (!isPlaying || isSongEnd)
@@ -79,7 +81,7 @@ public class PracticeModController : IngameController
             {
                 currentNoteIndex = loopStartNoteIndex;
                 passedNote = loopStartPassedNote;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 currentDeltaTimeF = loopStartDeltaTime;
                 SyncDeltaTime(false);
                 transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
@@ -131,23 +133,49 @@ public class PracticeModController : IngameController
                     return;
                 }
             }
-            IncreaseCurrentNoteIndex();
+            UpdatePassedNote();
+            UpdateTempo();
+            UpdateBeat();
         }
     }
 
-    public void IncreaseCurrentNoteIndex()
+    public void UpdatePassedNote()
     {
+        if (currentNoteIndex == Managers.Midi.noteTiming.Count)
+            return;
         if (Managers.Midi.noteTiming[currentNoteIndex] - currentDeltaTime > 0)
             return;
         _correctNoteKeys.Clear();
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-        _uiController.UpdatePassedNote();
+        _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
 
         for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
         {
             _correctNoteKeys.Add(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key);
         }
+    }
+
+    public void UpdateTempo()
+    {
+        if (_tempoMapIdx == Managers.Midi.song.tempoMap.Count)
+            return;
+        if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime - currentDeltaTime > 0)
+            return;
+        tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
+        _uiController.UpdateTempoText();
+        _tempoMapIdx += 1;
+    }
+
+    public void UpdateBeat()
+    {
+        if (_beatMapIdx == Managers.Midi.song.beatMap.Count)
+            return;
+        if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime - currentDeltaTime > 0)
+            return;
+        Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
+        _uiController.UpdateBeatText();
+        _beatMapIdx += 1;
     }
 
     public void AutoScroll()
@@ -175,32 +203,83 @@ public class PracticeModController : IngameController
         _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
     }
 
-    // 스크롤 또는 슬라이더 조작으로인한 deltaTime 변화로 현재 진행중인 곡의 정보가 바뀐 경우
-    public IEnumerator UpdateNotePosByTime()
+    // 타임 슬라이더 조작 또는 데이터 임의 조작으로 인한 deltaTime 변화로 현재 진행중인 곡의 정보가 바뀐 경우
+    public IEnumerator ForceUpdateNote()
     {
         transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
         while (true)
         {
+            // 노트 개수, 딕셔너리 데이터 관리
+            bool isNoteIdxChanged = false;
             if (currentNoteIndex > 0)
             {
                 if (Managers.Midi.noteTiming[currentNoteIndex - 1] >= currentDeltaTime)
                 {
                     currentNoteIndex--;
                     passedNote -= Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                    _uiController.UpdatePassedNote();
-                    continue;
+                    _uiController.UpdatePassedNoteText();
+                    isNoteIdxChanged = true;
                 }
             }
-            if (currentNoteIndex < Managers.Midi.noteTiming.Count - 1)
+            if (currentNoteIndex < Managers.Midi.noteTiming.Count - 1 && !isNoteIdxChanged)
             {
                 if (Managers.Midi.noteTiming[currentNoteIndex] < currentDeltaTime)
                 {
                     passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
                     currentNoteIndex++;
-                    _uiController.UpdatePassedNote();
-                    continue;
+                    _uiController.UpdatePassedNoteText();
+                    isNoteIdxChanged = true;
                 }
             }
+
+            // 현재 템포 인덱스 관리
+            bool isTempoMapIdxChanged = false;
+            if (_tempoMapIdx > 0)
+            {
+                if (Managers.Midi.song.tempoMap[_tempoMapIdx - 1].deltaTime >= currentDeltaTime)
+                {
+                    _tempoMapIdx--;
+                    tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
+                    _uiController.UpdateTempoText();
+                    isTempoMapIdxChanged = true;
+                }
+            }
+            if (_tempoMapIdx < Managers.Midi.song.tempoMap.Count - 1 && !isTempoMapIdxChanged)
+            {
+                if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime < currentDeltaTime)
+                {
+                    _tempoMapIdx++;
+                    tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
+                    _uiController.UpdateTempoText();
+                    isTempoMapIdxChanged = true;
+                }
+            }
+
+            // 현재 박자 인덱스 관리
+            bool isBeatMapIdxChanged = false;
+            if (_beatMapIdx > 0)
+            {
+                if (Managers.Midi.song.beatMap[_beatMapIdx - 1].deltaTime >= currentDeltaTime)
+                {
+                    _beatMapIdx--;
+                    Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
+                    _uiController.UpdateBeatText();
+                    isBeatMapIdxChanged = true;
+                }
+            }
+            if (_beatMapIdx < Managers.Midi.song.beatMap.Count - 1 && !isBeatMapIdxChanged)
+            {
+                if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime < currentDeltaTime)
+                {
+                    _beatMapIdx++;
+                    Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
+                    _uiController.UpdateBeatText();
+                    isBeatMapIdxChanged = true;
+                }
+            }
+
+            if (isNoteIdxChanged || isTempoMapIdxChanged || isBeatMapIdxChanged)
+                continue;
             break;
         }
         yield return null;
@@ -218,7 +297,7 @@ public class PracticeModController : IngameController
                 isSongEnd = false;
                 currentDeltaTime = 0;
                 SyncDeltaTime(true);
-                StartCoroutine(UpdateNotePosByTime());
+                StartCoroutine(ForceUpdateNote());
                 (_uiController as PracticeModUIController).ToggleSongEndPanel();
             }
             // 노트 입력 시작
@@ -245,7 +324,7 @@ public class PracticeModController : IngameController
             isSongEnd = false;
             currentDeltaTime = 0;
             SyncDeltaTime(true);
-            StartCoroutine(UpdateNotePosByTime());
+            StartCoroutine(ForceUpdateNote());
             (_uiController as PracticeModUIController).ToggleSongEndPanel();
             return;
         }

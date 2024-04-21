@@ -42,7 +42,7 @@ public class ReplayModController : IngameController
         (_uiController as ReplayModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
+        _uiController.songTempoTMP.text = $"{Managers.Midi.tempo}";
         _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
@@ -69,7 +69,7 @@ public class ReplayModController : IngameController
             {
                 currentNoteIndex = loopStartNoteIndex;
                 passedNote = loopStartPassedNote;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 currentDeltaTimeF = loopStartDeltaTime;
                 SyncDeltaTime(false);
                 transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
@@ -115,7 +115,7 @@ public class ReplayModController : IngameController
         if (Managers.Midi.noteTiming[currentNoteIndex] - currentDeltaTime > 0)
             return;
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-        _uiController.UpdatePassedNote();
+        _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
     }
 
@@ -143,7 +143,7 @@ public class ReplayModController : IngameController
                 {
                     currentNoteIndex--;
                     passedNote -= Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                    _uiController.UpdatePassedNote();
+                    _uiController.UpdatePassedNoteText();
                     continue;
                 }
             }
@@ -151,7 +151,7 @@ public class ReplayModController : IngameController
             {
                 passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
                 currentNoteIndex++;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 continue;
             }
             break;
