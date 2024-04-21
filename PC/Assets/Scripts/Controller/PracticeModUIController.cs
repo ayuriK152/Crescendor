@@ -113,13 +113,15 @@ public class PracticeModUIController : IngameUIController
             (_controller as PracticeModController).isPlaying = false;
         (_controller as PracticeModController).currentDeltaTime = (int)sliderValue;
         (_controller as PracticeModController).SyncDeltaTime(true);
-        StartCoroutine((_controller as PracticeModController).UpdateNotePosByTime());
+        StartCoroutine((_controller as PracticeModController).ForceUpdateNote());
     }
 
     void ForceScrollBtn()
     {
         (_controller as PracticeModController).isPlaying = true;
-        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
     }
 
     void AutoScrollBtn()
@@ -151,12 +153,17 @@ public class PracticeModUIController : IngameUIController
 
     void OnForceProgressBtnClick()
     {
-        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
     }
 
     void OnToEndBtnClick()
     {
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
+        (_controller as PracticeModController).isSongEnd = true;
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        (_controller as PracticeModController).IncreaseCurrentNoteIndex();
     }
 }

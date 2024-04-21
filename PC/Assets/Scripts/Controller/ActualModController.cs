@@ -39,7 +39,7 @@ public class ActualModController : IngameController
         (_uiController as ActualModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{tempo}";
+        _uiController.songTempoTMP.text = $"{tempo}";
         _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 

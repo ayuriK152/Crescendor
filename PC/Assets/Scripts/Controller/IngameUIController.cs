@@ -8,7 +8,7 @@ public class IngameUIController : MonoBehaviour
     #region Public Members
     public TextMeshProUGUI songTitleTMP;
     public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
+    public TextMeshProUGUI songTempoTMP;
     public TextMeshProUGUI songBeatTMP;
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
@@ -28,7 +28,7 @@ public class IngameUIController : MonoBehaviour
     {
         songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
         songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
+        songTempoTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
         songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
@@ -49,9 +49,19 @@ public class IngameUIController : MonoBehaviour
         Managers.Input.keyAction += InputKeyEvent;
     }
 
-    public void UpdatePassedNote()
+    public void UpdatePassedNoteText()
     {
         songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
+    }
+
+    public void UpdateTempoText()
+    {
+        songTempoTMP.text = $"{Managers.Midi.tempo}";
+    }
+
+    public void UpdateBeatText()
+    {
+        songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
     }
 
     public void DisconnectPianoBtn()
@@ -73,6 +83,7 @@ public class IngameUIController : MonoBehaviour
         }
     }
 
+    // 컨트롤러마다 돌아가야하는 씬이 다르기 때문에 오버라이드로 재정의해서 사용할 것
     protected virtual void OnClickExitBtn() { }
 
     protected virtual void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
