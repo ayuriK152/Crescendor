@@ -18,6 +18,7 @@ public class ActualModController : IngameController
 
     #region Private Members
     private int[] _lastInputTiming = new int[88];
+    private int noteCheckCoroutineCnt = 0;
 
     private bool _isSceneOnSwap = false;
     private bool _isIntro = true;
@@ -55,7 +56,7 @@ public class ActualModController : IngameController
     void Update()
     {
         Scroll();
-        StartCoroutine(CheckNotesStatus());
+        CheckNotesStatus();
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !_isSceneOnSwap)
             SwapScene();
         StartCoroutine(ToggleKeyHighlight());
@@ -74,6 +75,10 @@ public class ActualModController : IngameController
 
     void SwapScene()
     {
+        Debug.Log(noteCheckCoroutineCnt);
+        if (noteCheckCoroutineCnt > 0)
+            return;
+
         Managers.Input.keyAction = null;
         if (!PlayerPrefs.HasKey("trans_SongTitle"))
             PlayerPrefs.SetString("trans_SongTitle", "");
@@ -121,7 +126,7 @@ public class ActualModController : IngameController
         _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
     }
 
-    IEnumerator CheckNotesStatus()
+    void CheckNotesStatus()
     {
         for (int i = 0; i < 88; i++)
         {
@@ -129,16 +134,15 @@ public class ActualModController : IngameController
             {
                 if (Managers.Midi.noteSetByKey[i].Count > 0 && Managers.Midi.noteSetByKey[i].Count > Managers.Midi.nextKeyIndex[i])
                 {
-                    StartCoroutine(CheckNotesStatus(i));
+                    CheckNotesStatus(i);
                 }
             }
         }
-
-        yield return null;
     }
 
-    IEnumerator CheckNotesStatus(int keyNum)
+    void CheckNotesStatus(int keyNum)
     {
+        noteCheckCoroutineCnt += 1;
         if (_lastInputTiming[keyNum] == 0 && Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key != 0)
             _lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
@@ -153,7 +157,6 @@ public class ActualModController : IngameController
                 }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;
-            // Debug.Log(Managers.Midi.nextKeyIndex[keyNum]);
         }
 
         // 일반적인 노트 정확도 검사 부분, 인덱스 오류를 막기위한 조건문
@@ -165,11 +168,13 @@ public class ActualModController : IngameController
                     _lastInputTiming[keyNum] = Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key;
 
                 // 피아노 입력중인지, 지나친 선입력은 아닌지 체크
-                if ((!Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - Managers.Midi.song.division / 10f) || _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - Managers.Midi.song.division / 10f)
+                if ((!Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value) ||
+                    (!Managers.Input.keyChecks[keyNum] && _initInputTiming[keyNum] > Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key && _lastInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - Managers.Midi.song.division / 10f) ||
+                    _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - Managers.Midi.song.division / 10f)
                 {
                     currentFail += currentDeltaTime - _lastInputTiming[keyNum];
                 }
-                else if (_lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
+                else if (Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
                     currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
                 }
@@ -181,7 +186,7 @@ public class ActualModController : IngameController
 
         (_uiController as ActualModUIController).UpdateAccuracy();
 
-        yield return null;
+        noteCheckCoroutineCnt -= 1;
     }
 
     void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
