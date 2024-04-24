@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -20,6 +21,8 @@ public class UI_MyPage : UI_Scene
     {
         MainMenuBtn,
         SongSelectBtn,
+        LogOutBtn,
+        SecessionBtn,
     }
 
     void Start()
@@ -34,6 +37,8 @@ public class UI_MyPage : UI_Scene
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
         _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
+        GetButton((int)Buttons.LogOutBtn).gameObject.BindEvent(OnLogoutBtnClick);
+        GetButton((int)Buttons.SecessionBtn).gameObject.BindEvent(OnSeccssionClick);
         FindImages(); // 이미지 찾기
         StartCoroutine(GetLogsForUser(Managers.Data.userId));
     }
@@ -46,6 +51,18 @@ public class UI_MyPage : UI_Scene
     public void OnSongSelectBtnClick(PointerEventData data)
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
+    }
+
+    public void OnLogoutBtnClick(PointerEventData data)
+    {
+        Managers.Data.isUserLoggedIn = false;
+        SceneManager.LoadScene("MainMenuScene");
+    }
+
+    public void OnSeccssionClick(PointerEventData data)
+    {
+
+        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_Secession>();
     }
 
     // 이미지 찾아서 리스트에 추가하는 함수
@@ -91,14 +108,14 @@ public class UI_MyPage : UI_Scene
         List<LogEntry> logEntries = JsonUtility.FromJson<LogEntryList>("{\"logs\":" + jsonResult + "}").logs;
 
         //  배열
-        int[] logCounts = new int[13 * 4];
+        int[] logCounts = new int[12 * 4];
 
         foreach (var entry in logEntries)
         {
             DateTime date = DateTime.Parse(entry.date).Date;
             int month = date.Month;
             int week = Mathf.CeilToInt(date.Day / 7.0f);
-            int rowIndex = (week - 1) * 13; // 행 인덱스
+            int rowIndex = (week - 1) * 12; // 행 인덱스
             int colIndex = month - 1; // 열 인덱스
             int imageIndex = rowIndex + colIndex;
 
@@ -106,10 +123,6 @@ public class UI_MyPage : UI_Scene
             if (imageIndex >= 0 && imageIndex < logCounts.Length)
             {
                 logCounts[imageIndex]++;
-            }
-            else
-            {
-                Debug.LogWarning("이미지 인덱스가 배열 범위를 벗어남: " + imageIndex);
             }
         }
         return logCounts;
