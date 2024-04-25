@@ -6,43 +6,29 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PracticeModUIController : MonoBehaviour
+public class PracticeModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
+    #region Public Members
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
-    public GameObject pausePanelObj;
     public GameObject songEndPanelObj;
+    #endregion
 
-    Button _forceScrollBtn;
-    Button _disconnectBtn;
-    Button _autoScrollBtn;
-    Button _loopBtn;
-    Button _resumeBtn;
-    Button _optionBtn;
-    Button _exitBtn;
-    Button _toBeginBtn;
-    Button _playBtn;
-    Button _forceProgressBtn;
-    Button _toEndBtn;
-
-    PracticeModController _controller;
+    #region Private Members
+    private Button _forceScrollBtn;
+    private Button _autoScrollBtn;
+    private Button _loopBtn;
+    private Button _toBeginBtn;
+    private Button _playBtn;
+    private Button _forceProgressBtn;
+    private Button _toEndBtn;
+    #endregion
 
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+        base.BindIngameUI();
         loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
@@ -56,7 +42,6 @@ public class PracticeModUIController : MonoBehaviour
         _loopBtn.interactable = false;
 
         _forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
-        _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
         _autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
 
 // 런타임에서의 디버그용 기능 버튼 비활성화
@@ -69,12 +54,6 @@ public class PracticeModUIController : MonoBehaviour
         _disconnectBtn.gameObject.SetActive(false);
         _autoScrollBtn.gameObject.SetActive(false);
 #endif
-
-        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
-        pausePanelObj.SetActive(false);
 
         songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
         songEndPanelObj.SetActive(false);
@@ -90,8 +69,6 @@ public class PracticeModUIController : MonoBehaviour
         _forceProgressBtn.onClick.AddListener(OnForceProgressBtnClick);
         _toEndBtn.onClick.AddListener(OnToEndBtnClick);
         _loopBtn.onClick.AddListener(TurnOffLoop);
-        _resumeBtn.onClick.AddListener(TogglePausePanel);
-        _exitBtn.onClick.AddListener(OnClickExitBtn);
     }
 
     public void SetLoopStartMarker()
@@ -119,66 +96,44 @@ public class PracticeModUIController : MonoBehaviour
 
     void TurnOffLoop()
     {
-        _controller.TurnOffLoop();
+        (_controller as PracticeModController).TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
         _loopBtn.interactable = false;
     }
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
-    }
-
     void UpdateDeltaTimeBySlider(float sliderValue)
     {
-        if (_controller.isSongEnd)
+        if ((_controller as PracticeModController).isSongEnd)
         {
             songEndPanelObj.SetActive(false);
-            _controller.isSongEnd = false;
+            (_controller as PracticeModController).isSongEnd = false;
         }
-        if (_controller.isPlaying)
-            _controller.isPlaying = false;
-        _controller.currentDeltaTime = (int)sliderValue;
-        _controller.SyncDeltaTime(true);
-        StartCoroutine(_controller.UpdateNotePosByTime());
+        if ((_controller as PracticeModController).isPlaying)
+            (_controller as PracticeModController).isPlaying = false;
+        (_controller as PracticeModController).currentDeltaTime = (int)sliderValue;
+        (_controller as PracticeModController).SyncDeltaTime(true);
+        StartCoroutine((_controller as PracticeModController).ForceUpdateNote());
     }
 
     void ForceScrollBtn()
     {
-        _controller.isPlaying = true;
-        _controller.IncreaseCurrentNoteIndex();
-    }
-
-    void DisconnectPianoBtn()
-    {
-        _controller.DisconnectPiano();
+        (_controller as PracticeModController).isPlaying = true;
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
     }
 
     void AutoScrollBtn()
     {
-        _controller.AutoScroll();
+        (_controller as PracticeModController).AutoScroll();
     }
 
-    void OnClickExitBtn()
+    protected override void OnClickExitBtn()
     {
         Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
-
-    public void TogglePausePanel()
-    {
-        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
-
-        if (pausePanelObj.activeSelf)
-        {
-            _controller.enabled = false;
-        }
-        else
-        {
-            _controller.enabled = true;
-        }
     }
 
     public void ToggleSongEndPanel()
@@ -193,17 +148,22 @@ public class PracticeModUIController : MonoBehaviour
 
     void OnPlayBtnClick()
     {
-        _controller.isPlaying = true;
+        (_controller as PracticeModController).isPlaying = true;
     }
 
     void OnForceProgressBtnClick()
     {
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
     }
 
     void OnToEndBtnClick()
     {
+        (_controller as PracticeModController).UpdatePassedNote();
+        (_controller as PracticeModController).UpdateTempo();
+        (_controller as PracticeModController).UpdateBeat();
+        (_controller as PracticeModController).isSongEnd = true;
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        _controller.IncreaseCurrentNoteIndex();
     }
 }
