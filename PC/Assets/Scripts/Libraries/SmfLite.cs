@@ -355,6 +355,8 @@ namespace SmfLite
                 // Event type.
                 if ((reader.PeekByte () & 0x80) != 0) {
                     ev = reader.ReadByte ();
+                    if (ev == 0x81 || ev == 0x91)
+                        ev -= 1;
                 }
                 
                 if (ev == 0xff) {
