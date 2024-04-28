@@ -126,7 +126,7 @@ public class MidiManager
                 deltaTime = track.sequence[j].delta != 0 ? track.sequence[j].delta : deltaTime;
                 //eventStartTime += eventStartTime == -1 ? 1 : track.sequence[j].delta;
                 eventStartTime += eventStartTime == -1 ? track.sequence[j].delta + 1 : track.sequence[j].delta;
-                if (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 > 0)
+                if (track.sequence[j].midiEvent.status >= 0x90 && track.sequence[j].midiEvent.status <= 0x9f && track.sequence[j].midiEvent.data2 > 0)
                 {
                     if (_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))
                     {
@@ -135,7 +135,7 @@ public class MidiManager
                     }
                     _tempNoteData.Add(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET, eventStartTime);
                 }
-                else if (track.sequence[j].midiEvent.status == 128 || (track.sequence[j].midiEvent.status == 144 && track.sequence[j].midiEvent.data2 == 0))
+                else if (track.sequence[j].midiEvent.status >= 0x80 && track.sequence[j].midiEvent.status <= 0x8f || (track.sequence[j].midiEvent.status >= 0x90 && track.sequence[j].midiEvent.status <= 0x9f && track.sequence[j].midiEvent.data2 == 0))
                 {
                     if (!_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))
                         continue;
