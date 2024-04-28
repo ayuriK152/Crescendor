@@ -116,6 +116,14 @@ public class UI_MainMenu : UI_Scene
         {
             string id = idInput.text;
             string password = passwordInput.text;
+            // ID 또는 비밀번호가 null인지 확인
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
+            {
+                ShowErrorMsg("Please enter your id");
+                return; // 전송을 중지
+            }
+
+            // ID와 비밀번호가 유효한 경우에만 요청을 보냄.
             StartCoroutine(LoginRequest(id, password));
         }
     }
