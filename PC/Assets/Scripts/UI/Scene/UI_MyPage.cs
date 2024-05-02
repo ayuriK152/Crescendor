@@ -23,6 +23,7 @@ public class UI_MyPage : UI_Scene
         SongSelectBtn,
         LogOutBtn,
         SecessionBtn,
+        ProfileBtn,
     }
 
     void Start()
@@ -39,6 +40,8 @@ public class UI_MyPage : UI_Scene
         _userNameTMP.text = Managers.Data.userId;
         GetButton((int)Buttons.LogOutBtn).gameObject.BindEvent(OnLogoutBtnClick);
         GetButton((int)Buttons.SecessionBtn).gameObject.BindEvent(OnSeccssionClick);
+        GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnProfileBtnClick);
+        
         FindImages(); // 이미지 찾기
         StartCoroutine(GetLogsForUser(Managers.Data.userId));
     }
@@ -61,8 +64,12 @@ public class UI_MyPage : UI_Scene
 
     public void OnSeccssionClick(PointerEventData data)
     {
-
         Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_Secession>();
+    }
+
+    public void OnProfileBtnClick(PointerEventData data)
+    {
+        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_Profile>();
     }
 
     // 이미지 찾아서 리스트에 추가하는 함수

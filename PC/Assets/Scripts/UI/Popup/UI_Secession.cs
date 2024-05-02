@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -78,49 +79,12 @@ public class UI_Secession : UI_Popup
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            StartCoroutine(SignOutRequest(Managers.Data.userId));
+            Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_CheckOut>();
         }
         else
         {
             Debug.Log(www.error);
             ShowErrorMsg("Passwords do not match");
-        }
-    }
-
-    // È¸¿øÅ»Åð API
-    IEnumerator SendSignOut(string url, string json, string method)
-    {
-        UnityWebRequest www;
-
-        if (method == "POST")
-        {
-            www = UnityWebRequest.PostWwwForm(url, json);
-        }
-        else if (method == "PUT")
-        {
-            www = UnityWebRequest.Put(url, json);
-        }
-        else
-        {
-            Debug.LogError("Invalid HTTP method!");
-            yield break;
-        }
-
-        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-        www.uploadHandler = new UploadHandlerRaw(jsonToSend);
-        www.downloadHandler = new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-
-        yield return www.SendWebRequest();
-
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            Managers.Data.isUserLoggedIn = false;
-            SceneManager.LoadScene("MainMenuScene");
-        }
-        else
-        {
-            Debug.Log(www.error);
         }
     }
 
@@ -141,12 +105,6 @@ public class UI_Secession : UI_Popup
         yield return StartCoroutine(SendRequest(baseURL, json, "POST"));
     }
 
-    IEnumerator SignOutRequest(string id)
-    {
-        string baseURL = "http://15.164.2.49:3000/signout"; // ±âº» URL
-        string json = "{\"id\":\"" + id + "\"}";
-        yield return StartCoroutine(SendSignOut(baseURL, json, "POST"));
-    }
 
 
 
