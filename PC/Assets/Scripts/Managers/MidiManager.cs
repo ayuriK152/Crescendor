@@ -90,7 +90,15 @@ public class MidiManager
     {
         CleanPrevDatas();
 
-        TextAsset sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
+        TextAsset sourceFile;
+        if (Managers.Song.selectedSong.curriculum == Curriculum.None)
+        {
+            sourceFile = Resources.Load<TextAsset>($"Converts/{fileName}");
+        }
+        else
+        {
+            sourceFile = Resources.Load<TextAsset>($"Converts/{Managers.Song.selectedSong.curriculum}/{fileName}");
+        }
         song = MidiFileLoader.Load(sourceFile.bytes);
         while (song.tracks == null)     // 혹시 모를 비동기 로드 상황에 대비
         {
@@ -126,6 +134,8 @@ public class MidiManager
                 deltaTime = track.sequence[j].delta != 0 ? track.sequence[j].delta : deltaTime;
                 //eventStartTime += eventStartTime == -1 ? 1 : track.sequence[j].delta;
                 eventStartTime += eventStartTime == -1 ? track.sequence[j].delta + 1 : track.sequence[j].delta;
+
+                // 16진수 8n은 음표 끝, 9n은 음표 시작
                 if (track.sequence[j].midiEvent.status >= 0x90 && track.sequence[j].midiEvent.status <= 0x9f && track.sequence[j].midiEvent.data2 > 0)
                 {
                     if (_tempNoteData.ContainsKey(track.sequence[j].midiEvent.data1 - DEFAULT_KEY_NUM_OFFSET))

@@ -34,12 +34,14 @@ public class Define
         public int songNum;
         public string songTitle;
         public string songComposer;
+        public Curriculum curriculum;
 
-        public Song(int songNum, string songTitle, string composer)
+        public Song(int songNum, string songTitle, string songComposer, Curriculum curriculum)
         {
             this.songNum = songNum;
             this.songTitle = songTitle;
-            this.songComposer = composer;
+            this.songComposer = songComposer;
+            this.curriculum = curriculum;
         }
     }
 
@@ -135,5 +137,11 @@ public class Define
     {
         OnKeyDown,
         OnKeyUp,
+    }
+
+    public enum Curriculum
+    {
+        Hanon,
+        None,
     }
 }
