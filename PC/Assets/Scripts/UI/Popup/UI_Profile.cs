@@ -9,8 +9,10 @@ using UnityEngine.UI;
 
 public class UI_Profile : UI_Popup
 {
-    Image profileImage;
-    TMP_InputField imageUrl;
+    private Image profileImage;
+    private TMP_InputField imageUrl;
+    private UI_MyPage myPage;
+
     enum Buttons
     {
         Btn,
@@ -25,7 +27,28 @@ public class UI_Profile : UI_Popup
     {
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.Btn).gameObject.BindEvent(OnBtnClicked);
-        profileImage = GameObject.Find("ProfileBtn").GetComponent<Image>();
+
+        // ProfileBtn을 찾기 위해 UI_MyPage를 가져옴
+        myPage = FindObjectOfType<UI_MyPage>();
+        if (myPage != null)
+        {
+            // UserInfo에서 ProfileBtn을 찾아서 profileImage에 할당
+            Transform profileBtn = myPage.transform.Find("UserInfo/ProfileBtn");
+            if (profileBtn != null)
+            {
+                profileImage = profileBtn.GetComponent<Image>();
+            }
+            else
+            {
+                Debug.LogError("ProfileBtn not found under UserInfo.");
+            }
+        }
+        else
+        {
+            Debug.LogError("UI_MyPage not found in the scene.");
+        }
+
+        // URL 입력 필드 찾기
         imageUrl = GameObject.Find("@UI/UI_Profile/Panel/URL").GetComponent<TMP_InputField>();
     }
 
@@ -40,6 +63,7 @@ public class UI_Profile : UI_Popup
         // 이미지 URL을 가져와서 이미지 로드
         string URL = imageUrl.text;
         StartCoroutine(LoadImageFromURLCoroutine(URL));
+        Debug.Log(URL);
     }
 
     // 이미지 URL로부터 이미지를 다운로드하여 프로필 이미지로 설정하는 코루틴 함수

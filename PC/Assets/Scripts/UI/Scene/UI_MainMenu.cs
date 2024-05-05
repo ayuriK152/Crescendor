@@ -42,10 +42,10 @@ public class UI_MainMenu : UI_Scene
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.MypageBtn).gameObject.BindEvent(OnMyPageButtonClick);
-        idInput = GameObject.Find("MainMenu/NavBar/ID").GetComponent<TMP_InputField>(); 
-        passwordInput = GameObject.Find("MainMenu/NavBar/PASSWORD").GetComponent<TMP_InputField>();
-        signUpBtn = GameObject.Find("MainMenu/NavBar/SignUpBtn").GetComponent<Button>();
-        loginBtn = GameObject.Find("MainMenu/NavBar/LoginBtn").GetComponent<Button>();
+        idInput = GameObject.Find("MainMenu/Logo/ID").GetComponent<TMP_InputField>(); 
+        passwordInput = GameObject.Find("MainMenu/Logo/PASSWORD").GetComponent<TMP_InputField>();
+        signUpBtn = GameObject.Find("MainMenu/Logo/SignUpBtn").GetComponent<Button>();
+        loginBtn = GameObject.Find("MainMenu/Logo/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
 
         if (!Managers.Data.isUserLoggedIn)
