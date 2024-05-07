@@ -2,21 +2,21 @@
  * �ۼ� - �̿���
  * �Է� ����� ������� ó���ϱ� ���� ����ϴ� ��ü */
 
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
 using System;
 using UnityEngine;
 
-public class InputManager
+public class InputManager : IMidiEventHandler
 {
-    public InputDevice inputDevice;
     public bool[] keyChecks = new bool[88];
+    public bool isPianoConnected = false;
 
     public Action<KeyCode, Define.InputType> keyAction;
+    public Action<int, int> noteAction;
 
     public void Init()
     {
-        ConnectPiano();
+        Managers.ManagerObj.AddComponent<AndroidMidiManager>();
+        AndroidMidiManager.Instance.RegisterEventHandler(this);
         keyAction = null;
     }
 
@@ -41,17 +41,29 @@ public class InputManager
         }
     }
 
-    void ConnectPiano()
+    public void DeviceAttached(string deviceName)
     {
-        try
+        isPianoConnected = true;
+    }
+
+    public void DeviceDetached(string deviceName)
+    {
+        isPianoConnected = false;
+    }
+
+    public void NoteOn(int note, int velocity)
+    {
+        if (noteAction != null)
         {
-            inputDevice = InputDevice.GetByName("Digital Piano");
-            inputDevice.StartEventsListening();
-            Debug.Log(inputDevice.IsListeningForEvents);
+            noteAction.Invoke(note, velocity);
         }
-        catch (Exception e)
+    }
+
+    public void NoteOff(int note)
+    {
+        if (noteAction != null)
         {
-            Debug.Log(e.Message);
+            noteAction.Invoke(note, 0);
         }
     }
 }

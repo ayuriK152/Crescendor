@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using System.Collections;
 using static Define;
 using static Datas;
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
-using System.Collections;
 
 public class ReplayModController : IngameController
 {
@@ -101,7 +98,7 @@ public class ReplayModController : IngameController
             Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
             if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
             {
-                if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
+                if (Managers.Input.isPianoConnected && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
                     return;
                 _isInputTiming = false;
                 return;

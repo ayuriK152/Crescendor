@@ -138,9 +138,4 @@ public class IngameController : MonoBehaviour
         }
         _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[0];
     }
-
-    public void DisconnectPiano()
-    {
-        Managers.Input.inputDevice.StopEventsListening();
-    }
 }

@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +15,6 @@ public class IngameUIController : MonoBehaviour
     #endregion
 
     #region Protected Members
-    protected Button _disconnectBtn;
     protected Button _resumeBtn;
     protected Button _optionBtn;
     protected Button _exitBtn;
@@ -39,16 +37,6 @@ public class IngameUIController : MonoBehaviour
         _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
 
-        try
-        {
-            _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
-            _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
-        }
-        catch
-        {
-            Debug.Log("No Object");
-        }
-
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
 
@@ -69,11 +57,6 @@ public class IngameUIController : MonoBehaviour
     public void UpdateBeatText()
     {
         songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
-    }
-
-    public void DisconnectPianoBtn()
-    {
-        _controller.DisconnectPiano();
     }
 
     public void TogglePausePanel()

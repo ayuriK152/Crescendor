@@ -1,11 +1,7 @@
-using TMPro;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
-using SmfLite;
 
 public class PracticeModController : IngameController
 {
@@ -55,11 +51,8 @@ public class PracticeModController : IngameController
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
 
-        if (Managers.Input.inputDevice != null)
-        {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
-        }
+        Managers.Input.noteAction -= OnEventReceived;
+        Managers.Input.noteAction += OnEventReceived;
 
         Managers.InitManagerPosition();
     }
@@ -127,7 +120,7 @@ public class PracticeModController : IngameController
                 _vPianoKeyEffect[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key].color = _vPianoKeyEffectColors[2];
                 if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
                 {
-                    if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
+                    if (Managers.Input.isPianoConnected && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
                         return;
                     _isInputTiming = false;
                     return;
@@ -263,35 +256,29 @@ public class PracticeModController : IngameController
         yield return null;
     }
 
-    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
+    void OnEventReceived(int noteNum, int velocity)
     {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
+        if (isSongEnd && velocity != 0)
         {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-
-            if (isSongEnd && noteEvent.Velocity != 0)
-            {
-                isSongEnd = false;
-                currentDeltaTime = 0;
-                SyncDeltaTime(true);
-                StartCoroutine(ForceUpdateNote());
-                (_uiController as PracticeModUIController).ToggleSongEndPanel();
-            }
-            // 노트 입력 시작
-            if (noteEvent.Velocity != 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                Debug.Log(noteEvent);
-            }
-            // 노트 입력 종료
-            else if (noteEvent.Velocity == 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
-                Debug.Log(noteEvent);
-            }
+            isSongEnd = false;
+            currentDeltaTime = 0;
+            SyncDeltaTime(true);
+            StartCoroutine(ForceUpdateNote());
+            (_uiController as PracticeModUIController).ToggleSongEndPanel();
+        }
+        // 노트 입력 시작
+        if (velocity != 0)
+        {
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
+            Debug.Log(noteNum);
+        }
+        // 노트 입력 종료
+        else if (velocity == 0)
+        {
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
+            Debug.Log(noteNum);
         }
     }
 

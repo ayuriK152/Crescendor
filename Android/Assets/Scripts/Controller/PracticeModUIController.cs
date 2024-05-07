@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,11 +42,9 @@ public class PracticeModUIController : IngameUIController
 // 런타임에서의 디버그용 기능 버튼 비활성화
 #if UNITY_EDITOR
         _forceScrollBtn.onClick.AddListener(ForceScrollBtn);
-        _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
         _autoScrollBtn.onClick.AddListener(AutoScrollBtn);
 #else
         _forceScrollBtn.gameObject.SetActive(false);
-        _disconnectBtn.gameObject.SetActive(false);
         _autoScrollBtn.gameObject.SetActive(false);
 #endif
 

@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 using static Define;
 
 public class UI_Select : UI_Scene

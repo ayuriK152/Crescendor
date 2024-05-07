@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class UnityMidiAndroid
 {
     private const string PluginName = "com.arthaiirgames.usbmidiandroid.UsbMidiController";

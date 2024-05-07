@@ -1,9 +1,6 @@
-using TMPro;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
 
 public class ActualModController : IngameController
@@ -48,6 +45,9 @@ public class ActualModController : IngameController
 
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
+
+        Managers.Input.noteAction -= OnEventReceived;
+        Managers.Input.noteAction += OnEventReceived;
 
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));
@@ -189,29 +189,23 @@ public class ActualModController : IngameController
         noteCheckCoroutineCnt -= 1;
     }
 
-    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
+    void OnEventReceived(int noteNum, int velocity)
     {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
+        // 노트 입력 시작
+        if (velocity != 0)
         {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-
-            // 노트 입력 시작
-            if (noteEvent.Velocity != 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                if (!_noteRecords.ContainsKey(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET))
-                    _noteRecords.Add(noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET, new List<KeyValuePair<int, int>>());
-                Debug.Log(noteEvent);
-            }
-            // 노트 입력 종료
-            else if (noteEvent.Velocity == 0)
-            {
-                _noteRecords[noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
-            }
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
+            if (!_noteRecords.ContainsKey(noteNum - DEFAULT_KEY_NUM_OFFSET))
+                _noteRecords.Add(noteNum - DEFAULT_KEY_NUM_OFFSET, new List<KeyValuePair<int, int>>());
+            Debug.Log(noteNum);
+        }
+        // 노트 입력 종료
+        else if (velocity == 0)
+        {
+            _noteRecords[noteNum - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
         }
     }
 }

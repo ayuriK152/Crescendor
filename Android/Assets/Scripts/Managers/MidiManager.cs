@@ -6,11 +6,11 @@ using SmfLite;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static Define;
-using static Datas;
 using Newtonsoft.Json;
 using System.Linq;
 using System.IO;
+using static Define;
+using static Datas;
 
 public class MidiManager
 {

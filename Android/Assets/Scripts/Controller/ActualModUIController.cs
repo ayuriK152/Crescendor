@@ -31,7 +31,6 @@ public class ActualModUIController : IngameUIController
 
         _controller = Managers.Ingame.currentController as ActualModController;
 
-        _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
 
