@@ -6,18 +6,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class UI_Profile : UI_Popup
 {
-    private Image profileImage;
-    private TMP_InputField imageUrl;
-    private UI_MyPage myPage;
+    private TMP_InputField imageUrlInput;
+    UI_MyPage myPage;
+    Image profileImage;
+
+    private string imageUrlPattern = @"^(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)";
 
     enum Buttons
     {
         Btn,
+        CloseBtn,
     }
-
     private void Start()
     {
         Init();
@@ -27,67 +30,141 @@ public class UI_Profile : UI_Popup
     {
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.Btn).gameObject.BindEvent(OnBtnClicked);
-
-        // ProfileBtnÀ» Ã£±â À§ÇØ UI_MyPage¸¦ °¡Á®¿È
+        GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(OnCloseBtnClicked);
+        // UI ìš”ì†Œ ì´ˆê¸°í™”
+        imageUrlInput = GameObject.Find("@UI/UI_Profile/Panel/URL").GetComponent<TMP_InputField>();
+        // ProfileBtnì„ ì°¾ê¸° ìœ„í•´ UI_MyPageë¥¼ ê°€ì ¸ì˜´
         myPage = FindObjectOfType<UI_MyPage>();
         if (myPage != null)
         {
-            // UserInfo¿¡¼­ ProfileBtnÀ» Ã£¾Æ¼­ profileImage¿¡ ÇÒ´ç
+            // UserInfoì—ì„œ ProfileBtnì„ ì°¾ì•„ì„œ profileImageì— í• ë‹¹
             Transform profileBtn = myPage.transform.Find("UserInfo/ProfileBtn");
             if (profileBtn != null)
             {
                 profileImage = profileBtn.GetComponent<Image>();
             }
-            else
-            {
-                Debug.LogError("ProfileBtn not found under UserInfo.");
-            }
+        }
+    }
+
+    // ì´ë¯¸ì§€ URLì´ ìœ íš¨í•œì§€ í™•ì¸í•˜ëŠ” í•¨ìˆ˜
+    private bool IsValidImageUrl(string imageUrl)
+    {
+        // ì •ê·œì‹ íŒ¨í„´ì„ ì‚¬ìš©í•˜ì—¬ ì´ë¯¸ì§€ URLì„ ê²€ì‚¬
+        return Regex.IsMatch(imageUrl, imageUrlPattern);
+    }
+
+    public void ShowErrorMsg(string msg) // ì—ëŸ¬ íŒì—…ì°½ ìƒì„±
+    {
+        GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
+        GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+        loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+    }
+
+
+    // ì‚¬ìš©ìê°€ ì´ë¯¸ì§€ë¥¼ ì„ íƒí•˜ì—¬ í”„ë¡œí•„ ì´ë¯¸ì§€ë¡œ ì„¤ì •í•˜ëŠ” í•¨ìˆ˜
+    public void UpdateProfile()
+    {
+        // ì´ë¯¸ì§€ URLì„ ê°€ì ¸ì˜´
+        string imageURL = imageUrlInput.text;
+
+        // ì´ë¯¸ì§€ URLì´ ìœ íš¨í•œì§€ í™•ì¸
+        if (IsValidImageUrl(imageURL))
+        {
+            // ì„œë²„ì— í”„ë¡œí•„ ì—…ë°ì´íŠ¸ ìš”ì²­ì„ ë³´ëƒ„
+            StartCoroutine(UpdateProfileCoroutine(imageURL));
         }
         else
         {
-            Debug.LogError("UI_MyPage not found in the scene.");
+            ShowErrorMsg("Image url is invalid.");
         }
-
-        // URL ÀÔ·Â ÇÊµå Ã£±â
-        imageUrl = GameObject.Find("@UI/UI_Profile/Panel/URL").GetComponent<TMP_InputField>();
     }
 
     public void OnBtnClicked(PointerEventData data)
     {
-        LoadImageFromURL();
+        UpdateProfile();
     }
 
-    // »ç¿ëÀÚ°¡ ÀÌ¹ÌÁö¸¦ ¼±ÅÃÇÏ¿© ÇÁ·ÎÇÊ ÀÌ¹ÌÁö·Î ¼³Á¤ÇÏ´Â ÇÔ¼ö
-    public void LoadImageFromURL()
+    public void OnCloseBtnClicked(PointerEventData data)
     {
-        // ÀÌ¹ÌÁö URLÀ» °¡Á®¿Í¼­ ÀÌ¹ÌÁö ·Îµå
-        string URL = imageUrl.text;
-        StartCoroutine(LoadImageFromURLCoroutine(URL));
-        Debug.Log(URL);
+        Destroy(gameObject);
     }
 
-    // ÀÌ¹ÌÁö URL·ÎºÎÅÍ ÀÌ¹ÌÁö¸¦ ´Ù¿î·ÎµåÇÏ¿© ÇÁ·ÎÇÊ ÀÌ¹ÌÁö·Î ¼³Á¤ÇÏ´Â ÄÚ·çÆ¾ ÇÔ¼ö
-    private IEnumerator LoadImageFromURLCoroutine(string imageURL)
+    // ì„œë²„ì— í”„ë¡œí•„ ì—…ë°ì´íŠ¸ ìš”ì²­ì„ ë³´ë‚´ëŠ” ì½”ë£¨í‹´ í•¨ìˆ˜
+    private IEnumerator UpdateProfileCoroutine(string imageURL)
     {
-        // ÀÌ¹ÌÁö ´Ù¿î·Îµå
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(imageURL);
-        yield return request.SendWebRequest();
+        // ì—…ë°ì´íŠ¸í•  í”„ë¡œí•„ ì •ë³´ ìƒì„±
+        ProfileUpdateData updateData = new ProfileUpdateData();
+        updateData.id = Managers.Data.userId; // ì‚¬ìš©ì ID
+        updateData.profile = imageURL; // ì´ë¯¸ì§€ URL
 
-        // ÀÌ¹ÌÁö ´Ù¿î·Îµå¿¡ ¼º°øÇÑ °æ¿ì
-        if (!request.isNetworkError && !request.isHttpError)
+        // JSON í˜•ì‹ìœ¼ë¡œ ë³€í™˜
+        string jsonData = JsonUtility.ToJson(updateData);
+
+        // ì„œë²„ URL ì„¤ì •
+        string serverURL = "http://15.164.2.49:3000/changeprofile";
+
+        // POST ìš”ì²­ ë³´ë‚´ê¸°
+        using (UnityWebRequest request = UnityWebRequest.Post(serverURL, jsonData))
         {
-            // ÅØ½ºÃÄ »ı¼º
-            Texture2D texture = DownloadHandlerTexture.GetContent(request);
+            // ìš”ì²­ í—¤ë” ì„¤ì •
+            request.SetRequestHeader("Content-Type", "application/json");
 
-            // Sprite »ı¼º
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            // ìš”ì²­ ë³¸ë¬¸ ì„¤ì •
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
 
-            // ÇÁ·ÎÇÊ ÀÌ¹ÌÁö·Î ¼³Á¤
-            profileImage.sprite = sprite;
-        }
-        else
-        {
-            Debug.LogError("Failed to load image from URL: " + request.error);
+            // ì‘ë‹µ ëŒ€ê¸°
+            yield return request.SendWebRequest();
+
+            // ì„±ê³µ ì—¬ë¶€ í™•ì¸
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("í”„ë¡œí•„ ì—…ë°ì´íŠ¸ ì„±ê³µ");
+                Debug.Log("Response: " + request.downloadHandler.text);
+
+                // í”„ë¡œí•„ ì´ë¯¸ì§€ ì—…ë°ì´íŠ¸
+                UpdateProfileImage(imageURL);
+            }
+            else
+            {
+                Debug.LogError("ì´ë¯¸ì§€ URLì´ ìœ íš¨í•˜ì§€ ì•ŠìŒ. " + request.error);
+            }
         }
     }
+
+    // í”„ë¡œí•„ ì´ë¯¸ì§€ ì—…ë°ì´íŠ¸ í•¨ìˆ˜
+    private void UpdateProfileImage(string imageURL)
+    {
+        // ì´ë¯¸ì§€ë¥¼ ê°€ì ¸ì™€ì„œ í…ìŠ¤ì²˜ë¡œ ë³€í™˜í•˜ì—¬ í”„ë¡œí•„ ì´ë¯¸ì§€ì— ì„¤ì •
+        StartCoroutine(LoadImage(imageURL, (texture) =>
+        {
+            profileImage.sprite = Sprite.Create((Texture2D)texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+        }));
+    }
+
+    // ì´ë¯¸ì§€ë¥¼ ë¹„ë™ê¸°ì ìœ¼ë¡œ ë¡œë“œí•˜ëŠ” í•¨ìˆ˜
+    private IEnumerator LoadImage(string url, System.Action<Texture> onComplete)
+    {
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                onComplete(((DownloadHandlerTexture)www.downloadHandler).texture);
+            }
+            else
+            {
+                Debug.LogError("Failed to load image: " + www.error);
+            }
+        }
+    }
+
+}
+
+[System.Serializable]
+public class ProfileUpdateData
+{
+    public string id;
+    public string profile;
 }
