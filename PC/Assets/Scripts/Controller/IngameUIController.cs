@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IngameUIController : MonoBehaviour
+public class IngameUIController : BaseUIController
 {
     #region Public Members
     public TextMeshProUGUI songTitleTMP;
@@ -13,6 +13,7 @@ public class IngameUIController : MonoBehaviour
     public Slider songTimeSlider;
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
+    public GameObject optionPanelObj;
     #endregion
 
     #region Protected Members
@@ -34,10 +35,12 @@ public class IngameUIController : MonoBehaviour
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
+        optionPanelObj = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_Option");
         _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
         _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
         _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
+        _optionBtn.onClick.AddListener(OnOptionButtonClick);
 
         try
         {
@@ -69,6 +72,11 @@ public class IngameUIController : MonoBehaviour
     public void UpdateBeatText()
     {
         songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
+    }
+
+    public void OnOptionButtonClick()
+    {
+        ShowPopupUI<UI_Option>();
     }
 
     public void DisconnectPianoBtn()

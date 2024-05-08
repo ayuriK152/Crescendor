@@ -41,6 +41,6 @@ public class UI_SongPopup : UI_Popup
 
     public void CloseBtnClicked(PointerEventData data)
     {
-        (Managers.UI.currentUIController as OutGameUIController).ClosePopupUI(this);
+        (Managers.UI.currentUIController as BaseUIController).ClosePopupUI(this);
     }
 }

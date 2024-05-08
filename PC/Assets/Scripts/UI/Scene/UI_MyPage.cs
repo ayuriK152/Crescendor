@@ -62,7 +62,7 @@ public class UI_MyPage : UI_Scene
     public void OnSeccssionClick(PointerEventData data)
     {
 
-        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_Secession>();
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Secession>();
     }
 
     // 이미지 찾아서 리스트에 추가하는 함수
