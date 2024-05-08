@@ -9,6 +9,7 @@ public class UI_Option : UI_Popup
     enum OptionPanels
     {
         MetronomeVolume,
+        MetronomeOffset,
     }
 
     enum Buttons
@@ -16,8 +17,10 @@ public class UI_Option : UI_Popup
         CloseBtn,
     }
 
-    Slider metronomeSlider;
-    TextMeshProUGUI metronomeText;
+    Slider metronomeVolumeSlider;
+    Slider metronomeOffsetSlider;
+    TextMeshProUGUI metronomeVolumeText;
+    TextMeshProUGUI metronomeOffsetText;
 
     private void Start()
     {
@@ -30,11 +33,22 @@ public class UI_Option : UI_Popup
         Bind<Button>(typeof(Buttons));
 
         GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
-        metronomeSlider = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Slider").GetComponent<Slider>();
-        metronomeText = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Value").GetComponent<TextMeshProUGUI>();
-        metronomeSlider.value = PlayerPrefs.GetFloat("user_MetronomeVolume");
-        metronomeText.text = $"{Math.Truncate(metronomeSlider.value * 100)}";
-        metronomeSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeVolume, value));
+
+        metronomeVolumeSlider = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Slider").GetComponent<Slider>();
+        metronomeVolumeText = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Value").GetComponent<TextMeshProUGUI>();
+        metronomeVolumeSlider.value = PlayerPrefs.GetFloat("user_MetronomeVolume");
+        metronomeVolumeText.text = $"{Math.Truncate(metronomeVolumeSlider.value * 100)}";
+        metronomeVolumeSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeVolume, value));
+
+        metronomeOffsetSlider = Get<GameObject>((int)OptionPanels.MetronomeOffset).transform.Find("Slider").GetComponent<Slider>();
+        metronomeOffsetText = Get<GameObject>((int)OptionPanels.MetronomeOffset).transform.Find("Value").GetComponent<TextMeshProUGUI>();
+        if (!PlayerPrefs.HasKey("user_MetronomeOffset"))
+        {
+            PlayerPrefs.SetInt("user_MetronomeOffset", 0);
+        }
+        metronomeOffsetSlider.value = PlayerPrefs.GetInt("user_MetronomeOffset");
+        metronomeOffsetText.text = $"{metronomeOffsetSlider.value}";
+        metronomeOffsetSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeOffset, value));
     }
 
     public void CloseBtnClicked(PointerEventData data)
@@ -47,10 +61,17 @@ public class UI_Option : UI_Popup
         switch (options)
         {
             case OptionPanels.MetronomeVolume:
-                metronomeSlider.value = value;
-                metronomeText.text = $"{Math.Truncate(value * 100)}";
+                metronomeVolumeSlider.value = value;
+                metronomeVolumeText.text = $"{Math.Truncate(value * 100)}";
                 Managers.Sound.SetMetronomeVolume(value);
                 PlayerPrefs.SetFloat("user_MetronomeVolume", value);
+                break;
+
+            case OptionPanels.MetronomeOffset:
+                metronomeOffsetSlider.value = value;
+                metronomeOffsetText.text = $"{value}";
+                Managers.Sound.metronomeOffset = (int)value;
+                PlayerPrefs.SetInt("user_MetronomeOffset", (int)value);
                 break;
         }
     }
