@@ -257,7 +257,7 @@ public class ActualModController : IngameController
 
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
         Debug.Log("Effect/피아노 입력 확인: " + effectPos.name);
-        correctEffect.transform.position = effectPos.position;
+        correctEffect.transform.position = new Vector3(effectPos.position.x, 0.2f, -2f);
 
         ParticleSystem correct =  correctEffect.GetComponent<ParticleSystem>();
         correct.Play();
