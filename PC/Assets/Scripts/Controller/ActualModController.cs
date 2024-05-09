@@ -26,6 +26,17 @@ public class ActualModController : IngameController
     private Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
     #endregion
 
+    private GameObject correctEffect;
+    GameObject vPiano;
+
+    private void Start()
+    {
+        // 이펙트 관련 초기화
+        correctEffect = Resources.Load<GameObject>("Effects/correct");
+
+        vPiano = GameObject.Find("VirtualPiano");
+    }
+
     public void Init()
     {
         base.Init();
@@ -155,6 +166,12 @@ public class ActualModController : IngameController
                     currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - _lastInputTiming[keyNum];
                     currentAcc = (totalAcc - currentFail) / (float)totalAcc;
                 }
+
+                else
+                {
+                    // 노트 입력 시작 시에 이펙트
+                    Effects(keyNum);
+                }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;
         }
@@ -213,5 +230,36 @@ public class ActualModController : IngameController
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }
         }
+    }
+
+    void Effects(int keyNum)
+    {
+        int octave = 0;
+        int chord = 0;
+
+        if (keyNum >= 0 && keyNum <= 2)
+        {
+            octave = 0;
+            chord = keyNum;
+        }
+
+        else if (keyNum >= 3 && keyNum <= 86)
+        {
+            octave = (keyNum - 3) / 12 + 1;
+            chord = (keyNum - 3) % 12;
+        }
+
+        else if (keyNum == 87)
+        {
+            octave = 8;
+            chord = 0;
+        }
+
+        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
+        Debug.Log("Effect/피아노 입력 확인: " + effectPos.name);
+        correctEffect.transform.position = effectPos.position;
+
+        ParticleSystem correct =  correctEffect.GetComponent<ParticleSystem>();
+        correct.Play();
     }
 }
