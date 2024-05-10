@@ -185,8 +185,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Login Success
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5d509747da3b3be429750fc2e3ce665b, type: 2}
+  m_sharedMaterial: {fileID: 5491604793891476781, guid: 5d509747da3b3be429750fc2e3ce665b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -320,8 +320,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Ok
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 373dea1dcb288644896c7cdac5650ead, type: 2}
+  m_sharedMaterial: {fileID: -4132053971807613284, guid: 373dea1dcb288644896c7cdac5650ead, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
