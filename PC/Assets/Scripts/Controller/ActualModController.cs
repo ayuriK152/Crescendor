@@ -62,6 +62,8 @@ public class ActualModController : IngameController
         // 이펙트 관련 초기화
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
         vPiano = GameObject.Find("VirtualPiano");
+
+        Effects(1);
     }
 
     void Update()
@@ -255,7 +257,8 @@ public class ActualModController : IngameController
             chord = 0;
         }
 
-        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);        
-        Instantiate(correctEffect, effectPos);
+        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
+        GameObject effect_clone = Instantiate(correctEffect, effectPos);
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, -2.4f);
     }
 }
