@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
+using Unity.VisualScripting;
 
 public class ActualModController : IngameController
 {
@@ -26,16 +27,9 @@ public class ActualModController : IngameController
     private Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
     #endregion
 
+    // Effect 관련 변수
     private GameObject correctEffect;
-    GameObject vPiano;
-
-    private void Start()
-    {
-        // 이펙트 관련 초기화
-        correctEffect = Resources.Load<GameObject>("Effects/correct");
-
-        vPiano = GameObject.Find("VirtualPiano");
-    }
+    private GameObject vPiano;
 
     public void Init()
     {
@@ -62,6 +56,13 @@ public class ActualModController : IngameController
 
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));
+    }
+
+    private void Start()
+    {
+        // 이펙트 관련 초기화
+        correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
+        vPiano = GameObject.Find("VirtualPiano");
     }
 
     void Update()
@@ -255,11 +256,7 @@ public class ActualModController : IngameController
             chord = 0;
         }
 
-        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
-        Debug.Log("Effect/피아노 입력 확인: " + effectPos.name);
-        correctEffect.transform.position = new Vector3(effectPos.position.x, 0.2f, -2f);
-
-        ParticleSystem correct =  correctEffect.GetComponent<ParticleSystem>();
-        correct.Play();
+        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);        
+        Instantiate(correctEffect, effectPos);
     }
 }
