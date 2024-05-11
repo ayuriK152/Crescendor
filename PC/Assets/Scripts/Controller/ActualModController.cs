@@ -64,6 +64,8 @@ public class ActualModController : IngameController
         vPiano = GameObject.Find("VirtualPiano");
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
         accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
+
+        AccurayEffect();
     }
 
     void Update()
@@ -266,9 +268,16 @@ public class ActualModController : IngameController
     void AccurayEffect()
     {
         Transform camera = GameObject.FindWithTag("MainCamera").transform;
+        GameObject effect_clone = Instantiate(accuracyEffect, camera);
 
-        // 주어진 범위 내에서 랜덤으로 생성하게 로직 변경 예정
+        // float scale_x = vPiano.transform.lossyScale.x;
+        // float range_x = Random.Range(vPiano.transform.position.x - (scale_x / 2), vPiano.transform.position.x + (scale_x / 2));
+        // float range_z = Random.Range(camera.position.z - (0.28125f * scale_x) , camera.position.z + (0.28125f * scale_x));
 
-        Instantiate(accuracyEffect, camera);
+        // 수정 예정
+        float range_x = Random.Range(-10, 10);
+        float range_z = Random.Range(0, 10);
+
+        effect_clone.transform.position = new Vector3(range_x, effect_clone.transform.position.y, range_z); 
     }
 }
