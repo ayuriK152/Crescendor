@@ -27,8 +27,9 @@ public class ActualModController : IngameController
     #endregion
 
     // Effect 관련 변수
-    private GameObject correctEffect;
     private GameObject vPiano;
+    private GameObject correctEffect;
+    private GameObject accuracyEffect;
 
     public void Init()
     {
@@ -60,8 +61,9 @@ public class ActualModController : IngameController
     private void Start()
     {
         // 이펙트 관련 초기화
-        correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
         vPiano = GameObject.Find("VirtualPiano");
+        correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
+        accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
     }
 
     void Update()
@@ -170,7 +172,7 @@ public class ActualModController : IngameController
                 else
                 {
                     // 노트 입력 시작 시에 이펙트
-                    Effects(keyNum);
+                    CorrectEffect(keyNum);
                 }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;
@@ -194,6 +196,7 @@ public class ActualModController : IngameController
                 else if (Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
                     currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
+                    AccurayEffect();
                 }
 
                 _lastInputTiming[keyNum] = currentDeltaTime;
@@ -232,7 +235,7 @@ public class ActualModController : IngameController
         }
     }
 
-    void Effects(int keyNum)
+    void CorrectEffect(int keyNum)
     {
         int octave = 0;
         int chord = 0;
@@ -258,5 +261,14 @@ public class ActualModController : IngameController
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
         GameObject effect_clone = Instantiate(correctEffect, effectPos);
         effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, -2.4f);
+    }
+
+    void AccurayEffect()
+    {
+        Transform camera = GameObject.FindWithTag("MainCamera").transform;
+
+        // 주어진 범위 내에서 랜덤으로 생성하게 로직 변경 예정
+
+        Instantiate(accuracyEffect, camera);
     }
 }
