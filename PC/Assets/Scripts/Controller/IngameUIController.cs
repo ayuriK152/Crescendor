@@ -39,9 +39,16 @@ public class IngameUIController : MonoBehaviour
         _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
 
-        _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
+        try
+        {
+            _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
+            _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
+        }
+        catch
+        {
+            Debug.Log("No Object");
+        }
 
-        _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
 

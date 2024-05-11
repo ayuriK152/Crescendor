@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using static Define;
 
 public class UI_Select : UI_Scene
 {
@@ -14,65 +16,86 @@ public class UI_Select : UI_Scene
     {
         SongPanel,
         RankPanel,
+        CurriculumPanel,
+        CurriculumSongPanel,
         SongInfoPanel,
+        SongListScrollView,
+        CurriListScrollView,
+        CurriSongListScrollView,
+        RankListScrollView,
     }
 
     enum Buttons
     {
-        RankButton,
         MainMenuButton,
         OptionButton,
         ProfileButton,
+        SongListButton,
+        CurriculumButton
     }
 
     enum Dropdowns
     {
-        RankCategory,
-        SongCategory,
+        RankCategory
     }
 
     GameObject _rankPanelObj;
     GameObject _noRankSignPanelObj;
     GameObject _songInfoPanel;
-    Button _mainMenuBtn;
-    Button _optionBtn;
-    Button _profileBtn;
+    GameObject _songListScrollView;
+    GameObject _curriListScrollView;
+    GameObject _curriSongListScrollView;
+    GameObject _rankListScrollView;
+    UnityEngine.UI.Button _mainMenuBtn;
+    UnityEngine.UI.Button _optionBtn;
+    UnityEngine.UI.Button _profileBtn;
+    UnityEngine.UI.Button _songListBtn;
+    UnityEngine.UI.Button _curriListBtn;
     TextMeshProUGUI _profileName;
     TextMeshProUGUI _songInfoName;
     TextMeshProUGUI _songInfoComposser;
     TextMeshProUGUI _songInfoLength;
     TextMeshProUGUI _songInfoTempo;
     TMP_Dropdown _rankListDropdown;
-    TMP_Dropdown _songListDropdown;
     Define.RankRecordList rankRecords;
     Sprite originalSprite;
-
     void Start()
     {
         Init();
     }
-    
+
     public override void Init()
     {
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));
-        Bind<Button>(typeof(Buttons));
+        Bind<UnityEngine.UI.Button>(typeof(Buttons));
         Bind<TMP_Dropdown>(typeof(Dropdowns));
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
+        GameObject curriculumPanel = Get<GameObject>((int)GameObjects.CurriculumPanel);
         Managers.Song.LoadSongsFromConvertsFolder();
         foreach (Transform child in songPanel.transform)
             Managers.Data.Destroy(child.gameObject);
 
         _rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
         _songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
+        _songListScrollView = Get<GameObject>((int)GameObjects.SongListScrollView);
+        _curriListScrollView = Get<GameObject>((int)GameObjects.CurriListScrollView);
+        _curriSongListScrollView = Get<GameObject>((int)GameObjects.CurriSongListScrollView);
+        _rankListScrollView = Get<GameObject>((int)GameObjects.RankListScrollView);
+        _curriListScrollView.SetActive(false);
+        _curriSongListScrollView.SetActive(false);
 
-        _mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
-        _optionBtn = Get<Button>((int)Buttons.OptionButton);
-        _profileBtn = Get<Button>((int)Buttons.ProfileButton);
+        _mainMenuBtn = Get<UnityEngine.UI.Button>((int)Buttons.MainMenuButton);
+        _optionBtn = Get<UnityEngine.UI.Button>((int)Buttons.OptionButton);
+        _profileBtn = Get<UnityEngine.UI.Button>((int)Buttons.ProfileButton);
+        _songListBtn = Get<UnityEngine.UI.Button>((int)Buttons.SongListButton);
+        _curriListBtn = Get<UnityEngine.UI.Button>((int)Buttons.CurriculumButton);
+        _songListBtn.interactable = false;
+        _songListBtn.onClick.AddListener(SwapListView);
+        _curriListBtn.onClick.AddListener(SwapListView);
 
         _rankListDropdown = Get<TMP_Dropdown>((int)Dropdowns.RankCategory);
-        _songListDropdown = Get<TMP_Dropdown>((int)Dropdowns.SongCategory);
 
         _mainMenuBtn.onClick.AddListener(OnMainMenuButtonClick);
         _profileBtn.onClick.AddListener(OnProfileButtonClick);
@@ -88,14 +111,8 @@ public class UI_Select : UI_Scene
         _songInfoTempo = _songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
 
         _rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
-        _songListDropdown = transform.Find("SongListScrollView/SongCategory").GetComponent<TMP_Dropdown>();
 
         _noRankSignPanelObj = _rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
-
-        PlayerPrefs.SetString("trans_SongTitle", "CanCan-Jacques_Offenbach");
-
-        UpdateRankList();
-        UpdateSongInfo();
 
         // SongManager의 곡 정보를 이용하여 버튼 생성
         for (int i = 0; i < Managers.Song.songs.Count; i++)
@@ -105,15 +122,16 @@ public class UI_Select : UI_Scene
             // SongButton 생성
             if (songButtonPrefab != null)
             {
-                Button button = songButtonPrefab.GetComponent<Button>();
+                UnityEngine.UI.Button button = songButtonPrefab.GetComponent<UnityEngine.UI.Button>();
 
                 // Song 정보를 버튼에 표시
                 if (button != null)
                 {
                     // 예시로 Song의 songTitle을 버튼에 표시
+                    button.gameObject.name = $"{i}";
                     button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
                     button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
-                    button.onClick.AddListener(() => OnSongButtonClick($"{button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text.Replace(" ", "_")}-{button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text.Replace(" ", "_")}"));
+                    button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
                 }
             }
             else
@@ -122,23 +140,63 @@ public class UI_Select : UI_Scene
             }
         }
 
+        // 커리큘럼 버튼 리스트 생성
+        foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
+        {
+            if (curriculum == Curriculum.None)
+                continue;
+
+            GameObject curriculumButtonPrefab = Managers.Data.Instantiate($"UI/Sub/CurriculumButton", curriculumPanel.transform);
+            if (curriculumButtonPrefab != null)
+            {
+                UnityEngine.UI.Button button = curriculumButtonPrefab.GetComponent<UnityEngine.UI.Button>();
+
+                // Song 정보를 버튼에 표시
+                if (button != null)
+                {
+                    // 예시로 Song의 songTitle을 버튼에 표시
+                    button.gameObject.name = $"{curriculum}";
+                    button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = curriculum.ToString();
+                }
+            }
+            else
+            {
+                Debug.LogError($"Failed to load CurriculumButton prefab");
+            }
+        }
+
+        PlayerPrefs.SetString("trans_SongTitle", $"{Managers.Song.songs[0].songTitle.Replace(" ", "_")}-{Managers.Song.songs[0].songComposer.Replace(" ", "_")}");
+        Managers.Song.selectedSong = Managers.Song.songs[0];
+        Managers.Song.selectedCurriculum = Curriculum.Hanon;
+
+        UpdateRankList();
+        UpdateSongInfo();
+        UpdateCurriculumSongList();
         // 프로필 이미지 로드
         LoadImage(Managers.Data.userId);
     }
 
-    public void OnSongButtonClick(string songName)
+    public void OnSongButtonClick(int songIdx)
     {
-        if (!PlayerPrefs.HasKey("trans_SongTitle"))
-            PlayerPrefs.SetString("trans_SongTitle", "");
+        string selectedSongTitle = $"{Managers.Song.songs[songIdx].songTitle.Replace(" ", "_")}-{Managers.Song.songs[songIdx].songComposer.Replace(" ", "_")}";
         string currentSongTitle = PlayerPrefs.GetString("trans_SongTitle");
-        if (currentSongTitle != songName)
+        if (currentSongTitle != selectedSongTitle && !_songListBtn.interactable)
         {
-            PlayerPrefs.SetString("trans_SongTitle", songName);
+            PlayerPrefs.SetString("trans_SongTitle", selectedSongTitle);
+            Managers.Song.selectedSong = Managers.Song.songs[songIdx];
             UpdateRankList();
             UpdateSongInfo();
         }
-        else if (currentSongTitle == songName)
+        else
         {
+            if (currentSongTitle != selectedSongTitle)
+            {
+                PlayerPrefs.SetString("trans_SongTitle", selectedSongTitle);
+                Managers.Song.selectedSong = Managers.Song.songs[songIdx];
+                UpdateRankList();
+                UpdateSongInfo();
+            }
+
             (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_SongPopup>();
         }
     }
@@ -266,7 +324,7 @@ public class UI_Select : UI_Scene
                 rankButtonInstance.name = $"{i}";
                 if (rankButtonInstance != null)
                 {
-                    Button button = rankButtonInstance.GetComponent<Button>();
+                    UnityEngine.UI.Button button = rankButtonInstance.GetComponent<UnityEngine.UI.Button>();
                     button.gameObject.BindEvent(OnRankButtonClick);
                     button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
@@ -325,7 +383,7 @@ public class UI_Select : UI_Scene
             rankButtonInstance.name = $"{i}";
             if (rankButtonInstance != null)
             {
-                Button button = rankButtonInstance.GetComponent<Button>();
+                UnityEngine.UI.Button button = rankButtonInstance.GetComponent<UnityEngine.UI.Button>();
                 button.gameObject.BindEvent(OnRankButtonClick);
                 button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
@@ -356,6 +414,36 @@ public class UI_Select : UI_Scene
         _songInfoName.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[0].Replace("_", " ");
         _songInfoComposser.text = PlayerPrefs.GetString("trans_SongTitle").Split('-')[1].Replace("_", " ");
         _songInfoTempo.text = Managers.Midi.tempo.ToString();
+    }
+
+    void UpdateCurriculumSongList()
+    {
+        GameObject curriculumSongPanel = Get<GameObject>((int)GameObjects.CurriculumSongPanel);
+        GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", curriculumSongPanel.transform);
+
+        for (int i = 0; i < Managers.Song.songs.Count; i++)
+        {
+            if (Managers.Song.songs[i].curriculum != Managers.Song.selectedCurriculum)
+                continue;
+
+            UnityEngine.UI.Button button = songButtonPrefab.GetComponent<UnityEngine.UI.Button>();
+
+            button.gameObject.name = $"{i}";
+            button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
+            button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
+            button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
+        }
+    }
+
+    void SwapListView()
+    {
+        _songListBtn.interactable = !_songListBtn.interactable;
+        _curriListBtn.interactable = !_curriListBtn.interactable;
+        _songListScrollView.SetActive(!_songListScrollView.active);
+        _curriListScrollView.SetActive(!_curriListScrollView.active);
+        _curriSongListScrollView.SetActive(!_curriSongListScrollView.active);
+        _rankListScrollView.SetActive(!_rankListScrollView.active);
+        _songInfoPanel.SetActive(!_songInfoPanel.active);
     }
 
     #region Image Settings
@@ -401,8 +489,8 @@ public class UI_Select : UI_Scene
             {
                 // 텍스처 다운로드 및 이미지 UI에 설정
                 Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                originalSprite = _profileBtn.GetComponent<Image>().sprite; // 원래 이미지를 저장
-                _profileBtn.GetComponent<Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+                originalSprite = _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite; // 원래 이미지를 저장
+                _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             }
         }
     }
