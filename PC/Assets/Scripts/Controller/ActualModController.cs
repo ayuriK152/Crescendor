@@ -62,8 +62,6 @@ public class ActualModController : IngameController
         // 이펙트 관련 초기화
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
         vPiano = GameObject.Find("VirtualPiano");
-
-        Effects(1);
     }
 
     void Update()
