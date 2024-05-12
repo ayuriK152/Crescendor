@@ -53,12 +53,6 @@ public class ActualModController : IngameController
         StartCoroutine(DelayForSeconds(3));
     }
 
-    private void Start()
-    {
-        // 이건 내가 테스팅할라고
-        AccurayEffect();
-    }
-
     void Update()
     {
         Scroll();
@@ -185,11 +179,12 @@ public class ActualModController : IngameController
                     _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - Managers.Midi.song.division / 10f)
                 {
                     currentFail += currentDeltaTime - _lastInputTiming[keyNum];
+                    AccurayEffect().startColor = new Color(255, 0, 0, 200);
                 }
                 else if (Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
                     currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
-                    AccurayEffect();
+                    AccurayEffect().startColor = new Color(0, 255, 0, 200); 
                 }
 
                 _lastInputTiming[keyNum] = currentDeltaTime;

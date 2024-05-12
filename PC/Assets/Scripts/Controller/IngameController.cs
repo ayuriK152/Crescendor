@@ -182,19 +182,19 @@ public class IngameController : MonoBehaviour
         effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, -2.4f);
     }
 
-    protected void AccurayEffect()
+    protected ParticleSystem AccurayEffect()
     {
         Transform camera = GameObject.FindWithTag("MainCamera").transform;
         GameObject effect_clone = Instantiate(accuracyEffect, camera);
 
-        // float scale_x = vPiano.transform.lossyScale.x;
-        // float range_x = Random.Range(vPiano.transform.position.x - (scale_x / 2), vPiano.transform.position.x + (scale_x / 2));
-        // float range_z = Random.Range(camera.position.z - (0.28125f * scale_x) , camera.position.z + (0.28125f * scale_x));
-
         // 수정 예정
-        float range_x = Random.Range(-10, 10);
-        float range_z = Random.Range(0, 10);
+        float range_x = Random.Range(-5, 5);
+        float range_z = Random.Range(0, 4);
 
         effect_clone.transform.position = new Vector3(range_x, effect_clone.transform.position.y, range_z);
+
+        ParticleSystem particleSystem = effect_clone.GetComponent<ParticleSystem>();
+
+        return particleSystem;
     }
 }
