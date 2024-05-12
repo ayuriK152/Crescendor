@@ -26,11 +26,6 @@ public class ActualModController : IngameController
     private Dictionary<int, List<KeyValuePair<int, int>>> _noteRecords;
     #endregion
 
-    // Effect 관련 변수
-    private GameObject vPiano;
-    private GameObject correctEffect;
-    private GameObject accuracyEffect;
-
     public void Init()
     {
         base.Init();
@@ -60,11 +55,7 @@ public class ActualModController : IngameController
 
     private void Start()
     {
-        // 이펙트 관련 초기화
-        vPiano = GameObject.Find("VirtualPiano");
-        correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
-        accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
-
+        // 이건 내가 테스팅할라고
         AccurayEffect();
     }
 
@@ -235,49 +226,5 @@ public class ActualModController : IngameController
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             }
         }
-    }
-
-    void CorrectEffect(int keyNum)
-    {
-        int octave = 0;
-        int chord = 0;
-
-        if (keyNum >= 0 && keyNum <= 2)
-        {
-            octave = 0;
-            chord = keyNum;
-        }
-
-        else if (keyNum >= 3 && keyNum <= 86)
-        {
-            octave = (keyNum - 3) / 12 + 1;
-            chord = (keyNum - 3) % 12;
-        }
-
-        else if (keyNum == 87)
-        {
-            octave = 8;
-            chord = 0;
-        }
-
-        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
-        GameObject effect_clone = Instantiate(correctEffect, effectPos);
-        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, -2.4f);
-    }
-
-    void AccurayEffect()
-    {
-        Transform camera = GameObject.FindWithTag("MainCamera").transform;
-        GameObject effect_clone = Instantiate(accuracyEffect, camera);
-
-        // float scale_x = vPiano.transform.lossyScale.x;
-        // float range_x = Random.Range(vPiano.transform.position.x - (scale_x / 2), vPiano.transform.position.x + (scale_x / 2));
-        // float range_z = Random.Range(camera.position.z - (0.28125f * scale_x) , camera.position.z + (0.28125f * scale_x));
-
-        // 수정 예정
-        float range_x = Random.Range(-10, 10);
-        float range_z = Random.Range(0, 10);
-
-        effect_clone.transform.position = new Vector3(range_x, effect_clone.transform.position.y, range_z); 
     }
 }
