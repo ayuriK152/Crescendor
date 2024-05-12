@@ -1,3 +1,4 @@
+using Melanchall.DryWetMidi.Core;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -41,6 +42,7 @@ public class IngameController : MonoBehaviour
     private GameObject vPiano;
     private GameObject correctEffect;
     private GameObject accuracyEffect;
+    private GameObject congratulationEffect;
 
     protected void Init()
     {
@@ -56,6 +58,7 @@ public class IngameController : MonoBehaviour
         vPiano = GameObject.Find("VirtualPiano");
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
         accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
+        congratulationEffect = Resources.Load<GameObject>("Effects/congratulation") as GameObject;
 
         for (int i = 0; i < 88; i++)
         {
@@ -113,7 +116,10 @@ public class IngameController : MonoBehaviour
         for (int i = 0; i < 88; i++)
         {
             if (Managers.Input.keyChecks[i])
+            {
                 TurnOnHighlight(i);
+            }
+                
             else
                 TurnOffHighlight(i);
         }
@@ -196,5 +202,14 @@ public class IngameController : MonoBehaviour
         ParticleSystem particleSystem = effect_clone.GetComponent<ParticleSystem>();
 
         return particleSystem;
+    }
+
+    protected void CongratulationEffect()
+    {
+        Transform camera = GameObject.FindWithTag("MainCamera").transform;
+        GameObject effect_clone = Instantiate(accuracyEffect, camera);
+
+        effect_clone.transform.position = new Vector3(0f, 2.5f, 6f);
+        effect_clone.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
     }
 }

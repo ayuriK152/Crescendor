@@ -284,10 +284,6 @@ public class PracticeModController : IngameController
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
 
-                // 입력마다 Effect 생성
-                CorrectEffect(noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET);
-                AccurayEffect().startColor = new Color(255, 255, 255, 200);
-
                 Debug.Log(noteEvent);
             }
             // 노트 입력 종료
