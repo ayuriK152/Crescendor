@@ -207,9 +207,8 @@ public class IngameController : MonoBehaviour
     protected void CongratulationEffect()
     {
         Transform camera = GameObject.FindWithTag("MainCamera").transform;
-        GameObject effect_clone = Instantiate(accuracyEffect, camera);
+        GameObject effect_clone = Instantiate(congratulationEffect, camera);
 
-        effect_clone.transform.position = new Vector3(0f, 2.5f, 6f);
-        effect_clone.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+        effect_clone.transform.position = new Vector3(0f, 2.5f, 2f);
     }
 }
