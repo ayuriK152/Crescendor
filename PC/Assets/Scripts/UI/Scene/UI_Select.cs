@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using static Define;
 
@@ -53,12 +54,12 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI _songInfoTempo;
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
-
+    Sprite originalSprite;
     void Start()
     {
         Init();
     }
-    
+
     public override void Init()
     {
         base.Init();
@@ -136,7 +137,7 @@ public class UI_Select : UI_Scene
         }
 
         // 커리큘럼 버튼 리스트 생성
-        foreach(Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
+        foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
         {
             if (curriculum == Curriculum.None)
                 continue;
@@ -167,6 +168,8 @@ public class UI_Select : UI_Scene
         UpdateRankList();
         UpdateSongInfo();
         UpdateCurriculumSongList();
+        // 프로필 이미지 로드
+        LoadImage(Managers.Data.userId);
     }
 
     public void OnSongButtonClick(int songIdx)
@@ -438,5 +441,71 @@ public class UI_Select : UI_Scene
         _rankListScrollView.SetActive(!_rankListScrollView.active);
         _songInfoPanel.SetActive(!_songInfoPanel.active);
     }
+
+    #region Image Settings
+    public void LoadImage(string userId)
+    {
+        StartCoroutine(GetUserProfile(userId));
+    }
+
+
+    private IEnumerator GetUserProfile(string userID)
+    {
+
+        string url = "http://15.164.2.49:3000/getuser/" + userID;
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string responseText = request.downloadHandler.text;
+                Debug.Log("Response: " + responseText);
+
+                // 응답된 JSON 문자열에서 원하는 정보 추출
+                string profileURL = GetProfileURL(responseText);
+                // 프로필 이미지 다운로드 및 설정
+                yield return StartCoroutine(SetProfileImage(profileURL));
+            }
+            else
+            {
+                Debug.LogError("유저를 찾을 수 없음" + request.error);
+            }
+        }
+    }
+
+    private IEnumerator SetProfileImage(string imageURL)
+    {
+        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
+        {
+            yield return imageRequest.SendWebRequest();
+
+            if (imageRequest.result == UnityWebRequest.Result.Success)
+            {
+                // 텍스처 다운로드 및 이미지 UI에 설정
+                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
+                originalSprite = _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite; // 원래 이미지를 저장
+                _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            }
+        }
+    }
+
+
+    private string GetProfileURL(string json)
+    {
+        // JSON 문자열을 파싱하여 profile 정보 추출
+        string profileURL = "";
+
+        // JSON 문자열을 파싱하고 원하는 정보를 추출하는 로직을 작성
+        // 여기서는 간단하게 문자열을 찾아내는 방식으로 작성하였습니다.
+        int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
+        int endIndex = json.IndexOf("\"", startIndex + 1);
+        profileURL = json.Substring(startIndex, endIndex - startIndex);
+
+        return profileURL;
+    }
+
+    #endregion Image Settings 
 }
 
