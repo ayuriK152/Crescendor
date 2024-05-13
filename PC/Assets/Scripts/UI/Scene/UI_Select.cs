@@ -185,8 +185,8 @@ public class UI_Select : UI_Scene
                 curriculumMount += Managers.Song.curriculumSongMounts[curriculum];
                 if (Managers.Data.userCurriculumProgress < curriculumMount)
                 {
-                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = $"{(Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum]}%";
-                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = (Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum];
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = $"{Math.Truncate((Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum] * 1000) / 10}%";
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = (Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum] * 100;
                 }
                 else
                 {
