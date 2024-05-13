@@ -49,7 +49,7 @@ public class UI_MainMenu : UI_Scene
         signUpBtn = GameObject.Find("MainMenu/LoginStuff/SignUpBtn").GetComponent<Button>();
         loginBtn = GameObject.Find("MainMenu/LoginStuff/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
-        profileImage = GameObject.Find("MainMenu/NavBar/ProfileBtn").GetComponent<Image>();
+        profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
         originalSprite = profileImage.sprite;
         if (!Managers.Data.isUserLoggedIn)
         {
