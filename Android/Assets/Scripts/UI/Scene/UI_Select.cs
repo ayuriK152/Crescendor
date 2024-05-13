@@ -328,7 +328,7 @@ public class UI_Select : UI_Scene
                     {
                         button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                         button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
-                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
+                        button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"정확도: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
                     }
                 }
                 else
@@ -387,7 +387,7 @@ public class UI_Select : UI_Scene
                 {
                     button.transform.Find("Ranking").GetComponent<TextMeshProUGUI>().text = $"{i + 1}";
                     button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = $"{rankRecords.records[i].user_id}";
-                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"Accuracy: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
+                    button.transform.Find("Accuracy").GetComponent<TextMeshProUGUI>().text = $"정확도: {Math.Truncate(rankRecords.records[i].score * 10000) / 100}%";
                 }
             }
             else
