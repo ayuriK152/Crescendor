@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -36,6 +37,7 @@ public class UI_Select : UI_Scene
         RankCategory
     }
 
+    Dictionary<Curriculum, GameObject> _buttonByCurriculums;
     GameObject _rankPanelObj;
     GameObject _noRankSignPanelObj;
     GameObject _songInfoPanel;
@@ -56,6 +58,7 @@ public class UI_Select : UI_Scene
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
     Sprite originalSprite;
+
     void Start()
     {
         Init();
@@ -137,6 +140,8 @@ public class UI_Select : UI_Scene
             }
         }
 
+        _buttonByCurriculums = new Dictionary<Curriculum, GameObject>();
+
         // 커리큘럼 버튼 리스트 생성
         foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
         {
@@ -146,12 +151,11 @@ public class UI_Select : UI_Scene
             GameObject curriculumButtonPrefab = Managers.Data.Instantiate($"UI/Sub/CurriculumButton", curriculumPanel.transform);
             if (curriculumButtonPrefab != null)
             {
+                _buttonByCurriculums.Add(curriculum, curriculumButtonPrefab);
                 Button button = curriculumButtonPrefab.GetComponent<Button>();
 
-                // Song 정보를 버튼에 표시
                 if (button != null)
                 {
-                    // 예시로 Song의 songTitle을 버튼에 표시
                     button.gameObject.name = $"{curriculum}";
                     button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = curriculum.ToString();
                 }
@@ -165,10 +169,33 @@ public class UI_Select : UI_Scene
         PlayerPrefs.SetString("trans_SongTitle", $"{Managers.Song.songs[0].songTitle.Replace(" ", "_")}-{Managers.Song.songs[0].songComposer.Replace(" ", "_")}");
         Managers.Song.selectedSong = Managers.Song.songs[0];
         Managers.Song.selectedCurriculum = Curriculum.Hanon;
+        Managers.Song.isModCurriculum = false;
 
         UpdateRankList();
         UpdateSongInfo();
         UpdateCurriculumSongList();
+
+        if (Managers.Data.isUserLoggedIn)
+        {
+            int curriculumMount = 0;
+            foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
+            {
+                if (curriculum == Curriculum.None)
+                    continue;
+                curriculumMount += Managers.Song.curriculumSongMounts[curriculum];
+                if (Managers.Data.userCurriculumProgress < curriculumMount)
+                {
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = $"{(Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum]}%";
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = (Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum];
+                }
+                else
+                {
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = "100%";
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = 100f;
+                }
+            }
+        }
+
         // 프로필 이미지 로드
         if (Managers.Data.isUserLoggedIn)
         {
@@ -419,13 +446,18 @@ public class UI_Select : UI_Scene
     void UpdateCurriculumSongList()
     {
         GameObject curriculumSongPanel = Get<GameObject>((int)GameObjects.CurriculumSongPanel);
-        GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", curriculumSongPanel.transform);
+        Managers.Song.curriculumSongMounts.Clear();
 
         for (int i = 0; i < Managers.Song.songs.Count; i++)
         {
             if (Managers.Song.songs[i].curriculum != Managers.Song.selectedCurriculum)
                 continue;
-
+            if (!Managers.Song.curriculumSongMounts.ContainsKey(Managers.Song.songs[i].curriculum))
+            {
+                Managers.Song.curriculumSongMounts.Add(Managers.Song.songs[i].curriculum, 0);
+            }
+            Managers.Song.curriculumSongMounts[Managers.Song.songs[i].curriculum]++;
+            GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", curriculumSongPanel.transform);
             Button button = songButtonPrefab.GetComponent<Button>();
 
             button.gameObject.name = $"{i}";
@@ -437,6 +469,7 @@ public class UI_Select : UI_Scene
 
     void SwapListView()
     {
+        Managers.Song.isModCurriculum = !Managers.Song.isModCurriculum;
         _songListBtn.interactable = !_songListBtn.interactable;
         _curriListBtn.interactable = !_curriListBtn.interactable;
         _songListScrollView.SetActive(!_songListScrollView.active);

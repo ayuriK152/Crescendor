@@ -5,15 +5,18 @@
  * 필요한 경우 서버 통신과 관련된 모든 기능을 다른 매니저에 구현하는 것도 생각해볼 수 있음 */
 
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Datas;
 
 public class DataManager
 {
     public string jsonDataFromServer;
     public string userId = "";
+    public int userCurriculumProgress = 0;
     public bool isServerConnectionComplete = false;
     public bool isUserLoggedIn = false;
     public Define.RankRecord rankRecord;
@@ -76,7 +79,7 @@ public class DataManager
 
     public void GetRankListFromServer(string songFileName)
     {
-        UnityWebRequest www = UnityWebRequest.Get($"http://15.164.2.49:3000/ranking/{songFileName}");
+        UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/ranking/{songFileName}");
 
         www.SendWebRequest();  // 응답이 올때까지 대기한다.
         while (!www.isDone) { }
@@ -96,7 +99,7 @@ public class DataManager
 
     public float GetBestRankFromServer(string userId, string songFileName)
     {
-        UnityWebRequest www = UnityWebRequest.Get($"http://15.164.2.49:3000/record/getscore/{userId}/{songFileName}");
+        UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/record/getscore/{userId}/{songFileName}");
 
         www.SendWebRequest();  // 응답이 올때까지 대기한다.
         while (!www.isDone) { }
@@ -126,7 +129,7 @@ public class DataManager
 
     public void SetBestRankToServer(string userId, string songFileName, float score, Define.UserReplayRecord replayData)
     {
-        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/setscore/{userId}/{songFileName}", "PUT");
+        UnityWebRequest www = new UnityWebRequest($"http://{DEFAULT_SERVER_IP_PORT}/record/setscore/{userId}/{songFileName}", "PUT");
         string jsonData = $"{{\"score\" : {score}, \"midi\" : {{\"tempo\" : {replayData.tempo}, \"noteRecords\" : \"[{ParseToServer(JsonConvert.SerializeObject(replayData.noteRecords))}]\", \"originFileName\" : \"{replayData.originFileName}\"}}}}";
         Debug.Log(jsonData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
@@ -151,7 +154,7 @@ public class DataManager
 
     public void AddBestRankToServer(string userId, string songFileName, float score, Define.UserReplayRecord replayData)
     {
-        UnityWebRequest www = new UnityWebRequest($"http://15.164.2.49:3000/record/addscore/{userId}/{songFileName}", "POST");
+        UnityWebRequest www = new UnityWebRequest($"http://{DEFAULT_SERVER_IP_PORT}/record/addscore/{userId}/{songFileName}", "POST");
         string jsonData = $"{{\"score\" : {score}, \"midi\" : {{\"tempo\" : {replayData.tempo}, \"noteRecords\" : \"[{ParseToServer(JsonConvert.SerializeObject(replayData.noteRecords))}]\", \"originFileName\" : \"{replayData.originFileName}\"}}}}";
         Debug.Log(jsonData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
@@ -172,6 +175,36 @@ public class DataManager
             isServerConnectionComplete = false;
             Debug.LogError(www.error);
         }
+    }
+
+    // 반환되는 참 거짓 값으로 에러의 유무를 판별
+    public bool GetUserData(string userId)
+    {
+        UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/getuser/{userId}");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            isServerConnectionComplete = true;
+            Debug.Log("Get Data Success");
+            userCurriculumProgress = GetUserCurriculumProgress(www.downloadHandler.text);
+            return true;
+        }
+        else
+        {
+            isServerConnectionComplete = false;
+            Debug.LogError("Error to Get Data");
+            return false;
+        }
+    }
+
+    public int GetUserCurriculumProgress(string userData)
+    {
+        int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
+        int endIndex = userData.IndexOf("\"", startIndex + 1);
+        return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
     }
 
     string ParseToServer(string origin)

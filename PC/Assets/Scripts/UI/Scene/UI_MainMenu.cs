@@ -44,10 +44,10 @@ public class UI_MainMenu : UI_Scene
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnMyPageButtonClick);
-        idInput = GameObject.Find("MainMenu/Logo/ID").GetComponent<TMP_InputField>(); 
-        passwordInput = GameObject.Find("MainMenu/Logo/PASSWORD").GetComponent<TMP_InputField>();
-        signUpBtn = GameObject.Find("MainMenu/Logo/SignUpBtn").GetComponent<Button>();
-        loginBtn = GameObject.Find("MainMenu/Logo/LoginBtn").GetComponent<Button>();
+        idInput = GameObject.Find("MainMenu/LoginStuff/ID").GetComponent<TMP_InputField>(); 
+        passwordInput = GameObject.Find("MainMenu/LoginStuff/PASSWORD").GetComponent<TMP_InputField>();
+        signUpBtn = GameObject.Find("MainMenu/LoginStuff/SignUpBtn").GetComponent<Button>();
+        loginBtn = GameObject.Find("MainMenu/LoginStuff/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
         profileImage = GameObject.Find("MainMenu/NavBar/ProfileBtn").GetComponent<Image>();
         originalSprite = profileImage.sprite;
