@@ -8,12 +8,25 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Define;
 
 public class UI_MyPage : UI_Scene
 {
     TextMeshProUGUI _userNameTMP;
     public List<Image> grassImages; // 이미지를 담을 리스트
     private string baseURL = "http://15.164.2.49:3000/log/getlog/";
+
+    [Serializable]
+    public class LogEntry
+    {
+        public string date;
+    }
+
+    [Serializable]
+    public class LogEntryList
+    {
+        public List<LogEntry> logs;
+    }
 
     enum Buttons
     {
@@ -153,19 +166,4 @@ public class UI_MyPage : UI_Scene
         {
             return new Color(0.75f, 0.75f, 0.75f); // Gray
         }
-    }
-
-    [Serializable]
-    public class LogEntry
-    {
-        public string date;
-    }
-
-    [Serializable]
-    public class LogEntryList
-    {
-        public List<LogEntry> logs;
-    }
-
-
 }

@@ -168,7 +168,8 @@ public class UI_Select : UI_Scene
         UpdateSongInfo();
         UpdateCurriculumSongList();
 
-        Managers.Input.keyAction
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void OnSongButtonClick(int songIdx)
