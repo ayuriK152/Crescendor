@@ -79,7 +79,7 @@ public class UI_Secession : UI_Popup
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_CheckOut>();
+            Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_CheckOut>();
         }
         else
         {

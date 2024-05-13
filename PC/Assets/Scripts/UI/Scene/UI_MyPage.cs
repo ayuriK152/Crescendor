@@ -72,7 +72,7 @@ public class UI_MyPage : UI_Scene
 
     public void OnProfileBtnClick(PointerEventData data)
     {
-        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_Profile>();
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Profile>();
     }
 
 

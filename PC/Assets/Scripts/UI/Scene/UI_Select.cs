@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -169,7 +170,10 @@ public class UI_Select : UI_Scene
         UpdateSongInfo();
         UpdateCurriculumSongList();
         // 프로필 이미지 로드
-        LoadImage(Managers.Data.userId);
+        if (Managers.Data.isUserLoggedIn)
+        {
+            LoadImage(Managers.Data.userId);
+        }
     }
 
     public void OnSongButtonClick(int songIdx)

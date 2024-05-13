@@ -104,7 +104,7 @@ public class UI_Profile : UI_Popup
         string serverURL = "http://15.164.2.49:3000/changeprofile";
 
         // POST 요청 보내기
-        using (UnityWebRequest request = UnityWebRequest.Post(serverURL, jsonData))
+        using (UnityWebRequest request = UnityWebRequest.PostWwwForm(serverURL, jsonData))
         {
             // 요청 헤더 설정
             request.SetRequestHeader("Content-Type", "application/json");
