@@ -101,7 +101,7 @@ public class ActualModController : IngameController
     {
         if (_isIntro)
             return;
-        if (currentBar < currentDeltaTime / Managers.Midi.song.division)
+        if (currentBar < (currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division)
         {
             Managers.Sound.metronomeAction.Invoke();
             currentBar++;

@@ -136,7 +136,7 @@ public class UI_MainMenu : UI_Scene
     public void OnSignupButtonClick(PointerEventData data)
     {
         // 회원가입 팝업창 생성
-        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_SignUp>();
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_SignUp>();
     }
 
     public void OnMyPageButtonClick(PointerEventData data)

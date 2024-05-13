@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using static Define;
 
 public class UI_Select : UI_Scene
@@ -46,11 +42,11 @@ public class UI_Select : UI_Scene
     GameObject _curriListScrollView;
     GameObject _curriSongListScrollView;
     GameObject _rankListScrollView;
-    UnityEngine.UI.Button _mainMenuBtn;
-    UnityEngine.UI.Button _optionBtn;
-    UnityEngine.UI.Button _profileBtn;
-    UnityEngine.UI.Button _songListBtn;
-    UnityEngine.UI.Button _curriListBtn;
+    Button _mainMenuBtn;
+    Button _optionBtn;
+    Button _profileBtn;
+    Button _songListBtn;
+    Button _curriListBtn;
     TextMeshProUGUI _profileName;
     TextMeshProUGUI _songInfoName;
     TextMeshProUGUI _songInfoComposser;
@@ -69,7 +65,7 @@ public class UI_Select : UI_Scene
         base.Init();
 
         Bind<GameObject>(typeof(GameObjects));
-        Bind<UnityEngine.UI.Button>(typeof(Buttons));
+        Bind<Button>(typeof(Buttons));
         Bind<TMP_Dropdown>(typeof(Dropdowns));
         GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         GameObject curriculumPanel = Get<GameObject>((int)GameObjects.CurriculumPanel);
@@ -86,11 +82,11 @@ public class UI_Select : UI_Scene
         _curriListScrollView.SetActive(false);
         _curriSongListScrollView.SetActive(false);
 
-        _mainMenuBtn = Get<UnityEngine.UI.Button>((int)Buttons.MainMenuButton);
-        _optionBtn = Get<UnityEngine.UI.Button>((int)Buttons.OptionButton);
-        _profileBtn = Get<UnityEngine.UI.Button>((int)Buttons.ProfileButton);
-        _songListBtn = Get<UnityEngine.UI.Button>((int)Buttons.SongListButton);
-        _curriListBtn = Get<UnityEngine.UI.Button>((int)Buttons.CurriculumButton);
+        _mainMenuBtn = Get<Button>((int)Buttons.MainMenuButton);
+        _optionBtn = Get<Button>((int)Buttons.OptionButton);
+        _profileBtn = Get<Button>((int)Buttons.ProfileButton);
+        _songListBtn = Get<Button>((int)Buttons.SongListButton);
+        _curriListBtn = Get<Button>((int)Buttons.CurriculumButton);
         _songListBtn.interactable = false;
         _songListBtn.onClick.AddListener(SwapListView);
         _curriListBtn.onClick.AddListener(SwapListView);
@@ -122,7 +118,7 @@ public class UI_Select : UI_Scene
             // SongButton 생성
             if (songButtonPrefab != null)
             {
-                UnityEngine.UI.Button button = songButtonPrefab.GetComponent<UnityEngine.UI.Button>();
+                Button button = songButtonPrefab.GetComponent<Button>();
 
                 // Song 정보를 버튼에 표시
                 if (button != null)
@@ -149,7 +145,7 @@ public class UI_Select : UI_Scene
             GameObject curriculumButtonPrefab = Managers.Data.Instantiate($"UI/Sub/CurriculumButton", curriculumPanel.transform);
             if (curriculumButtonPrefab != null)
             {
-                UnityEngine.UI.Button button = curriculumButtonPrefab.GetComponent<UnityEngine.UI.Button>();
+                Button button = curriculumButtonPrefab.GetComponent<Button>();
 
                 // Song 정보를 버튼에 표시
                 if (button != null)
@@ -197,7 +193,7 @@ public class UI_Select : UI_Scene
                 UpdateSongInfo();
             }
 
-            (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_SongPopup>();
+            (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_SongPopup>();
         }
     }
 
@@ -224,7 +220,7 @@ public class UI_Select : UI_Scene
                 }
             }
         }
-        (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
+        (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
     }
 
     public void OnInstantReplayButtonClick(PointerEventData data)
@@ -324,7 +320,7 @@ public class UI_Select : UI_Scene
                 rankButtonInstance.name = $"{i}";
                 if (rankButtonInstance != null)
                 {
-                    UnityEngine.UI.Button button = rankButtonInstance.GetComponent<UnityEngine.UI.Button>();
+                    Button button = rankButtonInstance.GetComponent<Button>();
                     button.gameObject.BindEvent(OnRankButtonClick);
                     button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
@@ -383,7 +379,7 @@ public class UI_Select : UI_Scene
             rankButtonInstance.name = $"{i}";
             if (rankButtonInstance != null)
             {
-                UnityEngine.UI.Button button = rankButtonInstance.GetComponent<UnityEngine.UI.Button>();
+                Button button = rankButtonInstance.GetComponent<Button>();
                 button.gameObject.BindEvent(OnRankButtonClick);
                 button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
@@ -426,7 +422,7 @@ public class UI_Select : UI_Scene
             if (Managers.Song.songs[i].curriculum != Managers.Song.selectedCurriculum)
                 continue;
 
-            UnityEngine.UI.Button button = songButtonPrefab.GetComponent<UnityEngine.UI.Button>();
+            Button button = songButtonPrefab.GetComponent<Button>();
 
             button.gameObject.name = $"{i}";
             button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
