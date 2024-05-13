@@ -166,4 +166,6 @@ public class UI_MyPage : UI_Scene
         {
             return new Color(0.75f, 0.75f, 0.75f); // Gray
         }
+
+    }
 }

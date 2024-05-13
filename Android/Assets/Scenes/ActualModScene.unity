@@ -1238,11 +1238,11 @@ RectTransform:
   m_Father: {fileID: 1303965845}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 500}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1200, y: 80}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &758415499
 GameObject:
   m_ObjectHideFlags: 0
@@ -2784,12 +2784,13 @@ MonoBehaviour:
   songTitle: kankan
   passedNote: 0
   totalNote: 0
+  currentDeltaTime: 0
+  currentDeltaTimeF: 0
   currentCorrect: 0
   currentFail: 0
   totalAcc: 0
+  currentBar: -1
   currentAcc: 0
-  currentDeltaTime: 0
-  currentDeltaTimeF: 0
 --- !u!1 &1061854705
 GameObject:
   m_ObjectHideFlags: 0
