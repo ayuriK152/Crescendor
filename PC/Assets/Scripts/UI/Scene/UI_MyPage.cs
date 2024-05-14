@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,7 +8,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 
 public class UI_MyPage : UI_Scene
 {

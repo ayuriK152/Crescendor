@@ -1,8 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 using static Define;
 
 public class UI_Select : UI_Scene
@@ -34,6 +37,7 @@ public class UI_Select : UI_Scene
         RankCategory
     }
 
+    Dictionary<Curriculum, GameObject> _buttonByCurriculums;
     GameObject _rankPanelObj;
     GameObject _noRankSignPanelObj;
     GameObject _songInfoPanel;
@@ -53,12 +57,13 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI _songInfoTempo;
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
+    Sprite originalSprite;
 
     void Start()
     {
         Init();
     }
-    
+
     public override void Init()
     {
         base.Init();
@@ -135,8 +140,10 @@ public class UI_Select : UI_Scene
             }
         }
 
+        _buttonByCurriculums = new Dictionary<Curriculum, GameObject>();
+
         // 커리큘럼 버튼 리스트 생성
-        foreach(Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
+        foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
         {
             if (curriculum == Curriculum.None)
                 continue;
@@ -144,12 +151,11 @@ public class UI_Select : UI_Scene
             GameObject curriculumButtonPrefab = Managers.Data.Instantiate($"UI/Sub/CurriculumButton", curriculumPanel.transform);
             if (curriculumButtonPrefab != null)
             {
+                _buttonByCurriculums.Add(curriculum, curriculumButtonPrefab);
                 Button button = curriculumButtonPrefab.GetComponent<Button>();
 
-                // Song 정보를 버튼에 표시
                 if (button != null)
                 {
-                    // 예시로 Song의 songTitle을 버튼에 표시
                     button.gameObject.name = $"{curriculum}";
                     button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = curriculum.ToString();
                 }
@@ -163,13 +169,38 @@ public class UI_Select : UI_Scene
         PlayerPrefs.SetString("trans_SongTitle", $"{Managers.Song.songs[0].songTitle.Replace(" ", "_")}-{Managers.Song.songs[0].songComposer.Replace(" ", "_")}");
         Managers.Song.selectedSong = Managers.Song.songs[0];
         Managers.Song.selectedCurriculum = Curriculum.Hanon;
+        Managers.Song.isModCurriculum = false;
 
         UpdateRankList();
         UpdateSongInfo();
         UpdateCurriculumSongList();
 
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
+        if (Managers.Data.isUserLoggedIn)
+        {
+            int curriculumMount = 0;
+            foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
+            {
+                if (curriculum == Curriculum.None)
+                    continue;
+                curriculumMount += Managers.Song.curriculumSongMounts[curriculum];
+                if (Managers.Data.userCurriculumProgress < curriculumMount)
+                {
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = $"{Math.Truncate((Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum] * 1000) / 10}%";
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = (Managers.Data.userCurriculumProgress - curriculumMount + Managers.Song.curriculumSongMounts[curriculum]) / (float)Managers.Song.curriculumSongMounts[curriculum] * 100;
+                }
+                else
+                {
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/Value").GetComponent<TextMeshProUGUI>().text = "100%";
+                    _buttonByCurriculums[curriculum].transform.Find("Progress/ProgressBar/ProgressSlider").GetComponent<Slider>().value = 100f;
+                }
+            }
+        }
+
+        // 프로필 이미지 로드
+        if (Managers.Data.isUserLoggedIn)
+        {
+            LoadImage(Managers.Data.userId);
+        }
     }
 
     public void OnSongButtonClick(int songIdx)
@@ -193,7 +224,7 @@ public class UI_Select : UI_Scene
                 UpdateSongInfo();
             }
 
-            (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_SongPopup>();
+            (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_SongPopup>();
         }
     }
 
@@ -220,7 +251,7 @@ public class UI_Select : UI_Scene
                 }
             }
         }
-        (Managers.UI.currentUIController as OutGameUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
+        (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
     }
 
     public void OnInstantReplayButtonClick(PointerEventData data)
@@ -320,7 +351,7 @@ public class UI_Select : UI_Scene
                 rankButtonInstance.name = $"{i}";
                 if (rankButtonInstance != null)
                 {
-                   Button button = rankButtonInstance.GetComponent<Button>();
+                    Button button = rankButtonInstance.GetComponent<Button>();
                     button.gameObject.BindEvent(OnRankButtonClick);
                     button.transform.Find("ReplayButton").gameObject.BindEvent(OnInstantReplayButtonClick);
 
@@ -415,13 +446,18 @@ public class UI_Select : UI_Scene
     void UpdateCurriculumSongList()
     {
         GameObject curriculumSongPanel = Get<GameObject>((int)GameObjects.CurriculumSongPanel);
-        GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", curriculumSongPanel.transform);
+        Managers.Song.curriculumSongMounts.Clear();
 
         for (int i = 0; i < Managers.Song.songs.Count; i++)
         {
             if (Managers.Song.songs[i].curriculum != Managers.Song.selectedCurriculum)
                 continue;
-
+            if (!Managers.Song.curriculumSongMounts.ContainsKey(Managers.Song.songs[i].curriculum))
+            {
+                Managers.Song.curriculumSongMounts.Add(Managers.Song.songs[i].curriculum, 0);
+            }
+            Managers.Song.curriculumSongMounts[Managers.Song.songs[i].curriculum]++;
+            GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", curriculumSongPanel.transform);
             Button button = songButtonPrefab.GetComponent<Button>();
 
             button.gameObject.name = $"{i}";
@@ -433,6 +469,7 @@ public class UI_Select : UI_Scene
 
     void SwapListView()
     {
+        Managers.Song.isModCurriculum = !Managers.Song.isModCurriculum;
         _songListBtn.interactable = !_songListBtn.interactable;
         _curriListBtn.interactable = !_curriListBtn.interactable;
         _songListScrollView.SetActive(!_songListScrollView.active);
@@ -442,21 +479,70 @@ public class UI_Select : UI_Scene
         _songInfoPanel.SetActive(!_songInfoPanel.active);
     }
 
-    void InputKeyEvent(KeyCode keyCode, InputType inputType)
+    #region Image Settings
+    public void LoadImage(string userId)
     {
-        switch (inputType)
+        StartCoroutine(GetUserProfile(userId));
+    }
+
+
+    private IEnumerator GetUserProfile(string userID)
+    {
+
+        string url = "http://15.164.2.49:3000/getuser/" + userID;
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            case InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        Managers.Scene.LoadScene(Scene.MainMenuScene);
-                        break;
-                }
-                break;
-            case InputType.OnKeyUp:
-                break;
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string responseText = request.downloadHandler.text;
+                Debug.Log("Response: " + responseText);
+
+                // 응답된 JSON 문자열에서 원하는 정보 추출
+                string profileURL = GetProfileURL(responseText);
+                // 프로필 이미지 다운로드 및 설정
+                yield return StartCoroutine(SetProfileImage(profileURL));
+            }
+            else
+            {
+                Debug.LogError("유저를 찾을 수 없음" + request.error);
+            }
         }
     }
+
+    private IEnumerator SetProfileImage(string imageURL)
+    {
+        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
+        {
+            yield return imageRequest.SendWebRequest();
+
+            if (imageRequest.result == UnityWebRequest.Result.Success)
+            {
+                // 텍스처 다운로드 및 이미지 UI에 설정
+                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
+                originalSprite = _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite; // 원래 이미지를 저장
+                _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            }
+        }
+    }
+
+
+    private string GetProfileURL(string json)
+    {
+        // JSON 문자열을 파싱하여 profile 정보 추출
+        string profileURL = "";
+
+        // JSON 문자열을 파싱하고 원하는 정보를 추출하는 로직을 작성
+        // 여기서는 간단하게 문자열을 찾아내는 방식으로 작성하였습니다.
+        int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
+        int endIndex = json.IndexOf("\"", startIndex + 1);
+        profileURL = json.Substring(startIndex, endIndex - startIndex);
+
+        return profileURL;
+    }
+
+    #endregion Image Settings 
 }
 

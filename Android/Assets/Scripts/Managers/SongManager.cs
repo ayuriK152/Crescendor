@@ -10,6 +10,8 @@ public class SongManager
     public int songCount = 0;
     public Song selectedSong = null;
     public Curriculum selectedCurriculum = Curriculum.Hanon;
+    public Dictionary<Curriculum, int> curriculumSongMounts = new Dictionary<Curriculum, int>();
+    public bool isModCurriculum = false;
 
     public void LoadSongsFromConvertsFolder()
     {
@@ -63,7 +65,7 @@ public class SongManager
         }
         return false; // 추가되어 있지 않음
     }
-    
+
     public void AddSong(int songNum, string songTitle, string composer, Curriculum curriculum)
     {
         Song newSong = new Song(songNum, songTitle, composer, curriculum);

@@ -33,7 +33,7 @@ public class UIManager
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultUIController>());
                     break;
                 case "SongSelectUIController":
-                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<OutGameUIController>());
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<BaseUIController>());
                     break;
             }
         }
@@ -65,9 +65,9 @@ public class UIManager
                 break;
 
             case Scene.SongSelectScene:
-                currentUIController = Managers.ManagerInstance.GetComponent<OutGameUIController>();
+                currentUIController = Managers.ManagerInstance.GetComponent<BaseUIController>();
                 if (currentUIController == null)
-                    currentUIController = Managers.ManagerInstance.AddComponent<OutGameUIController>();
+                    currentUIController = Managers.ManagerInstance.AddComponent<BaseUIController>();
                 break;
         }
     }
