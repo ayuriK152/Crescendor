@@ -155,6 +155,10 @@ public class ActualModController : IngameController
                     currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - _lastInputTiming[keyNum];
                     currentAcc = (totalAcc - currentFail) / (float)totalAcc;
                 }
+                else
+                {
+                    CorrectEffect(keyNum);
+                }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;
         }
@@ -173,10 +177,12 @@ public class ActualModController : IngameController
                     _initInputTiming[keyNum] < Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key - Managers.Midi.song.division / 10f)
                 {
                     currentFail += currentDeltaTime - _lastInputTiming[keyNum];
+                    AccurayEffect().startColor = new Color(255, 0, 0, 200);
                 }
                 else if (Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
                     currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
+                    AccurayEffect().startColor = new Color(0, 255, 0, 200);
                 }
 
                 _lastInputTiming[keyNum] = currentDeltaTime;
