@@ -15,8 +15,10 @@ public class InputManager : IMidiEventHandler
 
     public void Init()
     {
+#if !UNITY_EDITOR
         Managers.ManagerObj.AddComponent<AndroidMidiManager>();
         AndroidMidiManager.Instance.RegisterEventHandler(this);
+#endif
         keyAction = null;
     }
 

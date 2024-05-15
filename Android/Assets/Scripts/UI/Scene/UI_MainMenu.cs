@@ -37,10 +37,12 @@ public class UI_MainMenu : UI_Scene
     {
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.PlayButton).gameObject.BindEvent(OnPlayButtonClick);
+        GetButton((int)Buttons.OptionButton).gameObject.BindEvent(OnOptionButtonClick);
         GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnExitButtonClick);
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnMyPageButtonClick);
+
         idInput = GameObject.Find("MainMenu/LoginStuff/ID").GetComponent<TMP_InputField>();
         passwordInput = GameObject.Find("MainMenu/LoginStuff/PASSWORD").GetComponent<TMP_InputField>();
         signUpBtn = GameObject.Find("MainMenu/LoginStuff/SignUpBtn").GetComponent<Button>();
@@ -48,6 +50,7 @@ public class UI_MainMenu : UI_Scene
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
         profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
         originalSprite = profileImage.sprite;
+
         if (!Managers.Data.isUserLoggedIn)
         {
             idInput.gameObject.SetActive(true);
@@ -128,6 +131,11 @@ public class UI_MainMenu : UI_Scene
             // ID와 비밀번호가 유효한 경우에만 요청을 보냄.
             StartCoroutine(LoginRequest(id, password));
         }
+    }
+
+    void OnOptionButtonClick(PointerEventData data)
+    {
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
     }
 
     public void OnSignupButtonClick(PointerEventData data)

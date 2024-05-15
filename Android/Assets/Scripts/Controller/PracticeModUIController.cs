@@ -36,18 +36,6 @@ public class PracticeModUIController : IngameUIController
         _loopBtn = GameObject.Find("MainCanvas/TimeSlider/LoopBtn").GetComponent<Button>();
         _loopBtn.interactable = false;
 
-        _forceScrollBtn = GameObject.Find("MainCanvas/Buttons/ForceScrollBtn").GetComponent<Button>();
-        _autoScrollBtn = GameObject.Find("MainCanvas/Buttons/AutoScroll").GetComponent<Button>();
-
-// 런타임에서의 디버그용 기능 버튼 비활성화
-#if UNITY_EDITOR
-        _forceScrollBtn.onClick.AddListener(ForceScrollBtn);
-        _autoScrollBtn.onClick.AddListener(AutoScrollBtn);
-#else
-        _forceScrollBtn.gameObject.SetActive(false);
-        _autoScrollBtn.gameObject.SetActive(false);
-#endif
-
         songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
         songEndPanelObj.SetActive(false);
 

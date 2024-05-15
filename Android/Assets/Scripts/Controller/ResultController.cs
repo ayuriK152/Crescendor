@@ -46,6 +46,8 @@ public class ResultController : MonoBehaviour
         _uiController.failMountTMP.text = $"{_failMount}";
         //_uiController.outlinerMountTMP.text = $"{_outlinerMount}";
         _uiController.songLengthTMP.text = $"{(int)(Managers.Midi.songLengthSecond / 60)}:{(int)(Managers.Midi.songLengthSecond % 60)}";
+        _uiController.correctGraphImage.fillAmount = _correctMount / (float)_totalAcc;
+        _uiController.failGraphImage.fillAmount = _failMount / (float)_failMount;
         //_uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
         //_uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
