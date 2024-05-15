@@ -46,8 +46,11 @@ public class ActualModController : IngameController
         // Managers.Input.keyAction -= InputKeyEvent;
         // Managers.Input.keyAction += InputKeyEvent;
 
-        Managers.Input.noteAction -= OnEventReceived;
-        Managers.Input.noteAction += OnEventReceived;
+        if (Managers.Input.isPianoConnected)
+        {
+            Managers.Input.noteAction -= OnEventReceived;
+            Managers.Input.noteAction += OnEventReceived;
+        }
 
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));

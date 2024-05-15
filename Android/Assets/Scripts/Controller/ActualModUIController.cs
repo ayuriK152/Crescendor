@@ -24,18 +24,13 @@ public class ActualModUIController : IngameUIController
 
         _correctGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
         _failGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
-        _outlinerGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Outliner/Graph").GetComponent<Image>();
+        //_outlinerGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Outliner/Graph").GetComponent<Image>();
         _correctGraph.fillAmount = 0;
         _failGraph.fillAmount = 0;
-        _outlinerGraph.fillAmount = 0;
+        //_outlinerGraph.fillAmount = 0;
 
         _controller = Managers.Ingame.currentController as ActualModController;
-
-        _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
-
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void UpdateAccuracy()

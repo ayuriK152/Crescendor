@@ -36,7 +36,7 @@ public class ResultController : MonoBehaviour
         _totalAcc = Managers.Midi.totalDeltaTime;
         _failMount = PlayerPrefs.GetInt("trans_FailMount");
         _correctMount = _totalAcc - _failMount;
-        _outlinerMount = PlayerPrefs.GetInt("trans_OutlinerMount");
+        //_outlinerMount = PlayerPrefs.GetInt("trans_OutlinerMount");
 
         _uiController = Managers.UI.currentUIController as ResultUIController;
         _uiController.BindIngameUI();
@@ -44,10 +44,10 @@ public class ResultController : MonoBehaviour
         _uiController.songComposerTMP.text = $"{_songComposer}";
         _uiController.correctMountTMP.text = $"{_correctMount}";
         _uiController.failMountTMP.text = $"{_failMount}";
-        _uiController.outlinerMountTMP.text = $"{_outlinerMount}";
+        //_uiController.outlinerMountTMP.text = $"{_outlinerMount}";
         _uiController.songLengthTMP.text = $"{(int)(Managers.Midi.songLengthSecond / 60)}:{(int)(Managers.Midi.songLengthSecond % 60)}";
-        _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
-        _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
+        //_uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
+        //_uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
 
         _rankPanelObj = GameObject.Find("MainCanvas/TopRanks/RankListScrollView/Viewport/RankPanel");
