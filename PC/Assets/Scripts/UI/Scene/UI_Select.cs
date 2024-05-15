@@ -232,7 +232,7 @@ public class UI_Select : UI_Scene
     {
         int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.name.Split("-")[0]);
         Managers.Data.rankRecord = rankRecords.records[recordIdx];
-        if (_rankListDropdown.itemText.text == "Online Rank")
+        if (_rankListDropdown.itemText.text == "온라인 랭크")
         {
             for (int i = 0; i < Managers.Data.rankRecord.midi.Length; i++)
             {
@@ -258,7 +258,7 @@ public class UI_Select : UI_Scene
     {
         int recordIdx = Convert.ToInt32(EventSystem.current.currentSelectedGameObject.transform.parent.name.Split("-")[0]);
         Managers.Data.rankRecord = rankRecords.records[recordIdx];
-        if (_rankListDropdown.options[_rankListDropdown.value].text == "Online Rank")
+        if (_rankListDropdown.options[_rankListDropdown.value].text == "온라인 랭크")
         {
             for (int i = 0; i < Managers.Data.rankRecord.midi.Length; i++)
             {
