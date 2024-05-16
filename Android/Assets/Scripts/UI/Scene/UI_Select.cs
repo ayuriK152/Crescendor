@@ -59,6 +59,7 @@ public class UI_Select : UI_Scene
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
     Sprite originalSprite;
+    Image pianoConnectionCheckImg;
 
     void Start()
     {
@@ -111,6 +112,15 @@ public class UI_Select : UI_Scene
         _songInfoComposser = _songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
         _songInfoLength = _songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         _songInfoTempo = _songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
+        pianoConnectionCheckImg = GameObject.Find("UI_Select/NavBar/PianoConnectionCheck").GetComponent<Image>();
+        if (Managers.Input.isPianoConnected)
+        {
+            pianoConnectionCheckImg.color = new Color(1, 1, 1);
+        }
+        else
+        {
+            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
+        }
 
         _rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
 
@@ -206,6 +216,8 @@ public class UI_Select : UI_Scene
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
+        Managers.Input.pianoConnectionAction -= PianoConnectionUpdate;
+        Managers.Input.pianoConnectionAction += PianoConnectionUpdate;
     }
 
     public void OnSongButtonClick(int songIdx)
@@ -498,6 +510,18 @@ public class UI_Select : UI_Scene
                 break;
             case Define.InputType.OnKeyUp:
                 break;
+        }
+    }
+
+    void PianoConnectionUpdate(bool isConnected)
+    {
+        if (isConnected)
+        {
+            pianoConnectionCheckImg.color = new Color(1, 1, 1);
+        }
+        else
+        {
+            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
         }
     }
 

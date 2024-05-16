@@ -17,6 +17,7 @@ public class UI_MainMenu : UI_Scene
     Image profileImage;
     private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
     Sprite originalSprite;
+    Image pianoConnectionCheckImg;
 
     enum Buttons
     {
@@ -49,6 +50,15 @@ public class UI_MainMenu : UI_Scene
         loginBtn = GameObject.Find("MainMenu/LoginStuff/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
         profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
+        pianoConnectionCheckImg = GameObject.Find("MainMenu/NavBar/PianoConnectionCheck").GetComponent<Image>();
+        if (Managers.Input.isPianoConnected)
+        {
+            pianoConnectionCheckImg.color = new Color(1, 1, 1);
+        }
+        else
+        {
+            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
+        }
         originalSprite = profileImage.sprite;
 
         if (!Managers.Data.isUserLoggedIn)
@@ -76,6 +86,8 @@ public class UI_MainMenu : UI_Scene
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
+        Managers.Input.pianoConnectionAction -= PianoConnectionUpdate;
+        Managers.Input.pianoConnectionAction += PianoConnectionUpdate;
     }
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
@@ -209,6 +221,18 @@ public class UI_MainMenu : UI_Scene
     {
         string json = "{\"id\":\"" + id + "\", \"password\":\"" + password + "\"}";
         yield return StartCoroutine(SendRequest(baseURL, json, "POST"));
+    }
+
+    void PianoConnectionUpdate(bool isConnected)
+    {
+        if (isConnected)
+        {
+            pianoConnectionCheckImg.color = new Color(1, 1, 1);
+        }
+        else
+        {
+            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
+        }
     }
 
     void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)

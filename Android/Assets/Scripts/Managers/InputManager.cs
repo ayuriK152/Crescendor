@@ -12,6 +12,7 @@ public class InputManager : IMidiEventHandler
 
     public Action<KeyCode, Define.InputType> keyAction;
     public Action<int, int> noteAction;
+    public Action<bool> pianoConnectionAction;
 
     public void Init()
     {
@@ -46,11 +47,19 @@ public class InputManager : IMidiEventHandler
     public void DeviceAttached(string deviceName)
     {
         isPianoConnected = true;
+        if (pianoConnectionAction != null)
+        {
+            pianoConnectionAction.Invoke(isPianoConnected);
+        }
     }
 
     public void DeviceDetached(string deviceName)
     {
         isPianoConnected = false;
+        if (pianoConnectionAction != null)
+        {
+            pianoConnectionAction.Invoke(isPianoConnected);
+        }
     }
 
     public void NoteOn(int note, int velocity)
