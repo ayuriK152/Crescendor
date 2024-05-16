@@ -19,6 +19,7 @@ public class IngameUIController : BaseUIController
     protected Button _resumeBtn;
     protected Button _optionBtn;
     protected Button _exitBtn;
+    protected Button _pauseBtn;
     #endregion
 
     protected IngameController _controller;
@@ -37,8 +38,10 @@ public class IngameUIController : BaseUIController
         _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
         _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
         _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
+        _pauseBtn = GameObject.Find("MainCanvas/Informations/PauseButton").GetComponent<Button>();
         pausePanelObj.SetActive(false);
         _optionBtn.onClick.AddListener(OnOptionButtonClick);
+        _pauseBtn.onClick.AddListener(TogglePausePanel);
 
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);

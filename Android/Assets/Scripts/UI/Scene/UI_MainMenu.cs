@@ -73,6 +73,9 @@ public class UI_MainMenu : UI_Scene
             loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
             LoadImage(Managers.Data.userId);
         }
+
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
@@ -206,6 +209,23 @@ public class UI_MainMenu : UI_Scene
     {
         string json = "{\"id\":\"" + id + "\", \"password\":\"" + password + "\"}";
         yield return StartCoroutine(SendRequest(baseURL, json, "POST"));
+    }
+
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
+    {
+        switch (inputType)
+        {
+            case Define.InputType.OnKeyDown:
+                switch (keyCode)
+                {
+                    case KeyCode.Escape:
+                        Application.Quit();
+                        break;
+                }
+                break;
+            case Define.InputType.OnKeyUp:
+                break;
+        }
     }
 
     #region Image Settings

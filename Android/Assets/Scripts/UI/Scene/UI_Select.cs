@@ -203,6 +203,9 @@ public class UI_Select : UI_Scene
         {
             LoadImage(Managers.Data.userId);
         }
+
+        Managers.Input.keyAction -= InputKeyEvent;
+        Managers.Input.keyAction += InputKeyEvent;
     }
 
     public void OnSongButtonClick(int songIdx)
@@ -479,6 +482,23 @@ public class UI_Select : UI_Scene
         _curriSongListScrollView.SetActive(!_curriSongListScrollView.active);
         _rankListScrollView.SetActive(!_rankListScrollView.active);
         _songInfoPanel.SetActive(!_songInfoPanel.active);
+    }
+
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
+    {
+        switch (inputType)
+        {
+            case Define.InputType.OnKeyDown:
+                switch (keyCode)
+                {
+                    case KeyCode.Escape:
+                        Managers.Scene.LoadScene(Scene.MainMenuScene);
+                        break;
+                }
+                break;
+            case Define.InputType.OnKeyUp:
+                break;
+        }
     }
 
     #region Image Settings
