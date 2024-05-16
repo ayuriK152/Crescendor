@@ -10,6 +10,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SocialPlatforms.Impl;
 using static Datas;
 
 public class DataManager
@@ -205,6 +206,31 @@ public class DataManager
         int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
         int endIndex = userData.IndexOf("\"", startIndex + 1);
         return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
+    }
+
+    public void SetUserCurriculumProgress(int value)
+    {
+        UnityWebRequest www = new UnityWebRequest($"http://{DEFAULT_SERVER_IP_PORT}/setcurriculum", "POST");
+        string jsonData = $"{{\"id\" : \"{userId}\", \"curriculum\" : {value}}}";
+        Debug.Log(jsonData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            isServerConnectionComplete = true;
+            Debug.Log("Set Data Success");
+        }
+        else
+        {
+            isServerConnectionComplete = false;
+            Debug.LogError($"Error to Set Data - {www.error}");
+        }
     }
 
     string ParseToServer(string origin)

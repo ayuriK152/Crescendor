@@ -57,10 +57,17 @@ public class ResultController : MonoBehaviour
         SaveResultToJson();
         if (Managers.Data.isUserLoggedIn)
         {
-            UpdateBestResult();
+            if (!Managers.Song.isModCurriculum)
+            {
+                UpdateBestResult();
+            }
+            else
+            {
+                UpdateCurriculumProgress();
+            }
         }
         UpdateHighScores();
-        if (Managers.Data.isUserLoggedIn)
+        if (Managers.Data.isUserLoggedIn && !Managers.Song.isModCurriculum)
         {
             for (int i = 0; i < rankRecords.records.Count; i++)
             {
@@ -99,6 +106,25 @@ public class ResultController : MonoBehaviour
         else
         {
             Debug.Log("Á¡¼ö°¡ ³·´Ù!");
+        }
+    }
+
+    void UpdateCurriculumProgress()
+    {
+        int playedIdx = -1;
+        for (int i = 0; i < Managers.Song.curriculumIdx.Count; i++)
+        {
+            if (Managers.Song.curriculumIdx[i].Key == _songTitle)
+            {
+                playedIdx = i;
+                break;
+            }
+        }
+
+        if (playedIdx == Managers.Data.userCurriculumProgress)
+        {
+            Managers.Data.userCurriculumProgress += 1;
+            Managers.Data.SetUserCurriculumProgress(Managers.Data.userCurriculumProgress);
         }
     }
 
