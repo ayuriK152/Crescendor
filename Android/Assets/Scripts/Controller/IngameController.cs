@@ -37,6 +37,12 @@ public class IngameController : MonoBehaviour
     protected IngameUIController _uiController;
     #endregion
 
+    // Effect 관련 변수
+    private GameObject vPiano;
+    private GameObject correctEffect;
+    private GameObject accuracyEffect;
+    private GameObject congratulationEffect;
+
     protected void Init()
     {
         songTitle = PlayerPrefs.GetString("trans_SongTitle");
@@ -46,6 +52,12 @@ public class IngameController : MonoBehaviour
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
+
+        // 이펙트 관련 초기화
+        vPiano = GameObject.Find("VirtualPiano");
+        correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
+        accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
+        congratulationEffect = Resources.Load<GameObject>("Effects/congratulation") as GameObject;
 
         for (int i = 0; i < 88; i++)
         {
@@ -103,7 +115,10 @@ public class IngameController : MonoBehaviour
         for (int i = 0; i < 88; i++)
         {
             if (Managers.Input.keyChecks[i])
+            {
                 TurnOnHighlight(i);
+            }
+
             else
                 TurnOffHighlight(i);
         }
@@ -124,6 +139,8 @@ public class IngameController : MonoBehaviour
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
         else
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+        if (_correctNoteKeys.Contains(keyNum))
+            CorrectEffect(keyNum);
     }
 
     void TurnOffHighlight(int keyNum)
@@ -137,5 +154,58 @@ public class IngameController : MonoBehaviour
             _vPianoKeyMat[keyNum].color = new Color(0, 0, 0);
         }
         _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[0];
+    }
+
+    protected void CorrectEffect(int keyNum)
+    {
+        int octave = 0;
+        int chord = 0;
+
+        if (keyNum >= 0 && keyNum <= 2)
+        {
+            octave = 0;
+            chord = keyNum;
+        }
+
+        else if (keyNum >= 3 && keyNum <= 86)
+        {
+            octave = (keyNum - 3) / 12 + 1;
+            chord = (keyNum - 3) % 12;
+        }
+
+        else if (keyNum == 87)
+        {
+            octave = 8;
+            chord = 0;
+        }
+
+        Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
+        GameObject effect_clone = Instantiate(accuracyEffect, effectPos);
+        effect_clone.transform.Rotate(new Vector3(90, 0, 0));
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x + 0.2f, effect_clone.transform.position.y, -2.6f);
+    }
+
+    protected ParticleSystem AccurayEffect()
+    {
+        Transform camera = GameObject.FindWithTag("MainCamera").transform;
+        GameObject effect_clone = Instantiate(accuracyEffect, camera);
+
+        // 수정 예정
+        float range_x = Random.Range(-5, 5);
+        float range_z = Random.Range(0, 4);
+
+        effect_clone.transform.position = new Vector3(range_x, effect_clone.transform.position.y, range_z);
+
+        ParticleSystem particleSystem = effect_clone.GetComponent<ParticleSystem>();
+
+        return particleSystem;
+    }
+
+    protected void CongratulationEffect()
+    {
+        Transform camera = GameObject.FindWithTag("MainCamera").transform;
+        GameObject effect_clone = Instantiate(congratulationEffect, camera);
+
+        effect_clone.transform.position = new Vector3(0f, 2.5f, 2f);
     }
 }

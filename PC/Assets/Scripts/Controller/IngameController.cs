@@ -1,4 +1,3 @@
-using Melanchall.DryWetMidi.Core;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -140,6 +139,8 @@ public class IngameController : MonoBehaviour
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
         else
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+        if (_correctNoteKeys.Contains(keyNum))
+            CorrectEffect(keyNum);
     }
 
     void TurnOffHighlight(int keyNum)
@@ -184,8 +185,9 @@ public class IngameController : MonoBehaviour
         }
 
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
-        GameObject effect_clone = Instantiate(correctEffect, effectPos);
-        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, -2.4f);
+        GameObject effect_clone = Instantiate(accuracyEffect, effectPos);
+        effect_clone.transform.Rotate(new Vector3(90, 0, 0));
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x + 0.2f, effect_clone.transform.position.y, -2.6f);
     }
 
     protected ParticleSystem AccurayEffect()
