@@ -237,7 +237,7 @@ public class MidiManager
 
         if (isPath)
         {
-            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(File.ReadAllText($"{Application.dataPath}/RecordReplay/{replayFile}.json"));
+            userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(File.ReadAllText($"{Application.persistentDataPath}/RecordReplay/{replayFile}.json"));
         }
         else
         {
