@@ -189,6 +189,7 @@ public class UI_Select : UI_Scene
 
         if (Managers.Data.isUserLoggedIn)
         {
+            Managers.Data.GetUserData(Managers.Data.userId);
             int curriculumMount = 0;
             foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
             {

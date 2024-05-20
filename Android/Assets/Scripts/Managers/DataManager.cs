@@ -60,16 +60,16 @@ public class DataManager
 
     public Define.RankRecordList GetRankListFromLocal(string songFileName)
     {
-        if (!Directory.Exists($"{Application.dataPath}/RecordReplay/"))
-            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
+        if (!Directory.Exists($"{Application.persistentDataPath}/RecordReplay/"))
+            Directory.CreateDirectory($"{Application.persistentDataPath}/RecordReplay/");
         Define.RankRecordList rankRecordList = new Define.RankRecordList();
-        DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.dataPath}/RecordReplay");
+        DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.persistentDataPath}/RecordReplay");
         foreach (FileInfo file in replayDirInfo.GetFiles())
         {
             string songTitle = file.Name.Split("-")[0];
             if (songTitle == songFileName.Split("-")[0] && file.Name.Split(".")[file.Name.Split(".").Length - 1] == "json")
             {
-                string dataStr = File.ReadAllText($"{Application.dataPath}/RecordReplay/{file.Name}");
+                string dataStr = File.ReadAllText($"{Application.persistentDataPath}/RecordReplay/{file.Name}");
                 Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(dataStr);
                 rankRecordList.records.Add(new Define.RankRecord(songTitle, file.Name.Split("-")[1], userReplayRecord.accuracy, file.Name.Split("-")[2], dataStr));
             }
@@ -203,9 +203,10 @@ public class DataManager
 
     public int GetUserCurriculumProgress(string userData)
     {
-        int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
-        int endIndex = userData.IndexOf("\"", startIndex + 1);
-        return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
+        //int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
+        //int endIndex = userData.IndexOf("}", startIndex + 1);
+        //return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
+        return Convert.ToInt32(userData[userData.Length - 3]) - 48;
     }
 
     public void SetUserCurriculumProgress(int value)
