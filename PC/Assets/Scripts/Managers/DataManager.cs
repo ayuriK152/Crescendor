@@ -204,7 +204,7 @@ public class DataManager
     {
         int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
         int endIndex = userData.IndexOf("\"", startIndex + 1);
-        return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
+        return int.Parse(userData.Substring(startIndex, endIndex - startIndex));
     }
 
     string ParseToServer(string origin)

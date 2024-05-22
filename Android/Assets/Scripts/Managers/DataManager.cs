@@ -203,10 +203,9 @@ public class DataManager
 
     public int GetUserCurriculumProgress(string userData)
     {
-        //int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
-        //int endIndex = userData.IndexOf("}", startIndex + 1);
-        //return Convert.ToInt32(userData.Substring(startIndex, endIndex - startIndex));
-        return Convert.ToInt32(userData[userData.Length - 3]) - 48;
+        int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
+        int endIndex = userData.IndexOf("}", startIndex + 1);
+        return int.Parse(userData.Substring(startIndex, endIndex - startIndex));
     }
 
     public void SetUserCurriculumProgress(int value)
