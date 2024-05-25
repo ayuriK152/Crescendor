@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
 public abstract class UI_Base : MonoBehaviour
 {
     // 각 타입에 대한 UI 요소를 저장하는 딕셔너리

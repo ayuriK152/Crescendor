@@ -10,13 +10,13 @@ using static Define;
 
 public class IngameManager
 {
-    public object controller;
+    public object currentController;
 
     public void Init()
     {
-        if (controller != null)
+        if (currentController != null)
         {
-            Type type = controller.GetType();
+            Type type = currentController.GetType();
             switch (type.FullName)
             {
                 case "PracticeModController":
@@ -24,6 +24,9 @@ public class IngameManager
                     break;
                 case "ActualModController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ActualModController>());
+                    break;
+                case "ReplayModController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ReplayModController>());
                     break;
                 case "ResultController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultController>());
@@ -34,24 +37,34 @@ public class IngameManager
         switch (Managers.Scene.currentScene)
         {
             case Scene.PracticeModScene:
-                controller = Managers.ManagerInstance.GetComponent<PracticeModController>();
-                if (controller == null)
-                    controller = Managers.ManagerInstance.AddComponent<PracticeModController>();
-                (controller as PracticeModController).Init();
+                currentController = Managers.ManagerInstance.GetComponent<PracticeModController>();
+                if (currentController == null)
+                    currentController = Managers.ManagerInstance.AddComponent<PracticeModController>();
+                (currentController as PracticeModController).Init();
                 break;
 
             case Scene.ActualModScene:
-                controller = Managers.ManagerInstance.GetComponent<ActualModController>();
-                if (controller == null)
-                    controller = Managers.ManagerInstance.AddComponent<ActualModController>();
-                (controller as ActualModController).Init();
+                currentController = Managers.ManagerInstance.GetComponent<ActualModController>();
+                if (currentController == null)
+                    currentController = Managers.ManagerInstance.AddComponent<ActualModController>();
+                (currentController as ActualModController).Init();
+                break;
+
+            case Scene.ReplayModScene:
+                currentController = Managers.ManagerInstance.GetComponent<ReplayModController>();
+                if (currentController == null)
+                    currentController = Managers.ManagerInstance.AddComponent<ReplayModController>();
+                (currentController as ReplayModController).Init();
                 break;
 
             case Scene.ResultScene:
-                controller = Managers.ManagerInstance.GetComponent<ResultController>();
-                if (controller == null)
-                    controller = Managers.ManagerInstance.AddComponent<ResultController>();
-                (controller as ResultController).Init();
+                currentController = Managers.ManagerInstance.GetComponent<ResultController>();
+                if (currentController == null)
+                    currentController = Managers.ManagerInstance.AddComponent<ResultController>();
+                (currentController as ResultController).Init();
+                break;
+            case Scene.SongSelectScene:
+                (Managers.UI.currentUIController as BaseUIController).ShowSceneUI<UI_Select>();
                 break;
         }
     }

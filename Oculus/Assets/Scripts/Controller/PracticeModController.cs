@@ -1,52 +1,31 @@
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using static Define;
-using static Datas;
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
-using System;
 using System.Collections;
+using System.Collections.Generic;
+using static Datas;
 
-public class PracticeModController : MonoBehaviour
+public class PracticeModController : IngameController
 {
-    public TextMeshProUGUI deviceText;
-    public TextMeshProUGUI noteText;
-
-    public int tempo = 120;
-    public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 0.15f;     // 1.5f
-    public string songTitle;
-
-    public int passedNote;
-    public int totalNote;
+    #region Public Members
     public int currentNoteIndex;
-
-    public bool isLoop;
-    public bool isPlaying;
     public int loopStartDeltaTime;
     public int loopEndDeltaTime;
     public int loopStartNoteIndex;
     public int loopStartPassedNote;
 
-    public int currentDeltaTime;
-    public float currentDeltaTimeF;
+    public bool isLoop;
+    public bool isPlaying;
+    public bool isSongEnd = false;
+    #endregion
 
-    int[] _initInputTiming = new int[88];
-
-    bool _isInputTiming = false;
-    bool _isWaitInput = true;
-
-    PracticeModUIController _uiController;
+    #region Private Members
+    private bool _isInputTiming = false;
+    private bool _isWaitInput = true;
+    #endregion
 
     public void Init()
     {
-        songTitle = PlayerPrefs.GetString("trans_SongTitle");
+        base.Init();
 
-        passedNote = 0;
-        totalNote = 0;
         currentNoteIndex = 0;
 
         isLoop = false;
@@ -56,37 +35,24 @@ public class PracticeModController : MonoBehaviour
         loopStartNoteIndex = 0;
         loopStartPassedNote = 0;
 
-        currentDeltaTime = -1;
-        currentDeltaTimeF = 0;
-
-        for (int i = 0; i < 88; i++)
-        {
-            _initInputTiming[i] = -1;
-        }
-
-        Managers.Midi.noteScale = noteScale;
-        // Managers.Midi.widthValue = widthValue;
-        Managers.Midi.widthValue = PlayerPrefs.GetFloat("trans_VPianoWidth");
-        Managers.Midi.LoadAndInstantiateMidi(songTitle, gameObject);
-
-        totalNote = Managers.Midi.notes.Count;
-
         _uiController = Managers.UI.currentUIController as PracticeModUIController;
-        _uiController.BindIngameUI();
+        (_uiController as PracticeModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
-        _uiController.songBeatTMP.text = $"4/4";
-        _uiController.songTimeSlider.maxValue = Managers.Midi.songLength;
+        _uiController.songTempoTMP.text = $"{Managers.Midi.tempo}";
+        _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
+        _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
+
+        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+        {
+            _correctNoteKeys.Add(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key);
+        }
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
 
-        if (Managers.Input.inputDevice != null)
-        {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
-        }
+        Managers.Input.noteAction -= OnEventReceived;
+        Managers.Input.noteAction += OnEventReceived;
 
         Managers.InitManagerPosition();
     }
@@ -95,10 +61,12 @@ public class PracticeModController : MonoBehaviour
     {
         WaitMidiInput();
         Scroll();
+        StartCoroutine(ToggleKeyHighlight());
     }
+
     void Scroll()
     {
-        if (!isPlaying)
+        if (!isPlaying || isSongEnd)
             return;
         if (isLoop)
         {
@@ -106,7 +74,7 @@ public class PracticeModController : MonoBehaviour
             {
                 currentNoteIndex = loopStartNoteIndex;
                 passedNote = loopStartPassedNote;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 currentDeltaTimeF = loopStartDeltaTime;
                 SyncDeltaTime(false);
                 transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
@@ -131,34 +99,54 @@ public class PracticeModController : MonoBehaviour
 
     void WaitMidiInput()
     {
-        if (!_isInputTiming || currentNoteIndex >= Managers.Midi.noteTiming.Count)
-            return;
-        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+        if (currentNoteIndex >= Managers.Midi.noteTiming.Count)
         {
-            Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-            if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
+            if (currentDeltaTime >= Managers.Midi.songLengthDelta)
             {
-                if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
-                    return;
-                _isInputTiming = false;
-                return;
+                if (!isSongEnd)
+                {
+                    (_uiController as PracticeModUIController).ToggleSongEndPanel();
+                }
+                isSongEnd = true;
             }
         }
-        IncreaseCurrentNoteIndex();
+        if (!_isInputTiming || isSongEnd)
+            return;
+        if (currentNoteIndex < Managers.Midi.noteTiming.Count)
+        {
+            for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+            {
+                Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
+                _vPianoKeyEffect[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key].color = _vPianoKeyEffectColors[2];
+                if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
+                {
+                    if (Managers.Input.isPianoConnected && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
+                        return;
+                    _isInputTiming = false;
+                    return;
+                }
+            }
+            UpdatePassedNote();
+            UpdateTempo();
+            UpdateBeat();
+        }
     }
 
-    public void IncreaseCurrentNoteIndex()
+    public void UpdatePassedNote()
     {
+        if (currentNoteIndex == Managers.Midi.noteTiming.Count)
+            return;
         if (Managers.Midi.noteTiming[currentNoteIndex] - currentDeltaTime > 0)
             return;
+        _correctNoteKeys.Clear();
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-        _uiController.UpdatePassedNote();
+        _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
-    }
 
-    public void DisconnectPiano()
-    {
-        Managers.Input.inputDevice.StopEventsListening();
+        for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
+        {
+            _correctNoteKeys.Add(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key);
+        }
     }
 
     public void AutoScroll()
@@ -186,65 +174,149 @@ public class PracticeModController : MonoBehaviour
         _uiController.songTimeSlider.SetValueWithoutNotify(currentDeltaTime);
     }
 
-    public IEnumerator UpdateNotePosByTime()
+    // 타임 슬라이더 조작 또는 데이터 임의 조작으로 인한 deltaTime 변화로 현재 진행중인 곡의 정보가 바뀐 경우
+    public IEnumerator ForceUpdateNote()
     {
         transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
         while (true)
         {
+            // 노트 개수, 딕셔너리 데이터 관리
+            bool isNoteIdxChanged = false;
             if (currentNoteIndex > 0)
             {
                 if (Managers.Midi.noteTiming[currentNoteIndex - 1] >= currentDeltaTime)
                 {
                     currentNoteIndex--;
                     passedNote -= Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                    _uiController.UpdatePassedNote();
-                    continue;
+                    _uiController.UpdatePassedNoteText();
+                    isNoteIdxChanged = true;
                 }
             }
-            if (Managers.Midi.noteTiming[currentNoteIndex] < currentDeltaTime)
+            if (currentNoteIndex < Managers.Midi.noteTiming.Count - 1 && !isNoteIdxChanged)
             {
-                passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                currentNoteIndex++;
-                _uiController.UpdatePassedNote();
-                continue;
+                if (Managers.Midi.noteTiming[currentNoteIndex] < currentDeltaTime)
+                {
+                    passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
+                    currentNoteIndex++;
+                    _uiController.UpdatePassedNoteText();
+                    isNoteIdxChanged = true;
+                }
             }
+
+            // 현재 템포 인덱스 관리
+            bool isTempoMapIdxChanged = false;
+            if (_tempoMapIdx > 0)
+            {
+                if (Managers.Midi.song.tempoMap[_tempoMapIdx - 1].deltaTime >= currentDeltaTime)
+                {
+                    _tempoMapIdx--;
+                    tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
+                    _uiController.UpdateTempoText();
+                    isTempoMapIdxChanged = true;
+                }
+            }
+            if (_tempoMapIdx < Managers.Midi.song.tempoMap.Count - 1 && !isTempoMapIdxChanged)
+            {
+                if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime < currentDeltaTime)
+                {
+                    _tempoMapIdx++;
+                    tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
+                    _uiController.UpdateTempoText();
+                    isTempoMapIdxChanged = true;
+                }
+            }
+
+            // 현재 박자 인덱스 관리
+            bool isBeatMapIdxChanged = false;
+            if (_beatMapIdx > 0)
+            {
+                if (Managers.Midi.song.beatMap[_beatMapIdx - 1].deltaTime >= currentDeltaTime)
+                {
+                    _beatMapIdx--;
+                    Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
+                    _uiController.UpdateBeatText();
+                    isBeatMapIdxChanged = true;
+                }
+            }
+            if (_beatMapIdx < Managers.Midi.song.beatMap.Count - 1 && !isBeatMapIdxChanged)
+            {
+                if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime < currentDeltaTime)
+                {
+                    _beatMapIdx++;
+                    Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
+                    _uiController.UpdateBeatText();
+                    isBeatMapIdxChanged = true;
+                }
+            }
+
+            if (isNoteIdxChanged || isTempoMapIdxChanged || isBeatMapIdxChanged)
+                continue;
             break;
         }
         yield return null;
     }
 
-    void OnEventReceived(object sender, MidiEventReceivedEventArgs e)
+    void OnEventReceived(int noteNum, int velocity)
     {
-        var midiDevice = (MidiDevice)sender;
-        if (e.Event.EventType != MidiEventType.ActiveSensing)
+        if (isSongEnd && velocity != 0)
         {
-            NoteEvent noteEvent = e.Event as NoteEvent;
-
-            // 노트 입력 시작
-            if (noteEvent.Velocity != 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
-                Debug.Log(noteEvent);
-            }
-            // 노트 입력 종료
-            else if (noteEvent.Velocity == 0)
-            {
-                _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
-                Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
-            }
+            isSongEnd = false;
+            currentDeltaTime = 0;
+            SyncDeltaTime(true);
+            StartCoroutine(ForceUpdateNote());
+            (_uiController as PracticeModUIController).ToggleSongEndPanel();
+        }
+        // 노트 입력 시작
+        if (velocity != 0)
+        {
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = currentDeltaTime;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = true;
+            Debug.Log(noteNum);
+        }
+        // 노트 입력 종료
+        else if (velocity == 0)
+        {
+            _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
+            Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
+            Debug.Log(noteNum);
         }
     }
 
-    void InputKeyEvent(KeyCode keyCode)
+    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
     {
-        switch (keyCode)
+        if (isSongEnd && keyCode != KeyCode.Escape)
         {
-            case KeyCode.LeftBracket:
-                SetStartDeltaTime();
+            isSongEnd = false;
+            currentDeltaTime = 0;
+            SyncDeltaTime(true);
+            StartCoroutine(ForceUpdateNote());
+            (_uiController as PracticeModUIController).ToggleSongEndPanel();
+            return;
+        }
+        switch (inputType)
+        {
+            case Define.InputType.OnKeyDown:
+                switch (keyCode)
+                {
+                    case KeyCode.Escape:
+                        if (isSongEnd)
+                        {
+                            Managers.CleanManagerChilds();
+                            Managers.Input.keyAction = null;
+                            Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
+                        }
+                        break;
+
+                    case KeyCode.LeftBracket:
+                        SetStartDeltaTime();
+                        break;
+
+                    case KeyCode.RightBracket:
+                        SetEndDeltaTime();
+                        break;
+                }
                 break;
-            case KeyCode.RightBracket:
-                SetEndDeltaTime();
+            case Define.InputType.OnKeyUp:
                 break;
         }
     }
@@ -254,18 +326,21 @@ public class PracticeModController : MonoBehaviour
         loopStartDeltaTime = currentDeltaTime;
         loopStartNoteIndex = currentNoteIndex;
         loopStartPassedNote = passedNote;
-        _uiController.SetLoopStartMarker();
+        (_uiController as PracticeModUIController).SetLoopStartMarker();
         if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as PracticeModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
         if (loopEndDeltaTime >= 0)
+        {
             isLoop = true;
+            (_uiController as PracticeModUIController).ActiveLoopBtn();
+        }
     }
 
     void SetEndDeltaTime()
@@ -273,17 +348,20 @@ public class PracticeModController : MonoBehaviour
         if (loopStartDeltaTime < 0)
             return;
         loopEndDeltaTime = currentDeltaTime;
-        _uiController.SetLoopEndMarker();
+        (_uiController as PracticeModUIController).SetLoopEndMarker();
         if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as PracticeModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
         if (loopStartDeltaTime >= 0)
+        {
             isLoop = true;
+            (_uiController as PracticeModUIController).ActiveLoopBtn();
+        }
     }
 }

@@ -1,21 +1,17 @@
 /* UI 매니저
  * 작성 - 이원섭
- * 여러 씬에서 사용되는 UI를 일괄 관리하고 바인딩하기 위해 사용하는 객체 */
+ * 여러 씬에서 사용되는 UI를 일괄 관리하고 바인딩하기 위해 사용하는 객체
+ * 현재 사용중인 씬을 확인하고 해당 씬의 UI 컨트롤러를 할당하는 방식
+ * UIController 접근시, (Managers.UI.currentController as ~~Controller)로 접근할 것 */
 
 using System;
 using Unity.VisualScripting;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using static Define;
 
 public class UIManager
 {
     public object currentUIController;
-
-    int _order = 10;
-    Stack<UI_Popup> _popupStack = new Stack<UI_Popup>();
-    UI_Scene _sceneUI = null;
 
     public void Init()
     {
@@ -30,8 +26,14 @@ public class UIManager
                 case "ActualModUIController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ActualModUIController>());
                     break;
+                case "ReplayModUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<ReplayModUIController>());
+                    break;
                 case "ResultUIController":
                     GameObject.Destroy(Managers.ManagerInstance.GetComponent<ResultUIController>());
+                    break;
+                case "SongSelectUIController":
+                    GameObject.Destroy(Managers.ManagerInstance.GetComponent<BaseUIController>());
                     break;
             }
         }
@@ -50,100 +52,23 @@ public class UIManager
                     currentUIController = Managers.ManagerInstance.AddComponent<ActualModUIController>();
                 break;
 
+            case Scene.ReplayModScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<ReplayModUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<ReplayModUIController>();
+                break;
+
             case Scene.ResultScene:
                 currentUIController = Managers.ManagerInstance.GetComponent<ResultUIController>();
                 if (currentUIController == null)
                     currentUIController = Managers.ManagerInstance.AddComponent<ResultUIController>();
                 break;
+
+            case Scene.SongSelectScene:
+                currentUIController = Managers.ManagerInstance.GetComponent<BaseUIController>();
+                if (currentUIController == null)
+                    currentUIController = Managers.ManagerInstance.AddComponent<BaseUIController>();
+                break;
         }
-    }
-
-    public GameObject Root
-    {
-        get
-        {
-            GameObject root = GameObject.Find("@UI");
-            if (root == null)
-                root = new GameObject { name = "@UI" };
-            return root;
-        }
-    }
-
-    public void SetCanvas(GameObject go, bool sort = true)
-    {
-        Canvas canvas = Util.GetOrAddComponent<Canvas>(go);
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.overrideSorting = true;
-        canvas.vertexColorAlwaysGammaSpace = true;
-
-        if (sort)
-        {
-            canvas.sortingOrder = _order;
-            _order++;
-        }
-        else
-        {
-            canvas.sortingOrder = 0;
-        }
-    }
-
-
-    public T ShowSceneUI<T>(string name = null) where T : UI_Scene
-    { 
-        if (string.IsNullOrEmpty(name))
-            name = typeof(T).Name;
-
-        GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
-        T sceneUI = Util.GetOrAddComponent<T>(go);
-        _sceneUI = sceneUI;
-
-        go.transform.SetParent(Root.transform);
-
-        return sceneUI;
-    }
-
-    public T ShowPopupUI<T>(string name = null) where T : UI_Popup
-    {
-        if (string.IsNullOrEmpty(name))
-            name = typeof(T).Name;
-
-        GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
-        T popup = Util.GetOrAddComponent<T>(go);
-        _popupStack.Push(popup);
-
-        go.transform.SetParent(Root.transform);
-
-        return popup;
-    }
-
-    public void ClosePopupUI(UI_Popup popup)
-    {
-        if (_popupStack.Count == 0)
-            return;
-
-        if (_popupStack.Peek() != popup)
-        {
-            Debug.Log("Close Popup Failed!");
-            return;
-        }
-
-        ClosePopupUI();
-    }
-
-    public void ClosePopupUI()
-    {
-        if (_popupStack.Count == 0)
-            return;
-
-        UI_Popup popup = _popupStack.Pop();
-        Managers.Resource.Destroy(popup.gameObject);
-        popup = null;
-        _order--;
-    }
-
-    public void CloseAllPopupUI()
-    {
-        while (_popupStack.Count > 0)
-            ClosePopupUI();
     }
 }
