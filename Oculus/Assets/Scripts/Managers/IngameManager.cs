@@ -64,7 +64,7 @@ public class IngameManager
                 (currentController as ResultController).Init();
                 break;
             case Scene.SongSelectScene:
-                (Managers.UI.currentUIController as BaseUIController).ShowSceneUI<UI_Select>();
+                //(Managers.UI.currentUIController as BaseUIController).ShowSceneUI<UI_Select>();
                 break;
         }
     }
