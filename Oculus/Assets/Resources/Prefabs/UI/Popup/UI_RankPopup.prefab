@@ -634,6 +634,7 @@ GameObject:
   - component: {fileID: 4739573460276957033}
   - component: {fileID: 5793453646378032093}
   - component: {fileID: 1752548879811623114}
+  - component: {fileID: 7630943316669016684}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -744,6 +745,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7630943316669016684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2248190544543200922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &2456296244553098690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1164,7 @@ GameObject:
   - component: {fileID: 7332052529785834746}
   - component: {fileID: 7609871416085553791}
   - component: {fileID: 1043373389121755128}
+  - component: {fileID: 2763891194862162092}
   m_Layer: 5
   m_Name: ReplayButton
   m_TagString: Untagged
@@ -1255,6 +1275,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2763891194862162092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032213637221748743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &5114833128632443460
 GameObject:
   m_ObjectHideFlags: 0

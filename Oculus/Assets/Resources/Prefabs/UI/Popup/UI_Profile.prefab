@@ -113,7 +113,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 67609769059357443}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bd003fb322a33743b2fa8e4cbf63f26, type: 3}
+  m_Script: {fileID: 11500000, guid: 3287fad75f639ff4180c1f6780178d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &336948373941316712
@@ -284,6 +284,7 @@ GameObject:
   - component: {fileID: 5450924278108720193}
   - component: {fileID: 548554356782013404}
   - component: {fileID: 1200390107913644321}
+  - component: {fileID: 6193671769600563571}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -393,6 +394,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6193671769600563571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653998588798023323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &2267298505937095718
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,6 +868,7 @@ GameObject:
   - component: {fileID: 7542020065039628913}
   - component: {fileID: 789640028885982665}
   - component: {fileID: 1414371854834808322}
+  - component: {fileID: 7537787210619997564}
   m_Layer: 5
   m_Name: Btn
   m_TagString: Untagged
@@ -959,6 +979,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7537787210619997564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7431903050328166855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &8323530776612308808
 GameObject:
   m_ObjectHideFlags: 0

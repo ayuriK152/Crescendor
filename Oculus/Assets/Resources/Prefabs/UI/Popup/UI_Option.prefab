@@ -778,6 +778,7 @@ GameObject:
   - component: {fileID: 4739573460276957033}
   - component: {fileID: 5793453646378032093}
   - component: {fileID: 1752548879811623114}
+  - component: {fileID: 7820535865914224548}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -888,6 +889,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7820535865914224548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2248190544543200922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &2660314827536021294
 GameObject:
   m_ObjectHideFlags: 0

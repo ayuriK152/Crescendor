@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 6540313013923855304}
   - component: {fileID: 341524382106099549}
   - component: {fileID: 851860807541536415}
+  - component: {fileID: 2742020896038910203}
   m_Layer: 5
   m_Name: SignUpBtn
   m_TagString: Untagged
@@ -550,6 +551,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2742020896038910203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2837337583325792585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &2865277921872910966
 GameObject:
   m_ObjectHideFlags: 0
@@ -1196,6 +1215,7 @@ GameObject:
   - component: {fileID: 2292204759398869172}
   - component: {fileID: 8297104936935363449}
   - component: {fileID: 6162104184787966772}
+  - component: {fileID: 4545607889739884889}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -1305,6 +1325,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4545607889739884889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7471452032306334008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &7735458866972486427
 GameObject:
   m_ObjectHideFlags: 0
