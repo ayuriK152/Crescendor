@@ -467,6 +467,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6610026713896087034, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
       insertIndex: -1
       addedObject: {fileID: 397296999}
+    - targetCorrespondingSourceObject: {fileID: 7442089027538945652, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 397296997}
+    - targetCorrespondingSourceObject: {fileID: 1332333993373701544, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 397296996}
   m_SourcePrefab: {fileID: 100100000, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
 --- !u!224 &397296990 stripped
 RectTransform:
@@ -504,6 +510,52 @@ MonoBehaviour:
   _renderingLayers:
     serializedVersion: 2
     m_Bits: 32
+--- !u!1 &397296994 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1332333993373701544, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
+  m_PrefabInstance: {fileID: 397296989}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &397296995 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7442089027538945652, guid: d966bb19455f8794aaf44d453ff19f29, type: 3}
+  m_PrefabInstance: {fileID: 397296989}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &397296996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397296994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
+--- !u!114 &397296997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397296995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!114 &397296999
 MonoBehaviour:
   m_ObjectHideFlags: 0
