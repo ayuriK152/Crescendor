@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 6474964876288877888}
   - component: {fileID: 9136423095373143060}
   - component: {fileID: 2075486150218673527}
+  - component: {fileID: 661549374138805163}
   m_Layer: 5
   m_Name: SongButton
   m_TagString: Untagged
@@ -161,6 +162,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &661549374138805163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2217063412847860153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PokeFollowTransform: {fileID: 0}
+  m_SmoothingSpeed: 16
+  m_ReturnToInitialPosition: 1
+  m_ApplyIfChildIsTarget: 1
+  m_ClampToMaxDistance: 0
+  m_MaxDistance: 0
 --- !u!1 &3077186806571393924
 GameObject:
   m_ObjectHideFlags: 0
