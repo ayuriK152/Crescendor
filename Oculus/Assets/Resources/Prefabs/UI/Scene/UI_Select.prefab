@@ -2747,7 +2747,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 998494194543966479}
   m_HandleRect: {fileID: 1549232040891012780}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5825,7 +5825,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3141343570415570783}
   m_HandleRect: {fileID: 6264839903844827576}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
