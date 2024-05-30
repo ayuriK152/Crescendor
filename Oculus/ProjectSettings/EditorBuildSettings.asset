@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/PracticeModScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/Scenes/ReplayModScene.unity
+    guid: 721899c2f7fb54e4380ee97fa99775dc
+  - enabled: 1
     path: Assets/Scenes/ResultScene.unity
     guid: 19435be11aad906428766d7cfb1e7663
   - enabled: 1
