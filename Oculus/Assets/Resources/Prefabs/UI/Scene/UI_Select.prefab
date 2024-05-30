@@ -2747,7 +2747,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 998494194543966479}
   m_HandleRect: {fileID: 1549232040891012780}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5381,6 +5381,8 @@ GameObject:
   - component: {fileID: 4802143723228259438}
   - component: {fileID: 6834129242337049029}
   - component: {fileID: 6632420603819213180}
+  - component: {fileID: 1499198786973710689}
+  - component: {fileID: 8048988938415820089}
   m_Layer: 5
   m_Name: UI_Select
   m_TagString: Untagged
@@ -5490,6 +5492,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e348e53d8dbc940b2305f0be0243ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1499198786973710689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402426159160152296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
+--- !u!114 &8048988938415820089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402426159160152296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ecff74e52843a41ab3a441ac81379e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvas: {fileID: 8393630563683312}
+  _renderScale: 1
+  _dimensionsDriveMode: 0
+  _resolution: {x: 128, y: 128}
+  _generateMipMaps: 0
+  _pixelsPerUnit: 100
+  _renderingLayers:
+    serializedVersion: 2
+    m_Bits: 32
 --- !u!1 &7473471769560364994
 GameObject:
   m_ObjectHideFlags: 0
@@ -5783,7 +5825,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3141343570415570783}
   m_HandleRect: {fileID: 6264839903844827576}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
