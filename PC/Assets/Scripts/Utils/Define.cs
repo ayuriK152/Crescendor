@@ -115,6 +115,18 @@ public class Define
         }
     }
 
+    [Serializable]
+    public class LogEntry
+    {
+        public string date;
+    }
+
+    [Serializable]
+    public class LogEntryList
+    {
+        public List<LogEntry> logs;
+    }
+
     public enum Scene
     {
         Unknown,

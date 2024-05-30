@@ -199,7 +199,7 @@ public class UI_Select : UI_Scene
         // 프로필 이미지 로드
         if (Managers.Data.isUserLoggedIn)
         {
-            LoadImage(Managers.Data.userId);
+            LoadImage();
         }
     }
 
@@ -480,36 +480,9 @@ public class UI_Select : UI_Scene
     }
 
     #region Image Settings
-    public void LoadImage(string userId)
+    public void LoadImage()
     {
-        StartCoroutine(GetUserProfile(userId));
-    }
-
-
-    private IEnumerator GetUserProfile(string userID)
-    {
-
-        string url = "http://15.164.2.49:3000/getuser/" + userID;
-
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string responseText = request.downloadHandler.text;
-                Debug.Log("Response: " + responseText);
-
-                // 응답된 JSON 문자열에서 원하는 정보 추출
-                string profileURL = GetProfileURL(responseText);
-                // 프로필 이미지 다운로드 및 설정
-                yield return StartCoroutine(SetProfileImage(profileURL));
-            }
-            else
-            {
-                Debug.LogError("유저를 찾을 수 없음" + request.error);
-            }
-        }
+        StartCoroutine(SetProfileImage(Managers.Data.userProfileURL));
     }
 
     private IEnumerator SetProfileImage(string imageURL)
