@@ -5462,7 +5462,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6834129242337049029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5528,7 +5528,7 @@ MonoBehaviour:
   _dimensionsDriveMode: 0
   _resolution: {x: 128, y: 128}
   _generateMipMaps: 0
-  _pixelsPerUnit: 100
+  _pixelsPerUnit: 500
   _renderingLayers:
     serializedVersion: 2
     m_Bits: 32

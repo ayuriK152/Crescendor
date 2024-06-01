@@ -215,7 +215,7 @@ MonoBehaviour:
   m_SmoothingSpeed: 16
   m_ReturnToInitialPosition: 1
   m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
+  m_ClampToMaxDistance: 1
   m_MaxDistance: 10
 --- !u!1 &3077186806571393924
 GameObject:
