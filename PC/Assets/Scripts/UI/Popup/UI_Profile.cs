@@ -135,6 +135,7 @@ public class UI_Profile : UI_Popup
     // 프로필 이미지 업데이트 함수
     private void UpdateProfileImage(string imageURL)
     {
+        Managers.Data.userProfileURL = imageURL;
         // 이미지를 가져와서 텍스처로 변환하여 프로필 이미지에 설정
         StartCoroutine(LoadImage(imageURL, (texture) =>
         {

@@ -13,6 +13,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using static Datas;
 using static Define;
 
@@ -65,8 +66,8 @@ public class DataManager
 
     public Define.RankRecordList GetRankListFromLocal(string songFileName)
     {
-        if (!Directory.Exists($"{Application.dataPath}/RecordReplay/"))
-            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
+        if (!System.IO.Directory.Exists($"{Application.dataPath}/RecordReplay/"))
+            System.IO.Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
         Define.RankRecordList rankRecordList = new Define.RankRecordList();
         DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.dataPath}/RecordReplay");
         foreach (FileInfo file in replayDirInfo.GetFiles())
@@ -74,7 +75,7 @@ public class DataManager
             string songTitle = file.Name.Split("-")[0];
             if (songTitle == songFileName.Split("-")[0] && file.Name.Split(".")[file.Name.Split(".").Length - 1] == "json")
             {
-                string dataStr = File.ReadAllText($"{Application.dataPath}/RecordReplay/{file.Name}");
+                string dataStr = System.IO.File.ReadAllText($"{Application.dataPath}/RecordReplay/{file.Name}");
                 Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(dataStr);
                 rankRecordList.records.Add(new Define.RankRecord(songTitle, file.Name.Split("-")[1], userReplayRecord.accuracy, file.Name.Split("-")[2], dataStr));
             }

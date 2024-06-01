@@ -126,7 +126,7 @@ public class UI_MainMenu : UI_Scene
             }
 
             // ID와 비밀번호가 유효한 경우에만 요청을 보냄.
-            StartCoroutine(LoginRequest(id, password));
+            StartCoroutine(Login(id, password));
         }
     }
 
@@ -155,7 +155,7 @@ public class UI_MainMenu : UI_Scene
         loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
     }
 
-    IEnumerator SendRequest(string url, string json, string method)
+    IEnumerator SendLoginRequest(string url, string json, string method)
     {
         UnityWebRequest www;
 
@@ -196,10 +196,10 @@ public class UI_MainMenu : UI_Scene
         }
     }
 
-    IEnumerator LoginRequest(string id, string password)
+    IEnumerator Login(string id, string password)
     {
         string json = "{\"id\":\"" + id + "\", \"password\":\"" + password + "\"}";
-        yield return StartCoroutine(SendRequest($"http://{DEFAULT_SERVER_IP_PORT}/login", json, "POST"));
+        yield return StartCoroutine(SendLoginRequest($"http://{DEFAULT_SERVER_IP_PORT}/login", json, "POST"));
     }
 
     public void LoadImage()

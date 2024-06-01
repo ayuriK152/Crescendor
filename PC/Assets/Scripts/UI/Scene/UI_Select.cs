@@ -482,23 +482,7 @@ public class UI_Select : UI_Scene
     #region Image Settings
     public void LoadImage()
     {
-        StartCoroutine(SetProfileImage(Managers.Data.userProfileURL));
-    }
-
-    private IEnumerator SetProfileImage(string imageURL)
-    {
-        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
-        {
-            yield return imageRequest.SendWebRequest();
-
-            if (imageRequest.result == UnityWebRequest.Result.Success)
-            {
-                // 텍스처 다운로드 및 이미지 UI에 설정
-                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                originalSprite = _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite; // 원래 이미지를 저장
-                _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-            }
-        }
+        StartCoroutine(Managers.Data.SetProfileImage(Managers.Data.userProfileURL, _profileBtn.GetComponent<UnityEngine.UI.Image>()));
     }
 
 
