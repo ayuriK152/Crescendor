@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5420344028452949297}
   - component: {fileID: 6151752520289370321}
   - component: {fileID: 7174420806016853844}
-  - component: {fileID: 1884265096099136702}
   m_Layer: 5
   m_Name: ActualBtn
   m_TagString: Untagged
@@ -123,24 +122,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1884265096099136702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1655285464894918305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &2070371672424574681
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,8 +152,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2070371672424574681}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
-  m_LocalScale: {x: 0.0005, y: 0.0005, z: 0.0005}
+  m_LocalPosition: {x: 0, y: 0, z: -0.05}
+  m_LocalScale: {x: 0.0005, y: 0.0005, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3602493948897641664}
@@ -229,7 +210,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2628869161547143742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,7 +276,7 @@ MonoBehaviour:
   _dimensionsDriveMode: 0
   _resolution: {x: 128, y: 128}
   _generateMipMaps: 0
-  _pixelsPerUnit: 500
+  _pixelsPerUnit: 1000
   _renderingLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -311,7 +292,6 @@ GameObject:
   - component: {fileID: 4739573460276957033}
   - component: {fileID: 5793453646378032093}
   - component: {fileID: 1752548879811623114}
-  - component: {fileID: 8290479259626823423}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -422,24 +402,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8290479259626823423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2248190544543200922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &2660314827536021294
 GameObject:
   m_ObjectHideFlags: 0
@@ -944,7 +906,6 @@ GameObject:
   - component: {fileID: 5520677532900252534}
   - component: {fileID: 4821303504165943726}
   - component: {fileID: 530254546547234681}
-  - component: {fileID: 8376023681142226486}
   m_Layer: 5
   m_Name: PracticeBtn
   m_TagString: Untagged
@@ -1055,24 +1016,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8376023681142226486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6397241199890964681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &7354669643542320208
 GameObject:
   m_ObjectHideFlags: 0

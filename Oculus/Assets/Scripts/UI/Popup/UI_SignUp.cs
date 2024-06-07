@@ -28,8 +28,8 @@ public class UI_SignUp : UI_Popup
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(SignUpBtnClicked);
-        idInput = GameObject.Find("@UI/UI_SignUp/Panel/ID").GetComponent<TMP_InputField>();
-        passwordInput = GameObject.Find("@UI/UI_SignUp/Panel/PW").GetComponent<TMP_InputField>();
+        idInput = GameObject.Find("Curved Panel/UI_SignUp/Panel/ID").GetComponent<TMP_InputField>();
+        passwordInput = GameObject.Find("Curved Panel/UI_SignUp/Panel/PW").GetComponent<TMP_InputField>();
     }
 
     public void CloseBtnClicked(PointerEventData data)

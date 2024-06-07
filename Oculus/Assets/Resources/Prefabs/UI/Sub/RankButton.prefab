@@ -269,7 +269,6 @@ GameObject:
   - component: {fileID: 4132145767214279683}
   - component: {fileID: 3227780164085892902}
   - component: {fileID: 5230275677243839416}
-  - component: {fileID: 8699075507158371433}
   m_Layer: 5
   m_Name: RankButton
   m_TagString: Untagged
@@ -383,24 +382,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8699075507158371433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3834394581293590607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 1
-  m_MaxDistance: 10
 --- !u!1 &3887237013230920084
 GameObject:
   m_ObjectHideFlags: 0

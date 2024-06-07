@@ -1254,7 +1254,6 @@ GameObject:
   - component: {fileID: 7936306633713069995}
   - component: {fileID: 4150134030980008147}
   - component: {fileID: 8859677518013989012}
-  - component: {fileID: 2008766189469779841}
   m_Layer: 5
   m_Name: CurriculumButton
   m_TagString: Untagged
@@ -1365,24 +1364,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2008766189469779841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2572447809965217064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 0
 --- !u!1 &2649787904493773220
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,7 +1414,6 @@ GameObject:
   - component: {fileID: 2885963969925955876}
   - component: {fileID: 2642638317561556694}
   - component: {fileID: 1683544234866805022}
-  - component: {fileID: 8225332323032358779}
   m_Layer: 5
   m_Name: MainMenuButton
   m_TagString: Untagged
@@ -1544,24 +1524,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8225332323032358779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2754660630913582652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 0
 --- !u!1 &2760662078667632316
 GameObject:
   m_ObjectHideFlags: 0
@@ -2747,7 +2709,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 998494194543966479}
   m_HandleRect: {fileID: 1549232040891012780}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4298,7 +4260,6 @@ GameObject:
   - component: {fileID: 312290575224586878}
   - component: {fileID: 4669473551240649754}
   - component: {fileID: 6090537229170650820}
-  - component: {fileID: 2300052771522443147}
   m_Layer: 5
   m_Name: OptionButton
   m_TagString: Untagged
@@ -4409,24 +4370,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2300052771522443147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6315247022703802685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 0
 --- !u!1 &6357812646739243337
 GameObject:
   m_ObjectHideFlags: 0
@@ -5528,7 +5471,7 @@ MonoBehaviour:
   _dimensionsDriveMode: 0
   _resolution: {x: 128, y: 128}
   _generateMipMaps: 0
-  _pixelsPerUnit: 500
+  _pixelsPerUnit: 1000
   _renderingLayers:
     serializedVersion: 2
     m_Bits: 32
@@ -5825,7 +5768,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3141343570415570783}
   m_HandleRect: {fileID: 6264839903844827576}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6393,7 +6336,6 @@ GameObject:
   - component: {fileID: 995819305783086423}
   - component: {fileID: 132149863180222659}
   - component: {fileID: 5981841981509450237}
-  - component: {fileID: 82767013684948654}
   m_Layer: 5
   m_Name: SongListButton
   m_TagString: Untagged
@@ -6504,24 +6446,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &82767013684948654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8974876450210588428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 0
 --- !u!1 &9053401599710089909
 GameObject:
   m_ObjectHideFlags: 0
