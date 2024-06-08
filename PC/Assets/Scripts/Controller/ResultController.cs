@@ -59,6 +59,7 @@ public class ResultController : MonoBehaviour
         if (Managers.Data.isUserLoggedIn)
         {
             UpdateBestResult();
+            Managers.Data.AddLog(Managers.Data.userId);
         }
         UpdateHighScores();
         if (Managers.Data.isUserLoggedIn)

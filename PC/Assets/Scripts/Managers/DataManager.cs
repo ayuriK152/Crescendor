@@ -198,6 +198,7 @@ public class DataManager
             Debug.Log("Get Data Success");
             userCurriculumProgress = GetUserCurriculumProgress(www.downloadHandler.text);
             userProfileURL = GetProfileURL(www.downloadHandler.text);
+            Managers.Data.GetUserLogData(Managers.Data.userId);
             return true;
         }
         else
@@ -247,7 +248,6 @@ public class DataManager
         else
         {
             isServerConnectionComplete = false;
-            Debug.LogError("Error to Log Data");
             return false;
         }
     }
@@ -292,5 +292,32 @@ public class DataManager
     {
         Debug.Log(origin.Replace("\"", "\\\""));
         return origin.Replace("\"", "\\\"");
+    }
+
+    public void AddLog(string userID)
+    {
+        string baseURL = "http://15.164.2.49:3000/log/addlog/";
+        string url = baseURL + userID;
+
+        string logData = "{\"date\":\"" + DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") + "\"}";
+
+        UnityWebRequest www = new UnityWebRequest(url, "POST")
+        {
+            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(logData)),
+            downloadHandler = new DownloadHandlerBuffer()
+        };
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        www.SendWebRequest().completed += (AsyncOperation op) =>
+        {
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Log added successfully!");
+            }
+            else
+            {
+                Debug.LogError("Error adding log: " + www.error);
+            }
+        };
     }
 }

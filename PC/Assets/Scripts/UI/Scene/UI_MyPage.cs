@@ -42,6 +42,7 @@ public class UI_MyPage : UI_Scene
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnProfileBtnClick);
         FindImages(); // 이미지 찾기
         LoadImage();
+        Managers.Data.GetUserData(Managers.Data.userId);
         DisplayLog(Managers.Data.logCounts);
     }
 
@@ -59,6 +60,7 @@ public class UI_MyPage : UI_Scene
     public void OnLogoutBtnClick(PointerEventData data)
     {
         Managers.Data.isUserLoggedIn = false;
+        ResetLogData();
         SceneManager.LoadScene("MainMenuScene");
     }
 
@@ -119,5 +121,18 @@ public class UI_MyPage : UI_Scene
         {
             return new Color(0.75f, 0.75f, 0.75f); // Gray
         }
+    }
+
+    // 로그 데이터와 이미지를 초기화하는 함수
+    private void ResetLogData()
+    {
+        // 로그 데이터를 초기화
+        for (int i = 0; i < Managers.Data.logCounts.Length; i++)
+        {
+            Managers.Data.logCounts[i] = 0;
+        }
+
+        // 이미지를 초기화 (회색으로 설정)
+        DisplayLog(Managers.Data.logCounts);
     }
 }
