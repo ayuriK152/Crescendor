@@ -11,9 +11,9 @@ public class IngameController : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 1.5f;
+    public float notePosOffset = -2.625f * 4;
+    public float noteScale = 12.0f;
+    public float widthValue = 6.0f;
     public string songTitle;
 
     public int passedNote;
@@ -66,6 +66,7 @@ public class IngameController : MonoBehaviour
 
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
+        Managers.Midi.notePositionOffset = notePosOffset;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
 
         totalNote = Managers.Midi.notes.Count;

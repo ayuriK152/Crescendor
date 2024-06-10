@@ -1813,7 +1813,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 20
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1858,15 +1858,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1874,7 +1874,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.75
+      value: -10.5
       objectReference: {fileID: 0}
     - target: {fileID: 3499668321441256348, guid: a325336f65443184494ff77fd3822a85, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1978,6 +1978,7 @@ MonoBehaviour:
   songTimeSlider: {fileID: 0}
   songTimeSliderHandle: {fileID: 0}
   pausePanelObj: {fileID: 0}
+  optionPanelObj: {fileID: 0}
   loopStartMarker: {fileID: 0}
   loopStartMarkerSprite: {fileID: 0}
   loopEndMarker: {fileID: 0}

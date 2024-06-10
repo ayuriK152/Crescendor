@@ -76,7 +76,7 @@ public class Managers : MonoBehaviour
 
     static public void InitManagerPosition()
     {
-        _managerInstance.transform.position = new Vector3(0, 0, Datas.DEFAULT_NOTE_POSITION_OFFSET);
+        _managerInstance.transform.position = new Vector3(0, 0, Midi.notePositionOffset);
     }
 
     static public void InitPostSceneLoad()
