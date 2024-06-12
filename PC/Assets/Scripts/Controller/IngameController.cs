@@ -67,9 +67,6 @@ public class IngameController : MonoBehaviour
             _initInputTiming[i] = -1;
         }
 
-        Managers.Input.keyAction -= TestKey;
-        Managers.Input.keyAction += TestKey;
-
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
@@ -125,30 +122,11 @@ public class IngameController : MonoBehaviour
             {
                 TurnOnHighlight(i);
             }
-            else if (i==39)
-            {
-                TurnOnHighlight(39);
-            }
             else
                 TurnOffHighlight(i);
 
         }
         yield return null;
-    }
-     void TestKey(KeyCode keyCode, Define.InputType inputType)
-    {
-        if (keyCode == KeyCode.A)
-        {
-            if(inputType == Define.InputType.OnKeyDown)
-            {
-                TurnOnHighlight(39);
-            }
-            if(inputType == Define.InputType.OnKeyUp)
-            {
-                TurnOffHighlight(39);
-            }
-        }
-
     }
 
     void TurnOnHighlight(int keyNum)
@@ -221,15 +199,9 @@ public class IngameController : MonoBehaviour
 
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
 
-        if (effectPos.childCount < 50)
-        {
-            GameObject effect_clone = Instantiate(correctEffect, effectPos);
-            effect_clone.transform.Rotate(new Vector3(90, 0, 0));
-            effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);
-        }
-        //GameObject effect_clone = Instantiate(correctEffect, effectPos);
-        //effect_clone.transform.Rotate(new Vector3(90, 0, 0));
-        //effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);
+        GameObject effect_clone = Instantiate(correctEffect, effectPos);
+        effect_clone.transform.Rotate(new Vector3(90, 0, 0));
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);
 
     }
 
