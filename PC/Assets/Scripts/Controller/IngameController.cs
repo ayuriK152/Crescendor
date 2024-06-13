@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -31,7 +32,7 @@ public class IngameController : MonoBehaviour
     protected List<Material> _vPianoKeyMat = new List<Material>();
     protected List<GameObject> _vPianoKeyObj = new List<GameObject>();
     protected List<SpriteRenderer> _vPianoKeyEffect = new List<SpriteRenderer>();
-    protected Color[] _vPianoKeyEffectColors = new Color[3];
+    protected Color[] _vPianoKeyEffectColors = new Color[4];
     protected List<int> _correctNoteKeys = new List<int>();
 
     protected IngameUIController _uiController;
@@ -43,6 +44,7 @@ public class IngameController : MonoBehaviour
     private GameObject accuracyEffect;
     private GameObject congratulationEffect;
 
+
     protected void Init()
     {
         songTitle = PlayerPrefs.GetString("trans_SongTitle");
@@ -52,6 +54,7 @@ public class IngameController : MonoBehaviour
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
+
 
         // 이펙트 관련 초기화
         vPiano = GameObject.Find("VirtualPiano");
@@ -73,6 +76,7 @@ public class IngameController : MonoBehaviour
         _vPianoKeyEffectColors[0] = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         _vPianoKeyEffectColors[1] = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         _vPianoKeyEffectColors[2] = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+        _vPianoKeyEffectColors[3] = new Color(0.0f, 0.5f, 0.0f, 1.0f);
 
         Transform[] tempVPianoMat = GameObject.Find("VirtualPiano").GetComponentsInChildren<Transform>();
         foreach (Transform t in tempVPianoMat)
@@ -118,27 +122,36 @@ public class IngameController : MonoBehaviour
             {
                 TurnOnHighlight(i);
             }
-                
             else
                 TurnOffHighlight(i);
+
         }
         yield return null;
     }
 
     void TurnOnHighlight(int keyNum)
     {
-        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+        if (_correctNoteKeys.Contains(keyNum))
         {
-            _vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
+            if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 1f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+            }
+            else
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 0.5f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[3];
+            }
+
         }
         else
         {
-            _vPianoKeyMat[keyNum].color = new Color(0.5f, 0, 0);
-        }
-        if (!_correctNoteKeys.Contains(keyNum) && _vPianoKeyEffect[keyNum].color != _vPianoKeyEffectColors[2])
+            _vPianoKeyMat[keyNum].color = new Color(1f, 0, 0);
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
-        else
-            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+
+        }
+
         if (_correctNoteKeys.Contains(keyNum))
             CorrectEffect(keyNum);
     }
@@ -185,9 +198,11 @@ public class IngameController : MonoBehaviour
         }
 
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
-        GameObject effect_clone = Instantiate(accuracyEffect, effectPos);
+
+        GameObject effect_clone = Instantiate(correctEffect, effectPos);
         effect_clone.transform.Rotate(new Vector3(90, 0, 0));
-        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x + 0.2f, effect_clone.transform.position.y, -2.6f);
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);
+
     }
 
     protected ParticleSystem AccurayEffect()
@@ -196,8 +211,8 @@ public class IngameController : MonoBehaviour
         GameObject effect_clone = Instantiate(accuracyEffect, camera);
 
         // 수정 예정
-        float range_x = Random.Range(-5, 5);
-        float range_z = Random.Range(0, 4);
+        float range_x = UnityEngine.Random.Range(-5, 5);
+        float range_z = UnityEngine.Random.Range(0, 4);
 
         effect_clone.transform.position = new Vector3(range_x, effect_clone.transform.position.y, range_z);
 
