@@ -4261,7 +4261,6 @@ GameObject:
   - component: {fileID: 974760404}
   - component: {fileID: 974760403}
   - component: {fileID: 974760402}
-  - component: {fileID: 974760405}
   m_Layer: 5
   m_Name: ResumeBtn
   m_TagString: Untagged
@@ -4372,24 +4371,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 974760400}
   m_CullTransparentMesh: 1
---- !u!114 &974760405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 974760400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &1022914000
 GameObject:
   m_ObjectHideFlags: 0
@@ -4505,7 +4486,6 @@ GameObject:
   - component: {fileID: 1088372282}
   - component: {fileID: 1088372281}
   - component: {fileID: 1088372280}
-  - component: {fileID: 1088372283}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -4616,24 +4596,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088372278}
   m_CullTransparentMesh: 1
---- !u!114 &1088372283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1088372278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &1173471013
 GameObject:
   m_ObjectHideFlags: 0
@@ -6748,7 +6710,6 @@ GameObject:
   - component: {fileID: 2005031791}
   - component: {fileID: 2005031790}
   - component: {fileID: 2005031789}
-  - component: {fileID: 2005031792}
   m_Layer: 5
   m_Name: OptionBtn
   m_TagString: Untagged
@@ -6859,24 +6820,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2005031787}
   m_CullTransparentMesh: 1
---- !u!114 &2005031792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2005031787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &2007564328
 GameObject:
   m_ObjectHideFlags: 0
