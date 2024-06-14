@@ -199,8 +199,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
         m_MethodName: UpBtn
         m_Mode: 1
         m_Arguments:
@@ -715,9 +715,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
-        m_MethodName: DownBtn
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
+        m_MethodName: BackBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -758,6 +758,7 @@ GameObject:
   - component: {fileID: 7955057362048222593}
   - component: {fileID: 5702551362506466735}
   - component: {fileID: 4704001510034661867}
+  - component: {fileID: 4676639456579931176}
   m_Layer: 5
   m_Name: UI_NoteTransform
   m_TagString: Untagged
@@ -861,13 +862,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
+  m_IgnoreReversedGraphics: 1
   m_CheckFor2DOcclusion: 0
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
+--- !u!114 &4676639456579931176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2851481519229616991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40ab28d6d849864eb6b0c3cb887a40f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UI_Confirm: {fileID: 7759004026107196838, guid: 7e875ab0206e39541be629262862e656, type: 3}
 --- !u!1 &3467632359885149727
 GameObject:
   m_ObjectHideFlags: 0
@@ -991,9 +1005,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
-        m_MethodName: RightBtn
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
+        m_MethodName: ForwardBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1819,9 +1833,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
-        m_MethodName: UpBtn
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
+        m_MethodName: Narrow
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1972,8 +1986,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
         m_MethodName: LeftBtn
         m_Mode: 1
         m_Arguments:
@@ -2260,9 +2274,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
-        m_MethodName: UpBtn
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
+        m_MethodName: Wide
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2489,8 +2503,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
         m_MethodName: DownBtn
         m_Mode: 1
         m_Arguments:
@@ -2906,8 +2920,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
         m_MethodName: ConfirmBtn
         m_Mode: 1
         m_Arguments:
@@ -3405,8 +3419,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PianoWidthController, Assembly-CSharp
+      - m_Target: {fileID: 4676639456579931176}
+        m_TargetAssemblyTypeName: UI_NoteTransform, Assembly-CSharp
         m_MethodName: RightBtn
         m_Mode: 1
         m_Arguments:
