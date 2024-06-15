@@ -154,6 +154,7 @@ public class Define
     public enum Curriculum
     {
         Hanon,
+        Bayer,
         None,
     }
 }

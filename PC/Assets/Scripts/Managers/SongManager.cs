@@ -42,8 +42,7 @@ public class SongManager
                 songTitle = songTitle.Replace("_", " ");
                 string songComposer = songFile.Key.Split('-')[1];
                 songComposer = songComposer.Replace("_", " ");
-
-                // SongManager에 중복 검사 후 곡 정보 추가
+                // SongManager에 중복 검사 후 곡 정보 추가 
                 if (!IsSongAlreadyAdded(songTitle))
                 {
                     AddSong(songCount, songTitle, songComposer, curriculum);
