@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UI_Option : UI_Popup
@@ -15,6 +16,7 @@ public class UI_Option : UI_Popup
     enum Buttons
     {
         CloseBtn,
+        PianoWidthBtn,
     }
 
     Slider metronomeVolumeSlider;
@@ -33,6 +35,7 @@ public class UI_Option : UI_Popup
         Bind<Button>(typeof(Buttons));
 
         GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
+        GetButton((int)Buttons.PianoWidthBtn).gameObject.BindEvent(PianoWidthBtnClicked);
 
         metronomeVolumeSlider = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Slider").GetComponent<Slider>();
         metronomeVolumeText = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Value").GetComponent<TextMeshProUGUI>();
@@ -54,6 +57,11 @@ public class UI_Option : UI_Popup
     public void CloseBtnClicked(PointerEventData data)
     {
         Destroy(gameObject);
+    }
+
+    public void PianoWidthBtnClicked(PointerEventData data)
+    {
+        SceneManager.LoadScene("GetPianoWidthScene");
     }
 
     void OnSliderValueChanged(OptionPanels options, float value)

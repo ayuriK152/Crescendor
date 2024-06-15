@@ -801,11 +801,6 @@ Transform:
   m_Father: {fileID: 1938636236}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &822265094 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9111728626653979497, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
-  m_PrefabInstance: {fileID: 1938636227}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &827977728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +889,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_InteractionLayers:
     m_Bits: 4294967295
-  m_AttachTransform: {fileID: 822265094}
+  m_AttachTransform: {fileID: 1267745254}
   m_KeepSelectedTargetValid: 1
   m_DisableVisualsWhenBlockedInGroup: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -1279,7 +1274,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_InteractionLayers:
     m_Bits: 4294967295
-  m_AttachTransform: {fileID: 1313152448}
+  m_AttachTransform: {fileID: 1267745253}
   m_KeepSelectedTargetValid: 1
   m_DisableVisualsWhenBlockedInGroup: 1
   m_StartingSelectedInteractable: {fileID: 0}
@@ -1353,9 +1348,14 @@ Transform:
   m_Father: {fileID: 642092594}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1313152448 stripped
+--- !u!4 &1267745253 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 754127783449087631, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
+  m_PrefabInstance: {fileID: 1938636227}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1267745254 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9111728626653979497, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
   m_PrefabInstance: {fileID: 1938636227}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1417493000
@@ -2642,10 +2642,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3744567562436422012, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
+      propertyPath: _pointTransform
+      value: 
+      objectReference: {fileID: 1267745254}
     - target: {fileID: 3840180250121710720, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
       propertyPath: _hmd
       value: 
       objectReference: {fileID: 1938636231}
+    - target: {fileID: 5184504681458730138, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
+      propertyPath: _pointTransform
+      value: 
+      objectReference: {fileID: 1267745253}
     - target: {fileID: 5550776016039436608, guid: f39a9d103c4129b42a53567f6cd8356a, type: 3}
       propertyPath: m_RootOrder
       value: 0
