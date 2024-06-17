@@ -6,7 +6,7 @@ public class Datas
     public const float DEFAULT_QUARTER_NOTE_MILLISEC = 500000.0f;
     public const int DEFAULT_C3_POSITION = 40;
     public const int DEFAULT_KEY_NUM_OFFSET = 20;
-    public const float DEFAULT_NOTE_POSITION_OFFSET = -2.625f;
+    public const float DEFAULT_NOTE_POSITION_OFFSET = -10.5f;
 
     // 기본 서버 ip:port
     public const string DEFAULT_SERVER_IP_PORT = "15.164.2.49:3000";

@@ -26,6 +26,7 @@ public class MidiManager
     Transform replayInstantiatePoint;
 
     public int tempo = 120;
+    public List<int> barTiming = new List<int>();
     public KeyValuePair<int, int> beat = new KeyValuePair<int, int>(4, 4);
     public int songLengthDelta = 0;
     public float songLengthSecond = 0;
@@ -33,8 +34,9 @@ public class MidiManager
     public float noteScale = 1.0f;
     public float blackNoteWidth = 0.13125f;
     public float whiteNoteWidth = 0.225f;
+    public float notePositionOffset = -10.5f;
     public float virtualPianoWidth = 1.575f;
-    public float widthValue = 1.0f;
+    public float widthValue = 4.0f;
     public MidiFileContainer song;
 
     public List<Notes> notes = new List<Notes>();
@@ -46,6 +48,8 @@ public class MidiManager
     // 각 건반별 쳐야하는 노트들 모음
     public Dictionary<int, List<KeyValuePair<int, int>>> noteSetByKey = new Dictionary<int, List<KeyValuePair<int, int>>>();
     public int[] nextKeyIndex = new int[88];
+
+    public List<Bar> bars = new List<Bar>();
 
     public List<Notes> replayNotes = new List<Notes>();
     public List<int> replayNoteTiming = new List<int>();
@@ -82,6 +86,8 @@ public class MidiManager
         replayNotes.Clear();
         replayNoteTiming.Clear();
         instantiateReplayNotes.Clear();
+        bars.Clear();
+        barTiming.Clear();
 
         nextKeyIndex = new int[88];
     }
@@ -166,6 +172,21 @@ public class MidiManager
 
         notes.Sort();
 
+        int beatMapIndex = 0;
+        for (int i = 0; i < songLengthDelta;)
+        {
+            if (song.beatMap.Count - 1 > beatMapIndex)
+            {
+                if (song.beatMap[beatMapIndex + 1].deltaTime <= i)
+                {
+                    beatMapIndex += 1;
+                }
+            }
+
+            barTiming.Add(i + song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator));
+            i += song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator);
+        }
+
         /*  바로 시작 방지용 코드, 검증 필요
         noteTiming.Add(0);
         noteSetBySameTime.Add(0, new List<KeyValuePair<int, bool>>());
@@ -228,6 +249,55 @@ public class MidiManager
         }
 
         noteTiming.Sort();
+
+        int tempBarAmount = (int)Mathf.Ceil(totalDeltaTime / (song.division * beat.Key));
+        for (int i = 0; i < tempBarAmount; i++)
+        {
+            bars.Add(new Bar());
+            for (int j = 0; j < notes.Count; j++)
+            {
+                if (notes[j].startTime >= i * song.division * beat.Key && notes[j].startTime < (i + 1) * song.division * beat.Key)
+                {
+                    bool isUpper = notes[j].channel == 0 ? true : false;
+                    float noteOffset = i % 4 == 0 ? 88.5f : 16.5f;
+                    switch (notes[j].deltaTime / (song.division / 4))
+                    {
+                        case 2:
+                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Eighth));
+                            foreach (SheetNote sheetNote in bars[i].notes)
+                            {
+                                if (sheetNote.timing == bars[i].notes[bars[i].notes.Count - 1].timing && sheetNote.keyNum < bars[i].notes[bars[i].notes.Count - 1].keyNum)
+                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = true;
+                                else
+                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
+                            }
+                            break;
+                        case 3:
+                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Eighth));
+                            foreach (SheetNote sheetNote in bars[i].notes)
+                            {
+                                if (sheetNote.timing == bars[i].notes[bars[i].notes.Count - 1].timing && sheetNote.keyNum < bars[i].notes[bars[i].notes.Count - 1].keyNum)
+                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = true;
+                                else
+                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
+                            }
+                            break;
+                        case 4:
+                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Fourth));
+                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
+                            break;
+                        case 8:
+                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Second));
+                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
+                            break;
+                        case 16:
+                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.First));
+                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     public void LoadAndInstantiateReplay(string replayFile, bool isPath)
@@ -422,7 +492,7 @@ public class MidiManager
         return flag;
     }
 
-    int NoteKeyPosOrder(int keyNum)
+    public int NoteKeyPosOrder(int keyNum)
     {
         int keyPos = 0;
         if (keyNum > 3)

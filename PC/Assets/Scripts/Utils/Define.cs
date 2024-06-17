@@ -115,6 +115,45 @@ public class Define
         }
     }
 
+    public class SheetNote
+    {
+        public int keyNum;
+        public float timing;
+        public bool isUpper;
+        public bool isShapeFourth;
+        public NoteKind noteKind;
+        public Vector2 position;
+
+        public SheetNote(int keyNum, float timing, bool isUpper, NoteKind noteKind)
+        {
+            this.keyNum = keyNum;
+            this.timing = timing;
+            this.isUpper = isUpper;
+            this.noteKind = noteKind;
+            isShapeFourth = false;
+            if (isUpper)
+            {
+                int yPosOffset = (keyNum - 3) / 12;
+                position = new Vector2(timing, (Managers.Midi.NoteKeyPosOrder(keyNum) + yPosOffset * 7 - 32) * 7.5f);
+            }
+            else
+            {
+                int yPosOffset = (keyNum - 3) / 12;
+                position = new Vector2(timing, (Managers.Midi.NoteKeyPosOrder(keyNum) + yPosOffset * 7 - 20) * 7.5f);
+            }
+        }
+    }
+
+    public class Bar
+    {
+        public List<SheetNote> notes;
+
+        public Bar()
+        {
+            notes = new List<SheetNote>();
+        }
+    }
+
     [Serializable]
     public class LogEntry
     {
@@ -156,5 +195,14 @@ public class Define
         Hanon,
         Bayer,
         None,
+    }
+
+    public enum NoteKind
+    {
+        First,
+        Second,
+        Fourth,
+        Eighth,
+        Sixteenth,
     }
 }

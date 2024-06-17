@@ -1,3 +1,4 @@
+using ABCUnity.Example;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,9 +12,9 @@ public class IngameController : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 1.5f;
+    public float notePosOffset = -2.625f * 4;
+    public float noteScale = 12.0f;
+    public float widthValue = 6.0f;
     public string songTitle;
 
     public int passedNote;
@@ -26,6 +27,7 @@ public class IngameController : MonoBehaviour
     #region Protected Members
     protected int _tempoMapIdx = 0;
     protected int _beatMapIdx = 0;
+    protected int _currentBarIdx = 0;
     protected int[] _initInputTiming = new int[88];
 
     protected List<Material> _vPianoKeyMat = new List<Material>();
@@ -35,6 +37,7 @@ public class IngameController : MonoBehaviour
     protected List<int> _correctNoteKeys = new List<int>();
 
     protected IngameUIController _uiController;
+    protected BasicLayout sheetController;
     #endregion
 
     // Effect 관련 변수
@@ -66,6 +69,7 @@ public class IngameController : MonoBehaviour
 
         Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
+        Managers.Midi.notePositionOffset = notePosOffset;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
 
         totalNote = Managers.Midi.notes.Count;
@@ -86,13 +90,15 @@ public class IngameController : MonoBehaviour
                 _vPianoKeyMat.Add(tempVPianoKeyMat.material);
             }
         }
+
+        sheetController = GameObject.Find("SheetController").GetComponent<BasicLayout>();
     }
 
     public void UpdateTempo()
     {
         if (_tempoMapIdx == Managers.Midi.song.tempoMap.Count)
             return;
-        if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime - currentDeltaTime > 0)
+        if (Managers.Midi.song.tempoMap[_tempoMapIdx].deltaTime - currentDeltaTime >= 0)
             return;
         tempo = Managers.Midi.song.tempoMap[_tempoMapIdx].tempo;
         _uiController.UpdateTempoText();
@@ -103,11 +109,23 @@ public class IngameController : MonoBehaviour
     {
         if (_beatMapIdx == Managers.Midi.song.beatMap.Count)
             return;
-        if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime - currentDeltaTime > 0)
+        if (Managers.Midi.song.beatMap[_beatMapIdx].deltaTime - currentDeltaTime >= 0)
             return;
         Managers.Midi.beat = new KeyValuePair<int, int>(Managers.Midi.song.beatMap[_beatMapIdx].numerator, Managers.Midi.song.beatMap[_beatMapIdx].denominator);
         _uiController.UpdateBeatText();
         _beatMapIdx += 1;
+    }
+
+    public void UpdateBar()
+    {
+        if (_currentBarIdx == Managers.Midi.barTiming.Count)
+            return;
+        if (Managers.Midi.barTiming[_currentBarIdx] >= currentDeltaTime)
+            return;
+        int temp = _currentBarIdx / 4;
+        _currentBarIdx += 1;
+        if (temp != _currentBarIdx / 4)
+            sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4);
     }
 
     protected IEnumerator ToggleKeyHighlight()
