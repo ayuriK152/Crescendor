@@ -11,6 +11,7 @@ public class SongManager
     public Song selectedSong = null;
     public Curriculum selectedCurriculum = Curriculum.Hanon;
     public Dictionary<Curriculum, int> curriculumSongMounts = new Dictionary<Curriculum, int>();
+    public List<KeyValuePair<string, int>> curriculumIdx = new List<KeyValuePair<string, int>>();
     public bool isModCurriculum = false;
 
     public void LoadSongsFromConvertsFolder()
@@ -41,8 +42,7 @@ public class SongManager
                 songTitle = songTitle.Replace("_", " ");
                 string songComposer = songFile.Key.Split('-')[1];
                 songComposer = songComposer.Replace("_", " ");
-
-                // SongManager에 중복 검사 후 곡 정보 추가
+                // SongManager에 중복 검사 후 곡 정보 추가 
                 if (!IsSongAlreadyAdded(songTitle))
                 {
                     AddSong(songCount, songTitle, songComposer, curriculum);
@@ -51,6 +51,13 @@ public class SongManager
         }
 
         songs.Sort((Song a, Song b) => a.songTitle.CompareTo(b.songTitle));
+
+        for (int i = 0; i < songs.Count; i++)
+        {
+            if (songs[i].curriculum == Curriculum.None)
+                continue;
+            curriculumIdx.Add(new KeyValuePair<string, int>(songs[i].songTitle, i));
+        }
     }
 
     // SongManager에 이미 해당 곡이 추가되어 있는지 확인하는 메서드
