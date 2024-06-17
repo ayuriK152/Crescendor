@@ -11,6 +11,8 @@ namespace ABCUnity.Example
     {
         [SerializeField] private TextMeshPro title;
         [SerializeField] private string resourceName;
+        [SerializeField] private string abcString;
+        [SerializeField] private string abcFile;
 
         [Range(0.0f, 1.0f)]public float layoutWidth = 0.8f;
         private Camera mainCamera;
@@ -22,7 +24,7 @@ namespace ABCUnity.Example
         {
             mainCamera = Camera.main;
             layout = FindObjectOfType<Layout>();
-
+            
             ResizeLayout();
             layout.onLoaded += OnLoaded;
         }
@@ -34,9 +36,19 @@ namespace ABCUnity.Example
 
         void Start()
         {
-            if (!string.IsNullOrEmpty(resourceName))
+            if (!string.IsNullOrEmpty(abcString)) {
+                layout.LoadString(abcString);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(abcFile)) {
+                layout.LoadFile(abcFile);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(resourceName)) {
                 LoadFromResource(resourceName);
-            layout.GetComponent<RectTransform>().Rotate(new Vector3(90, 0, 0));
+            }
         }
 
         void Update()
@@ -69,6 +81,8 @@ namespace ABCUnity.Example
             var layoutTransform = layout.GetComponent<RectTransform>();
             layoutTransform.position = new Vector3(0.0f, titleTransform.position.y - titleTransform.rect.height - layoutSpacer, 0.0f);
             layoutTransform.sizeDelta = new Vector2(targetWidth, orthoHeight - titleTransform.sizeDelta.y - layoutSpacer);
+            layoutTransform.Rotate(90, 0, 0);
+            layoutTransform.position = new Vector3(0, 3, 10);
         }
     }
 

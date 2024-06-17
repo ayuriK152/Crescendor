@@ -12,6 +12,7 @@ namespace ABCUnity
         [SerializeField] private SpriteAtlas spriteAtlas; // set in editor
         [SerializeField] public Color color = Color.black;
         [SerializeField] public Material NoteMaterial;
+        [SerializeField] public Material LineMaterial;
         [SerializeField] public TextMeshPro textPrefab;
         [SerializeField] public float staffLinePadding = 0.4f;
         [SerializeField] public float staffLineMargin = 1.0f;
@@ -24,11 +25,11 @@ namespace ABCUnity
 
         #region TuneSpecificMembers
         List<VoiceLayout> layouts = new List<VoiceLayout>();
-        Dictionary<int, Beam> beams;
+        Dictionary<ABC.Beam, Beam> beams;
         public ABC.Tune tune { get; private set; }
         GameObject scoreContainer;
         public Dictionary<int, GameObject> gameObjectMap { get; } = new Dictionary<int, GameObject>();
-        public Dictionary<GameObject, ABC.Item> itemMap { get; } = new Dictionary<GameObject, ABC.Item>();
+        private Dictionary<int, VoiceLayout.ScoreLine.Element> abcItemToLayoutElement { get; } = new Dictionary<int, VoiceLayout.ScoreLine.Element>();
         private Dictionary<int, List<SpriteRenderer>> spriteRendererCache = new Dictionary<int, List<SpriteRenderer>>();
         private TimeSignature timeSignature;
         #endregion
@@ -53,7 +54,6 @@ namespace ABCUnity
         {
             multilineLayout = !overrideLineBreaks;
             rectTransform = GetComponent<RectTransform>();
-            rectTransform.rotation = new Quaternion(270.0f, 0.0f, 0.0f, 0.0f);
             cache = new SpriteCache(spriteAtlas, textPrefab);
             layouts.Clear();
             if (beams != null)
@@ -70,7 +70,7 @@ namespace ABCUnity
             GameObject.Destroy(scoreContainer);
             layouts.Clear();
             gameObjectMap.Clear();
-            itemMap.Clear();
+            abcItemToLayoutElement.Clear();
             spriteRendererCache.Clear();
             
             timeSignature = null;
@@ -113,14 +113,6 @@ namespace ABCUnity
             {
                 LoadStream(file);
             }
-        }
-
-        public GameObject FindItemRootObject(GameObject obj)
-        {
-            while (!itemMap.ContainsKey(obj))
-                obj = obj.transform.parent.gameObject;
-
-            return obj;
         }
 
         public bool SetItemColor(ABC.Item item, Color color)
@@ -237,7 +229,7 @@ namespace ABCUnity
                                 }
 
                                 gameObjectMap.Add(element.item.id, element.container);
-                                itemMap.Add(element.container, element.item);
+                                abcItemToLayoutElement.Add(element.item.id, element);
 
                                 // position
                                 var beatItem = layoutMeasure.elements[layoutMeasure.elements.Count - 1];
@@ -420,23 +412,16 @@ namespace ABCUnity
                 actualBounds.Encapsulate(actualNoteInfo.totalBounding);
 
                 var duration = item.item as ABC.Duration;
-                if (duration != null && beams.TryGetValue(duration.beam, out Beam beam))
+                if (duration != null && duration.beam != null && beams.TryGetValue(duration.beam, out Beam beam))
                 {
-                    beam.Update(actualNoteInfo.rootBounding);
+                    beam.AddNoteInfo(actualNoteInfo);
 
-                    if (beam.isReadyToCreate)
-                    {
-                        if (beam.type == Beam.Type.Angle)
-                        {
-                            if (beamVertices == null)
-                                beamVertices = new List<Vector3>();
+                    if (beamVertices == null) {
+                        beamVertices = new List<Vector3>();
+                    }
 
-                            beam.CreateAngledBeam(beamVertices);
-                        }
-                        else
-                        {
-                            beam.CreateBasicBeam(cache, measure.container);
-                        }
+                    if (beam.isReadyToCreate) {
+                        beam.CreateBeamVertices(beamVertices);
                     }
                 }
             }
@@ -538,9 +523,30 @@ namespace ABCUnity
             for (int i = 0; i < layouts[0].scoreLines.Count; i++)
                 PositionScoreLine(i);
 
+            CreateSlursAndTies();
+
             scoreContainer.transform.localScale = new Vector3(layoutScale, layoutScale, layoutScale);
+            scoreContainer.transform.Rotate(90, 0, 0);
             this.gameObject.transform.localScale = scale;
-            
+        }
+
+        private void CreateSlursAndTies()
+        {
+            foreach (var voice in tune.voices)
+            {
+                CreateGroupings(voice.slurs);
+                CreateGroupings(voice.ties);
+            }
+        }
+
+        private void CreateGroupings(IEnumerable<ABC.Grouping> groupings)
+        {
+            foreach (var grouping in groupings)
+            {
+                var startElement = abcItemToLayoutElement[grouping.startId];
+                var endElement = abcItemToLayoutElement[grouping.endId];
+                Grouping.Create(startElement, endElement, LineMaterial);
+            }
         }
 
         /// <summary> Breaks up a single score line into multiple lines based on the horizontal max</summary>
@@ -553,7 +559,7 @@ namespace ABCUnity
             {
                 scoreLines[i] = layouts[i].scoreLines[0].measures;
                 layouts[i].scoreLines.Clear();
-                layouts[i].scoreLines.Add(new VoiceLayout.ScoreLine());
+                layouts[i].scoreLines.Add(new VoiceLayout.ScoreLine(layouts[i]));
             }
 
             float currentWidth = 0.0f;
@@ -571,7 +577,7 @@ namespace ABCUnity
                     if (currentWidth + scoreLine[measureIndex].insertX > horizontalMax)
                     {
                         foreach (var layout in layouts)
-                            layout.scoreLines.Add(new VoiceLayout.ScoreLine());
+                            layout.scoreLines.Add(new VoiceLayout.ScoreLine(layout));
 
                         currentWidth = 0.0f;
                         break;
@@ -582,7 +588,7 @@ namespace ABCUnity
                 for (int i = 0; i < scoreLines.Length; i++)
                 {
                     var scoreLine = layouts[i].scoreLines[layouts[i].scoreLines.Count - 1];
-                    scoreLine.measures.Add(scoreLines[i][measureIndex]);
+                    scoreLine.AddMeasure(scoreLines[i][measureIndex]);
                     currentWidth += measureWidth;
                 }
             }
@@ -701,7 +707,7 @@ namespace ABCUnity
             tune.decorations.TryGetValue(chordItem.id, out var decorations);
             
             NoteInfo chordInfo;
-            if (beams.TryGetValue(chordItem.beam, out Beam beam))
+            if (chordItem.beam != null && beams.TryGetValue(chordItem.beam, out Beam beam))
                 chordInfo = notes.CreateChord(chordItem, beam, decorations, element.container);
             else
                 chordInfo = notes.CreateChord(chordItem, clef, decorations, element.container);
@@ -717,7 +723,7 @@ namespace ABCUnity
             tune.decorations.TryGetValue(noteItem.id, out var decorations);
 
             NoteInfo noteInfo;
-            if (beams.TryGetValue(noteItem.beam, out Beam beam))
+            if (noteItem.beam != null && beams.TryGetValue(noteItem.beam, out Beam beam))
                 noteInfo = notes.CreateNote(noteItem, beam, decorations, element.container);
             else
                 noteInfo = notes.CreateNote(noteItem, clef, decorations, element.container);
