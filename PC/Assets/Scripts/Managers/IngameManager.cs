@@ -11,6 +11,7 @@ using static Define;
 public class IngameManager
 {
     public object currentController;
+    public Action OptionChangedAction;
 
     public void Init()
     {

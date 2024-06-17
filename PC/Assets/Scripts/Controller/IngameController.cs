@@ -38,6 +38,7 @@ public class IngameController : MonoBehaviour
 
     protected IngameUIController _uiController;
     protected BasicLayout sheetController;
+    protected GameObject sheetObject;
     #endregion
 
     // Effect 관련 변수
@@ -92,6 +93,21 @@ public class IngameController : MonoBehaviour
         }
 
         sheetController = GameObject.Find("SheetController").GetComponent<BasicLayout>();
+        sheetObject = GameObject.Find("ABCLayout");
+        if (PlayerPrefs.GetInt("user_SheetShow") == 0)
+            sheetObject.SetActive(false);
+        else
+            sheetObject.SetActive(true);
+        Managers.Ingame.OptionChangedAction -= ToggleSheetShow;
+        Managers.Ingame.OptionChangedAction += ToggleSheetShow;
+    }
+
+    void ToggleSheetShow()
+    {
+        if (PlayerPrefs.GetInt("user_SheetShow") == 0)
+            sheetObject.SetActive(false);
+        else
+            sheetObject.SetActive(true);
     }
 
     public void UpdateTempo()
