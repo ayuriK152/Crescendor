@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
+using ABCUnity.Example;
+using System;
 
 public class ActualModController : IngameController
 {
@@ -46,8 +48,11 @@ public class ActualModController : IngameController
 
         _noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
 
-        // Managers.Input.keyAction -= InputKeyEvent;
-        // Managers.Input.keyAction += InputKeyEvent;
+        if (Managers.Input.inputDevice != null)
+        {
+            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
+            Managers.Input.inputDevice.EventReceived += OnEventReceived;
+        }
 
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));
@@ -111,6 +116,7 @@ public class ActualModController : IngameController
         transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
         UpdateTempo();
         UpdateBeat();
+        UpdateBar();
     }
 
     public void SyncDeltaTime(bool isIntToFloat)

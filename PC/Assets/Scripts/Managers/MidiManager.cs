@@ -26,6 +26,7 @@ public class MidiManager
     Transform replayInstantiatePoint;
 
     public int tempo = 120;
+    public List<int> barTiming = new List<int>();
     public KeyValuePair<int, int> beat = new KeyValuePair<int, int>(4, 4);
     public int songLengthDelta = 0;
     public float songLengthSecond = 0;
@@ -86,6 +87,7 @@ public class MidiManager
         replayNoteTiming.Clear();
         instantiateReplayNotes.Clear();
         bars.Clear();
+        barTiming.Clear();
 
         nextKeyIndex = new int[88];
     }
@@ -166,6 +168,21 @@ public class MidiManager
         songLengthSecond = (songLengthDelta / (float)song.division) / (tempo / 60.0f);
 
         notes.Sort();
+
+        int beatMapIndex = 0;
+        for (int i = 0; i < songLengthDelta;)
+        {
+            if (song.beatMap.Count - 1 > beatMapIndex)
+            {
+                if (song.beatMap[beatMapIndex + 1].deltaTime <= i)
+                {
+                    beatMapIndex += 1;
+                }
+            }
+
+            barTiming.Add(i + song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator));
+            i += song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator);
+        }
 
         /*  바로 시작 방지용 코드, 검증 필요
         noteTiming.Add(0);

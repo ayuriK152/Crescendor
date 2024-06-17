@@ -34,27 +34,15 @@ namespace ABCUnity.Example
             title.text = tune.title;
         }
 
-        void Start()
-        {
-            if (!string.IsNullOrEmpty(abcString)) {
-                layout.LoadString(abcString);
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(abcFile)) {
-                layout.LoadFile(abcFile);
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(resourceName)) {
-                LoadFromResource(resourceName);
-            }
-        }
-
         void Update()
         {
             if (aspect != mainCamera.aspect || orthographicSize != mainCamera.orthographicSize)
                 ResizeLayout();
+        }
+
+        public void ShowSheetAtIndex(string directory, int index)
+        {
+            LoadFromResource($"{directory}/{index}");
         }
 
         public void LoadFromResource(string resourceName)

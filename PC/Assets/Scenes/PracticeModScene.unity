@@ -1325,7 +1325,7 @@ GameObject:
   - component: {fileID: 486018871}
   - component: {fileID: 486018870}
   m_Layer: 0
-  m_Name: SheetShow
+  m_Name: SheetController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1344,7 +1344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: {fileID: 655651827}
-  resourceName: SheetDatas/He's_Pirate-Hans_Zimmer/3
+  resourceName: 
   abcString: 
   abcFile: 
   layoutWidth: 0.8
