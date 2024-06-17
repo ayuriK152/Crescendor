@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UI_NoteTransform : MonoBehaviour
@@ -15,7 +16,7 @@ public class UI_NoteTransform : MonoBehaviour
     private float l_zpos;
 
     [SerializeField]
-    GameObject UI_Confirm;
+    private TextMeshProUGUI confirmMsg;
 
     private void Awake()
     {
@@ -26,14 +27,6 @@ public class UI_NoteTransform : MonoBehaviour
         l_ypos = GameObject.Find("LeftNoteAnchor").transform.position.y;
         r_zpos = GameObject.Find("RightNoteAnchor").transform.position.z;
         l_zpos = GameObject.Find("LeftNoteAnchor").transform.position.z;
-    }
-
-    public void DestroyUI()
-    {
-        if (UI_Confirm.activeSelf == true)
-        {
-            UI_Confirm.SetActive(false);
-        }
     }
 
     public void ConfirmBtn()
@@ -47,8 +40,7 @@ public class UI_NoteTransform : MonoBehaviour
         PlayerPrefs.SetFloat("trans_ypos", r_ypos);
         PlayerPrefs.SetFloat("trans_zpos", r_zpos);
 
-        UI_Confirm.SetActive(true);
-        Invoke("DestroyUI", 3f);
+        confirmMsg.text = "Confirm";
     }
 
     public void UpBtn()
