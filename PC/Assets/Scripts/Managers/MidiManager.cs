@@ -117,7 +117,10 @@ public class MidiManager
 
         tempo = CalcTempoWithRatio(Datas.DEFAULT_QUARTER_NOTE_MILLISEC / song.tempoMap[0].milliSecond);
         if (song.beatMap.Count == 0)
+        {
             beat = new KeyValuePair<int, int>(4, 4);
+            song.beatMap.Add(new Beat(0, 4, 4, 24, 8));
+        }
         else
             beat = new KeyValuePair<int, int>(song.beatMap[0].numerator, song.beatMap[0].denominator);
     }

@@ -153,6 +153,7 @@ public class UI_Select : UI_Scene
             {
                 _buttonByCurriculums.Add(curriculum, curriculumButtonPrefab);
                 Button button = curriculumButtonPrefab.GetComponent<Button>();
+                button.onClick.AddListener(() => UpdateSelectedCurriculum(curriculum));
 
                 if (button != null)
                 {
@@ -446,6 +447,10 @@ public class UI_Select : UI_Scene
     void UpdateCurriculumSongList()
     {
         GameObject curriculumSongPanel = Get<GameObject>((int)GameObjects.CurriculumSongPanel);
+        foreach (Transform child in curriculumSongPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
         Managers.Song.curriculumSongMounts.Clear();
 
         for (int i = 0; i < Managers.Song.songs.Count; i++)
@@ -465,6 +470,12 @@ public class UI_Select : UI_Scene
             button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
             button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
         }
+    }
+
+    void UpdateSelectedCurriculum(Curriculum curriculum)
+    {
+        Managers.Song.selectedCurriculum = curriculum;
+        UpdateCurriculumSongList();
     }
 
     void SwapListView()
