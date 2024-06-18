@@ -40,9 +40,10 @@ namespace ABCUnity.Example
                 ResizeLayout();
         }
 
-        public void ShowSheetAtIndex(string directory, int index)
+        public IEnumerator ShowSheetAtIndex(string directory, int index)
         {
             LoadFromResource($"{directory}/{index}");
+            yield return null;
         }
 
         public void LoadFromResource(string resourceName)

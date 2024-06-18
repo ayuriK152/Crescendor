@@ -146,7 +146,9 @@ public class IngameController : MonoBehaviour
         int temp = _currentBarIdx / 4;
         _currentBarIdx += 1;
         if (temp != _currentBarIdx / 4)
-            sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4);
+        {
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
+        }
     }
 
     protected IEnumerator ToggleKeyHighlight()

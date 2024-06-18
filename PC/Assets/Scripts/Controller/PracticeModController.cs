@@ -66,7 +66,7 @@ public class PracticeModController : IngameController
 
         try
         {
-            sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0);
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0));
         }
         catch (Exception e)
         {

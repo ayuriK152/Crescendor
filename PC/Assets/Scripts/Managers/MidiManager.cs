@@ -16,6 +16,7 @@ public class MidiManager
 {
     GameObject noteObj;
     GameObject keyTextObj;
+    GameObject barLineObj;
     Material whiteKeyOne;
     Material whiteKeyTwo;
     Material whiteKeyThree;
@@ -61,6 +62,7 @@ public class MidiManager
     {
         noteObj = Resources.Load<GameObject>("Prefabs/Note");
         keyTextObj = Resources.Load<GameObject>("Prefabs/KeyText");
+        barLineObj = Resources.Load<GameObject>("Prefabs/BarLine");
 
         whiteKeyOne = Resources.Load<Material>("Materials/WhiteChannel1");
         whiteKeyTwo = Resources.Load<Material>("Materials/WhiteChannel2");
@@ -252,6 +254,11 @@ public class MidiManager
         }
 
         noteTiming.Sort();
+
+        for (int i = 0; i < barTiming.Count; i++)
+        {
+            GameObject.Instantiate(barLineObj, noteInstantiatePoint).transform.localPosition = new Vector3(0, 0, barTiming[i] / song.division * noteScale);
+        }
 
         int tempBarAmount = (int)Mathf.Ceil(totalDeltaTime / (song.division * beat.Key));
         for (int i = 0; i < tempBarAmount; i++)

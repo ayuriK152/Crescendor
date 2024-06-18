@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
-using ABCUnity.Example;
 using System;
 
 public class ActualModController : IngameController
@@ -14,7 +13,7 @@ public class ActualModController : IngameController
     public int currentCorrect;
     public int currentFail;
     public int totalAcc;
-    public int currentBar = -1;
+    public int currentMetronomeIdx = -1;
     public float currentAcc = 1;
     #endregion
 
@@ -56,7 +55,7 @@ public class ActualModController : IngameController
 
         try
         {
-            sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0);
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0));
         }
         catch (Exception e)
         {
@@ -76,6 +75,7 @@ public class ActualModController : IngameController
         StartCoroutine(ToggleKeyHighlight());
     }
 
+    //처음 게임 시작 전에 딜레이
     public IEnumerator DelayForSeconds(float seconds)
     {
         for (int i = (int)seconds / 1; i > 0; i--)
@@ -87,6 +87,7 @@ public class ActualModController : IngameController
         _isIntro = false;
     }
 
+    //Result 씬으로 넘어갈때 반드시 거치는 메소드
     void SwapScene()
     {
         Debug.Log(noteCheckCoroutineCnt);
@@ -115,10 +116,19 @@ public class ActualModController : IngameController
     {
         if (_isIntro)
             return;
-        if (currentBar < (currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division)
+        // 메트로놈
+        if (currentMetronomeIdx < (currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division)
         {
-            Managers.Sound.metronomeAction.Invoke();
-            currentBar++;
+            if ((Managers.Sound.metronomeOffset != 0 && Managers.Midi.barTiming[_currentBarIdx] <= currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) ||
+                currentMetronomeIdx == -1)
+            {
+                Managers.Sound.metronomeAction.Invoke(true);
+            }
+            else
+            {
+                Managers.Sound.metronomeAction.Invoke(false);
+            }
+            currentMetronomeIdx++;
         }
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
         SyncDeltaTime(false);
