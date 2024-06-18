@@ -51,11 +51,13 @@ public class UI_MyPage : UI_Scene
 
     public void OnMainMenuBtnClick(PointerEventData data)
     {
+        ResetLogData();
         SceneManager.LoadScene("MainMenuScene");
     }
 
     public void OnSongSelectBtnClick(PointerEventData data)
     {
+        ResetLogData();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
 

@@ -261,9 +261,9 @@ public class DataManager
             DateTime date = DateTime.Parse(entry.date).Date;
             int month = date.Month;
             int week = Mathf.CeilToInt(date.Day / 7.0f);
-            int rowIndex = (week - 1) * 12; // 행 인덱스
-            int colIndex = month - 1; // 열 인덱스
-            int imageIndex = rowIndex + colIndex;
+            int rowIndex = month - 1; // 행 인덱스 
+            int colIndex = week - 1; // 열 인덱스 
+            int imageIndex = rowIndex * 4 + colIndex; // 인덱스 계산 방식
 
             // 이미지 인덱스가 배열 범위를 벗어나지 않도록 보정
             if (imageIndex >= 0 && imageIndex < logCounts.Length)
