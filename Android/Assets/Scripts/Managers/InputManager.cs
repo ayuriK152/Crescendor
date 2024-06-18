@@ -77,4 +77,18 @@ public class InputManager : IMidiEventHandler
             noteAction.Invoke(note, 0);
         }
     }
+
+    public void RawMidi(sbyte command, sbyte data1, sbyte data2)
+    {
+        if(command>= 0xb0 && command <= 0xbf)
+        {
+            if(data1 == 0x40)
+            {
+                if(data2 >= 0x40)
+                {
+                    //여기에 페달액션 넣기
+                }
+            }
+        }
+    }   
 }
