@@ -216,15 +216,15 @@ public class MidiManager
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
-                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
+                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue * 0.1f , blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale * 0.1f);
                 instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
-                    instantiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
+                    instantiateNotes[i].transform.GetChild(0).GetComponent<Renderer>().material = blackKeyOne;
                 }
                 else
                 {
-                    instantiateNotes[i].GetComponent<Renderer>().material = blackKeyTwo;
+                    instantiateNotes[i].transform.GetChild(0).GetComponent<Renderer>().material = blackKeyTwo;
                 }
             }
             else
@@ -232,15 +232,15 @@ public class MidiManager
                 int keyPos = NoteKeyPosOrder(notes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
-                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
+                instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue * 0.1f, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale * 0.1f);
                 instantiateNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
-                    instantiateNotes[i].GetComponent<Renderer>().material = whiteKeyOne;
+                    instantiateNotes[i].transform.GetChild(0).GetComponent<Renderer>().material = whiteKeyOne;
                 }
                 else
                 {
-                    instantiateNotes[i].GetComponent<Renderer>().material = whiteKeyTwo;
+                    instantiateNotes[i].transform.GetChild(0).GetComponent<Renderer>().material = whiteKeyTwo;
                 }
             }
 
@@ -339,7 +339,7 @@ public class MidiManager
                 int keyPos = NoteKeyPosOrder(replayNotes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateReplayNotes.Add(GameObject.Instantiate(noteObj, replayInstantiatePoint));
-                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale);
+                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue * 0.1f, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale * 0.1f);
                 instantiateReplayNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (replayNotes[i].startTime + replayNotes[i].deltaTime / 2.0f) / song.division * noteScale);
                 instantiateReplayNotes[i].GetComponent<Renderer>().material = blackKeyThree;
             }
@@ -348,7 +348,7 @@ public class MidiManager
                 int keyPos = NoteKeyPosOrder(replayNotes[i].keyNum) - 1;
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateReplayNotes.Add(GameObject.Instantiate(noteObj, replayInstantiatePoint));
-                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale);
+                instantiateReplayNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue * 0.1f, blackNoteWidth * widthValue, replayNotes[i].deltaTime / (float)song.division * noteScale * 0.1f);
                 instantiateReplayNotes[i].transform.localPosition = new Vector3((whiteNoteWidth / 2 + keyPos * whiteNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0, (replayNotes[i].startTime + replayNotes[i].deltaTime / 2.0f) / song.division * noteScale);
                 instantiateReplayNotes[i].GetComponent<Renderer>().material = whiteKeyThree;
             }
