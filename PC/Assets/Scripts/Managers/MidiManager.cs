@@ -189,7 +189,7 @@ public class MidiManager
             }
 
             barTiming.Add(i + song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator));
-            i += song.division * (song.beatMap[beatMapIndex].numerator * 4 / song.beatMap[beatMapIndex].denominator);
+            i += (int)(song.division * (song.beatMap[beatMapIndex].numerator * 4.0f / song.beatMap[beatMapIndex].denominator));
         }
 
         /*  바로 시작 방지용 코드, 검증 필요

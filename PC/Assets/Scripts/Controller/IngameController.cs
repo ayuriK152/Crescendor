@@ -139,7 +139,7 @@ public class IngameController : MonoBehaviour
 
     public void UpdateBar()
     {
-        if (_currentBarIdx == Managers.Midi.barTiming.Count)
+        if (_currentBarIdx >= Managers.Midi.barTiming.Count - 1)
             return;
         if (Managers.Midi.barTiming[_currentBarIdx] >= currentDeltaTime)
             return;
