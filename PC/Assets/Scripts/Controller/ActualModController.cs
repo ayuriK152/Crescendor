@@ -54,6 +54,15 @@ public class ActualModController : IngameController
             Managers.Input.inputDevice.EventReceived += OnEventReceived;
         }
 
+        try
+        {
+            sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+
         Managers.InitManagerPosition();
         StartCoroutine(DelayForSeconds(3));
     }

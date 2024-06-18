@@ -98,7 +98,8 @@ public class IngameController : MonoBehaviour
             sheetObject.SetActive(false);
         else
             sheetObject.SetActive(true);
-        Managers.Ingame.OptionChangedAction -= ToggleSheetShow;
+
+        Managers.Ingame.OptionChangedAction = null;
         Managers.Ingame.OptionChangedAction += ToggleSheetShow;
     }
 
