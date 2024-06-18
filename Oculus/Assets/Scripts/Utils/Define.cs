@@ -123,6 +123,7 @@ public class Define
         ResultScene,
         MainMenuScene,
         MyPageScene,
+        GetPianoWidthScene,
     }
 
     public enum UIEvent
