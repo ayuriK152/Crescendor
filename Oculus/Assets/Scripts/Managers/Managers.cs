@@ -17,16 +17,18 @@ public class Managers : MonoBehaviour
     private static UIManager _ui = new UIManager();
     private static IngameManager _ingame = new IngameManager();
     private static SceneManagerEx _scene = new SceneManagerEx();
-    private static ResourceManager _resource = new ResourceManager();
+    private static DataManager _data = new DataManager();
     private static SongManager _song = new SongManager();
+    private static SoundManager _sound = new SoundManager();
 
     public static InputManager Input { get { return _input; } }
     public static MidiManager Midi { get { return _midi; } }
     public static UIManager UI { get { return _ui; } }
     public static IngameManager Ingame { get { return _ingame; } }
     public static SceneManagerEx Scene {  get { return _scene; } }
-    public static ResourceManager Resource { get { return _resource; } }
+    public static DataManager Data { get { return _data; } }
     public static SongManager Song { get { return _song; } }
+    public static SoundManager Sound { get { return _sound; } }
 
     void Awake()
     {
@@ -58,11 +60,18 @@ public class Managers : MonoBehaviour
             _managerInstance = go.GetComponent<Managers>();
         }
 
+        if (_managerObj == null)
+        {
+            _managerObj = _managerInstance.gameObject;
+        }
+
         /* 아래 Init 메소드 호출 순서는 의도되었으며, 임의로 순서를 바꿔서는 절대로 안됨
          * 바꿔야하는 이유가 있다면 상의 요망*/
         Scene.Init();
         Input.Init();
         Midi.Init();
+        Data.Init();
+        Sound.Init();
     }
 
     static public void InitManagerPosition()

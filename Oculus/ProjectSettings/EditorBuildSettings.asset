@@ -6,18 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 3fceecf171f097245aeefc5d629f668e
+  - enabled: 1
     path: Assets/Scenes/SongSelectScene.unity
     guid: eb1cad2b4dc03a34eb2302d915d8e613
-  - enabled: 1
-    path: Assets/Scenes/ActualModScene.unity
-    guid: 8626d5e5a4a89dc4d9b613007e23913f
   - enabled: 1
     path: Assets/Scenes/PracticeModScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
+    path: Assets/Scenes/ActualModScene.unity
+    guid: 8626d5e5a4a89dc4d9b613007e23913f
+  - enabled: 1
+    path: Assets/Scenes/ReplayModScene.unity
+    guid: 721899c2f7fb54e4380ee97fa99775dc
+  - enabled: 1
     path: Assets/Scenes/ResultScene.unity
     guid: 19435be11aad906428766d7cfb1e7663
+  - enabled: 1
+    path: Assets/Scenes/MyPageScene.unity
+    guid: 5331b4529301a76479cca14709a74fcf
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 650ec8fc0a17b1b40bc6f9822092d12d, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0a85d9248da3e3d4d80f64344540c402, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 510c50b8684bd814289d14a89d0fd208, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2bcf50ca7a335ea40b37e3bcf05eea52, type: 2}
