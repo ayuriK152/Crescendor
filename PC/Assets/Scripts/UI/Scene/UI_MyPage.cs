@@ -13,6 +13,7 @@ public class UI_MyPage : UI_Scene
 {
     TextMeshProUGUI _userNameTMP;
     public List<Image> grassImages; // 이미지를 담을 리스트
+    public List<Image> badgeImages;
     Image profileImage;
 
     enum Buttons
@@ -34,7 +35,7 @@ public class UI_MyPage : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.MainMenuBtn).gameObject.BindEvent(OnMainMenuBtnClick);
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
-        _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
+        _userNameTMP = transform.Find("UserInfo/UserInfoDetail/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
         profileImage = transform.Find("UserInfo/ProfileBtn").GetComponent<Image>();
         GetButton((int)Buttons.LogOutBtn).gameObject.BindEvent(OnLogoutBtnClick);
@@ -44,6 +45,7 @@ public class UI_MyPage : UI_Scene
         LoadImage();
         Managers.Data.GetUserData(Managers.Data.userId);
         DisplayLog(Managers.Data.logCounts);
+        SetBadge(Managers.Data.userCurriculumProgress);
     }
 
 
@@ -82,7 +84,7 @@ public class UI_MyPage : UI_Scene
     // 이미지 찾아서 리스트에 추가하는 함수
     private void FindImages()
     {
-        Transform grassParent = transform.Find("UserInfo/Frequency/Grass");
+        Transform grassParent = transform.Find("Frequency/Background/Grass");
 
         foreach (Transform child in grassParent)
         {
@@ -135,4 +137,42 @@ public class UI_MyPage : UI_Scene
         // 이미지를 초기화 (회색으로 설정)
         DisplayLog(Managers.Data.logCounts);
     }
+
+    private void SetBadge(int progreessAmount)
+    {
+        Transform badgeParent = transform.Find("UserInfo/CurriInfo/Badges");
+
+        foreach (Transform child in badgeParent)
+        {
+            Image badgeImage = child.GetComponent<Image>();
+            if (badgeImage != null)
+            {
+                badgeImages.Add(badgeImage);
+            }
+        }
+
+        if (progreessAmount == 22)
+        {
+            Sprite badgeMark = Resources.Load<Sprite>("Textures/HanonBadge");
+
+            // BadgeMark 스프라이트가 잘 로드되었는지 확인
+            if (badgeMark == null)
+            {
+                Debug.LogError("BadgeMark sprite not found in Resources/Textures");
+                return;
+            }
+
+            foreach (Transform child in badgeParent)
+            {
+                Image badgeImage = child.GetComponent<Image>();
+                if (badgeImage != null)
+                {
+                    // 첫 번째 뱃지만 변경하고 루프를 탈출
+                    badgeImage.sprite = badgeMark;
+                    break;
+                }
+            }
+        }
+    }
+
 }
