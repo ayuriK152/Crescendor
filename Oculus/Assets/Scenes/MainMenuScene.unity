@@ -2169,7 +2169,7 @@ PrefabInstance:
       objectReference: {fileID: 2146908517}
     - target: {fileID: 4464419641693729567, guid: d27ac1ffd4cdd7c40a39dcfa6012355c, type: 3}
       propertyPath: _maxRayLength
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8030197382645210609, guid: d27ac1ffd4cdd7c40a39dcfa6012355c, type: 3}
       propertyPath: m_Name
@@ -2535,6 +2535,7 @@ GameObject:
   - component: {fileID: 817700296}
   - component: {fileID: 817700302}
   - component: {fileID: 817700301}
+  - component: {fileID: 817700303}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -2679,6 +2680,27 @@ MonoBehaviour:
   _renderingLayers:
     serializedVersion: 2
     m_Bits: 32
+--- !u!114 &817700303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817700295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb86ba9d4c5126e48bfef9b0c9550e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactorFilters: []
+  _maxInteractors: -1
+  _maxSelectingInteractors: -1
+  _data: {fileID: 0}
+  _pointableElement: {fileID: 1098587676}
+  _surface: {fileID: 1595803525}
+  _selectSurface: {fileID: 0}
+  _movementProvider: {fileID: 0}
+  _tiebreakerScore: 0
 --- !u!1 &887707261
 GameObject:
   m_ObjectHideFlags: 0
@@ -3336,7 +3358,7 @@ PrefabInstance:
       objectReference: {fileID: 2146908519}
     - target: {fileID: 4464419641693729567, guid: d27ac1ffd4cdd7c40a39dcfa6012355c, type: 3}
       propertyPath: _maxRayLength
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8030197382645210609, guid: d27ac1ffd4cdd7c40a39dcfa6012355c, type: 3}
       propertyPath: m_Name
