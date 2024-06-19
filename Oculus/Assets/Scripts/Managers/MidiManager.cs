@@ -128,10 +128,10 @@ public class MidiManager
 
         else
         {
-            float ypos = PlayerPrefs.GetFloat("r_ypos");
-            float zpos = PlayerPrefs.GetFloat("r_zpos");
-
+            float ypos = PlayerPrefs.GetFloat("trans_ypos");
+            float zpos = PlayerPrefs.GetFloat("trans_zpos");
             tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, ypos, zpos);
+            // 너비랑 x축은 어떻게 처리할지...
         }
 
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
