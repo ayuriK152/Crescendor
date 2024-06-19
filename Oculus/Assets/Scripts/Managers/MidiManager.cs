@@ -120,7 +120,20 @@ public class MidiManager
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, -0.25f, 0);
+
+        if (!PlayerPrefs.HasKey("trans_VPianoWidth"))
+        {
+            tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, -0.25f, 0);
+        }
+
+        else
+        {
+            float ypos = PlayerPrefs.GetFloat("r_ypos");
+            float zpos = PlayerPrefs.GetFloat("r_zpos");
+
+            tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, ypos, zpos);
+        }
+
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         int trackNum = 0;
