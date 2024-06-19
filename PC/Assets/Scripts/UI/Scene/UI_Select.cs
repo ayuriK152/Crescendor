@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 using static Define;
 
@@ -91,6 +90,7 @@ public class UI_Select : UI_Scene
         _songListBtn = Get<Button>((int)Buttons.SongListButton);
         _curriListBtn = Get<Button>((int)Buttons.CurriculumButton);
         _songListBtn.interactable = false;
+        _optionBtn.onClick.AddListener(OnOptionButtonClick);
         _songListBtn.onClick.AddListener(SwapListView);
         _curriListBtn.onClick.AddListener(SwapListView);
 
@@ -265,7 +265,7 @@ public class UI_Select : UI_Scene
 
     public void OnOptionButtonClick()
     {
-
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
     }
 
     public void OnProfileButtonClick()
@@ -527,4 +527,3 @@ public class UI_Select : UI_Scene
 
     #endregion Image Settings 
 }
-
