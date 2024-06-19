@@ -15,7 +15,6 @@ public class IngameController : MonoBehaviour
     public float tempoSpeed;
     public float scrollSpeed = 1.0f;
     public float notePosOffset = -2.625f * 4;
-    public float noteScale = 12.0f;
     public float widthValue = 6.0f;
     public string songTitle;
 
@@ -72,7 +71,6 @@ public class IngameController : MonoBehaviour
             _initInputTiming[i] = -1;
         }
 
-        Managers.Midi.noteScale = noteScale;
         Managers.Midi.widthValue = widthValue;
         Managers.Midi.notePositionOffset = notePosOffset;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
@@ -116,10 +114,15 @@ public class IngameController : MonoBehaviour
 
     void ToggleSheetShow()
     {
-        if (PlayerPrefs.GetInt("user_SheetShow") == 0)
-            sheetObject.SetActive(false);
-        else
-            sheetObject.SetActive(true);
+        if (Managers.Scene.currentScene == Define.Scene.ActualModScene ||
+            Managers.Scene.currentScene == Define.Scene.PracticeModScene ||
+            Managers.Scene.currentScene == Define.Scene.ReplayModScene)
+        {
+            if (PlayerPrefs.GetInt("user_SheetShow") == 0)
+                sheetObject.SetActive(false);
+            else
+                sheetObject.SetActive(true);
+        }
     }
 
     public void UpdateTempo()

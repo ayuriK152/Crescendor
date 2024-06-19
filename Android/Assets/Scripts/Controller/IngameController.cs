@@ -64,7 +64,7 @@ public class IngameController : MonoBehaviour
             _initInputTiming[i] = -1;
         }
 
-        Managers.Midi.noteScale = noteScale;
+        Managers.Midi.noteScaleZ = noteScale;
         Managers.Midi.widthValue = widthValue;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
 

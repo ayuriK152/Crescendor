@@ -10,6 +10,7 @@ public class UI_Option : UI_Popup
     {
         MetronomeVolume,
         MetronomeOffset,
+        ScrollSpeed
     }
 
     enum Buttons
@@ -19,8 +20,10 @@ public class UI_Option : UI_Popup
 
     Slider metronomeVolumeSlider;
     Slider metronomeOffsetSlider;
+    Slider scrollSpeedSlider;
     TextMeshProUGUI metronomeVolumeText;
     TextMeshProUGUI metronomeOffsetText;
+    TextMeshProUGUI scrollSpeedText;
 
     private void Start()
     {
@@ -49,6 +52,17 @@ public class UI_Option : UI_Popup
         metronomeOffsetSlider.value = PlayerPrefs.GetInt("user_MetronomeOffset");
         metronomeOffsetText.text = $"{metronomeOffsetSlider.value}";
         metronomeOffsetSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeOffset, value));
+
+        scrollSpeedSlider = Get<GameObject>((int)OptionPanels.ScrollSpeed).transform.Find("Slider").GetComponent<Slider>();
+        scrollSpeedText = Get<GameObject>((int)OptionPanels.ScrollSpeed).transform.Find("Value").GetComponent<TextMeshProUGUI>();
+        if (!PlayerPrefs.HasKey("user_ScrollSpeed"))
+        {
+            PlayerPrefs.SetFloat("user_ScrollSpeed", 1.0f);
+        }
+        Managers.Midi.noteScaleZ = PlayerPrefs.GetFloat("user_ScrollSpeed");
+        scrollSpeedSlider.value = PlayerPrefs.GetFloat("user_ScrollSpeed");
+        scrollSpeedText.text = $"{Math.Truncate(metronomeOffsetSlider.value * 100.0f) / 100.0f}";
+        scrollSpeedSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.ScrollSpeed, value));
     }
 
     public void CloseBtnClicked(PointerEventData data)
@@ -72,6 +86,12 @@ public class UI_Option : UI_Popup
                 metronomeOffsetText.text = $"{value}";
                 Managers.Sound.metronomeOffset = (int)value;
                 PlayerPrefs.SetInt("user_MetronomeOffset", (int)value);
+                break;
+
+            case OptionPanels.ScrollSpeed:
+                Managers.Midi.noteScaleZ = value;
+                scrollSpeedText.text = $"{Math.Truncate(value * 100.0f) / 100.0f}";
+                PlayerPrefs.SetFloat("user_ScrollSpeed", (float)Math.Truncate(value * 100.0f) / 100.0f);
                 break;
         }
     }

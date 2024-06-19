@@ -11,6 +11,7 @@ public class UI_Option : UI_Popup
         MetronomeVolume,
         MetronomeOffset,
         SheetShowToggle,
+        ScrollSpeed,
         TempoSpeed
     }
 
@@ -21,10 +22,12 @@ public class UI_Option : UI_Popup
 
     Slider metronomeVolumeSlider;
     Slider metronomeOffsetSlider;
+    Slider scrollSpeedSlider;
     Toggle sheetShowToggle;
     Slider tempoSpeedSlider;
     TextMeshProUGUI metronomeVolumeText;
     TextMeshProUGUI metronomeOffsetText;
+    TextMeshProUGUI scrollSpeedText;
     TextMeshProUGUI tempoSpeedText;
 
     private void Start()
@@ -55,6 +58,17 @@ public class UI_Option : UI_Popup
         metronomeOffsetText.text = $"{metronomeOffsetSlider.value}";
         metronomeOffsetSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeOffset, value));
 
+        scrollSpeedSlider = Get<GameObject>((int)OptionPanels.ScrollSpeed).transform.Find("Slider").GetComponent<Slider>();
+        scrollSpeedText = Get<GameObject>((int)OptionPanels.ScrollSpeed).transform.Find("Value").GetComponent<TextMeshProUGUI>();
+        if (!PlayerPrefs.HasKey("user_ScrollSpeed"))
+        {
+            PlayerPrefs.SetFloat("user_ScrollSpeed", 1.0f);
+        }
+        Managers.Midi.noteScaleZ = PlayerPrefs.GetFloat("user_ScrollSpeed");
+        scrollSpeedSlider.value = PlayerPrefs.GetFloat("user_ScrollSpeed");
+        scrollSpeedText.text = $"{Math.Truncate(scrollSpeedSlider.value * 100.0f) / 100.0f}";
+        scrollSpeedSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.ScrollSpeed, value));
+
         sheetShowToggle = Get<GameObject>((int)OptionPanels.SheetShowToggle).transform.Find("Toggle").GetComponent<Toggle>();
         sheetShowToggle.onValueChanged.AddListener((bool toggle) => OnSheetShowToggleChanged(toggle));
         if (!PlayerPrefs.HasKey("user_SheetShow"))
@@ -75,7 +89,6 @@ public class UI_Option : UI_Popup
         tempoSpeedSlider.value = PlayerPrefs.GetInt("user_TempoSpeed");
         tempoSpeedText.text = $"{tempoSpeedSlider.value / 10.0f}";
         tempoSpeedSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.TempoSpeed, value));
-
     }
 
     public void CloseBtnClicked(PointerEventData data)
@@ -101,13 +114,20 @@ public class UI_Option : UI_Popup
                 PlayerPrefs.SetInt("user_TempoSpeed", (int)value);
                 break;
 
+            case OptionPanels.ScrollSpeed:
+                Managers.Midi.noteScaleZ = value;
+                scrollSpeedText.text = $"{Math.Truncate(value * 100.0f) / 100.0f}";
+                PlayerPrefs.SetFloat("user_ScrollSpeed", (float)Math.Truncate(value * 100.0f) / 100.0f);
+                break;
+
             case OptionPanels.TempoSpeed:
                 tempoSpeedSlider.value = value;
                 tempoSpeedText.text = $"{value / 10.0f}";
                 PlayerPrefs.SetInt("user_TempoSpeed", (int)value);
                 break;
         }
-        Managers.Ingame.OptionChangedAction.Invoke();
+        if (Managers.Ingame.OptionChangedAction != null)
+            Managers.Ingame.OptionChangedAction.Invoke();
     }
 
     void OnSheetShowToggleChanged(bool toggle)
@@ -120,6 +140,7 @@ public class UI_Option : UI_Popup
         {
             PlayerPrefs.SetInt("user_SheetShow", 0);
         }
-        Managers.Ingame.OptionChangedAction.Invoke();
+        if (Managers.Ingame.OptionChangedAction != null)
+            Managers.Ingame.OptionChangedAction.Invoke();
     }
 }

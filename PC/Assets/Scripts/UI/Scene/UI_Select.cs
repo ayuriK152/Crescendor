@@ -475,6 +475,10 @@ public class UI_Select : UI_Scene
                         button.gameObject.name = $"{i}";
                         button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
                         button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
+                        if (Managers.Song.songs[i].curriculum != Curriculum.None)
+                            button.transform.Find("Curriculum/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].curriculum.ToString();
+                        else
+                            button.transform.Find("Curriculum/Value").GetComponent<TextMeshProUGUI>().text = "Generic";
                         button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
                     }
                 }

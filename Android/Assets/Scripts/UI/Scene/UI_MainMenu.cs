@@ -51,6 +51,7 @@ public class UI_MainMenu : UI_Scene
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
         profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
         pianoConnectionCheckImg = GameObject.Find("MainMenu/NavBar/PianoConnectionCheck").GetComponent<Image>();
+
         if (Managers.Input.isPianoConnected)
         {
             pianoConnectionCheckImg.color = new Color(1, 1, 1);
