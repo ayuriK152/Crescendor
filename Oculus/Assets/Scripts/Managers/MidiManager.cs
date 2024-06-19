@@ -120,7 +120,7 @@ public class MidiManager
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(-1, 0, 0);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, -0.25f, 0);
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         int trackNum = 0;
