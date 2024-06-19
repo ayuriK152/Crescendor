@@ -21,6 +21,7 @@ public class UI_Select : UI_Scene
         CurriListScrollView,
         CurriSongListScrollView,
         RankListScrollView,
+        SearchInputField
     }
 
     enum Buttons
@@ -55,6 +56,7 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI _songInfoComposser;
     TextMeshProUGUI _songInfoLength;
     TextMeshProUGUI _songInfoTempo;
+    TMP_InputField _searchInputField;
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
     Sprite originalSprite;
@@ -71,11 +73,8 @@ public class UI_Select : UI_Scene
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
         Bind<TMP_Dropdown>(typeof(Dropdowns));
-        GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         GameObject curriculumPanel = Get<GameObject>((int)GameObjects.CurriculumPanel);
         Managers.Song.LoadSongsFromConvertsFolder();
-        foreach (Transform child in songPanel.transform)
-            Managers.Data.Destroy(child.gameObject);
 
         _rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
         _songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
@@ -109,36 +108,14 @@ public class UI_Select : UI_Scene
         _songInfoComposser = _songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
         _songInfoLength = _songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         _songInfoTempo = _songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
+        _searchInputField = Get<GameObject>((int)GameObjects.SearchInputField).GetComponent<TMP_InputField>();
+        _searchInputField.onValueChanged.AddListener((string s) => UpdateSongList());
 
         _rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
 
         _noRankSignPanelObj = _rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
-        // SongManager의 곡 정보를 이용하여 버튼 생성
-        for (int i = 0; i < Managers.Song.songs.Count; i++)
-        {
-            // SongButton 프리팹 로드
-            GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", songPanel.transform);
-            // SongButton 생성
-            if (songButtonPrefab != null)
-            {
-                Button button = songButtonPrefab.GetComponent<Button>();
-
-                // Song 정보를 버튼에 표시
-                if (button != null)
-                {
-                    // 예시로 Song의 songTitle을 버튼에 표시
-                    button.gameObject.name = $"{i}";
-                    button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
-                    button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
-                    button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
-                }
-            }
-            else
-            {
-                Debug.LogError($"Failed to load SongButton prefab");
-            }
-        }
+        UpdateSongList();
 
         _buttonByCurriculums = new Dictionary<Curriculum, GameObject>();
 
@@ -469,6 +446,43 @@ public class UI_Select : UI_Scene
             button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
             button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
             button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
+        }
+    }
+
+    void UpdateSongList()
+    {
+        GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
+        foreach (Transform child in songPanel.transform)
+            Managers.Data.Destroy(child.gameObject);
+        for (int i = 0; i < Managers.Song.songs.Count; i++)
+        {
+            // 검색
+            if (_searchInputField.text == "" ||
+                Managers.Song.songs[i].songComposer.ToLower().Contains(_searchInputField.text.ToLower()) ||
+                Managers.Song.songs[i].songTitle.ToLower().Contains(_searchInputField.text.ToLower()))
+            {
+                // SongButton 프리팹 로드
+                GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", songPanel.transform);
+                // SongButton 생성
+                if (songButtonPrefab != null)
+                {
+                    Button button = songButtonPrefab.GetComponent<Button>();
+
+                    // Song 정보를 버튼에 표시
+                    if (button != null)
+                    {
+                        // 예시로 Song의 songTitle을 버튼에 표시
+                        button.gameObject.name = $"{i}";
+                        button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
+                        button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
+                        button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load SongButton prefab");
+                }
+            }
         }
     }
 
