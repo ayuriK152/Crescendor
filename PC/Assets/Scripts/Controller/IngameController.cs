@@ -12,6 +12,7 @@ public class IngameController : MonoBehaviour
     public TextMeshProUGUI noteText;
 
     public int tempo = 120;
+    public float tempoSpeed;
     public float scrollSpeed = 1.0f;
     public float notePosOffset = -2.625f * 4;
     public float noteScale = 12.0f;
@@ -102,6 +103,12 @@ public class IngameController : MonoBehaviour
             sheetObject.SetActive(false);
         else
             sheetObject.SetActive(true);
+
+        if (!PlayerPrefs.HasKey("user_TempoSpeed"))
+        {
+            PlayerPrefs.SetInt("user_TempoSpeed", 10);
+        }
+        tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
 
         Managers.Ingame.OptionChangedAction = null;
         Managers.Ingame.OptionChangedAction += ToggleSheetShow;

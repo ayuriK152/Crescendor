@@ -10,7 +10,8 @@ public class UI_Option : UI_Popup
     {
         MetronomeVolume,
         MetronomeOffset,
-        SheetShowToggle
+        SheetShowToggle,
+        TempoSpeed
     }
 
     enum Buttons
@@ -21,8 +22,10 @@ public class UI_Option : UI_Popup
     Slider metronomeVolumeSlider;
     Slider metronomeOffsetSlider;
     Toggle sheetShowToggle;
+    Slider tempoSpeedSlider;
     TextMeshProUGUI metronomeVolumeText;
     TextMeshProUGUI metronomeOffsetText;
+    TextMeshProUGUI tempoSpeedText;
 
     private void Start()
     {
@@ -41,8 +44,6 @@ public class UI_Option : UI_Popup
         metronomeVolumeSlider.value = PlayerPrefs.GetFloat("user_MetronomeVolume");
         metronomeVolumeText.text = $"{Math.Truncate(metronomeVolumeSlider.value * 100)}";
         metronomeVolumeSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeVolume, value));
-        sheetShowToggle = Get<GameObject>((int)OptionPanels.SheetShowToggle).transform.Find("Toggle").GetComponent<Toggle>();
-
 
         metronomeOffsetSlider = Get<GameObject>((int)OptionPanels.MetronomeOffset).transform.Find("Slider").GetComponent<Slider>();
         metronomeOffsetText = Get<GameObject>((int)OptionPanels.MetronomeOffset).transform.Find("Value").GetComponent<TextMeshProUGUI>();
@@ -54,6 +55,7 @@ public class UI_Option : UI_Popup
         metronomeOffsetText.text = $"{metronomeOffsetSlider.value}";
         metronomeOffsetSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.MetronomeOffset, value));
 
+        sheetShowToggle = Get<GameObject>((int)OptionPanels.SheetShowToggle).transform.Find("Toggle").GetComponent<Toggle>();
         sheetShowToggle.onValueChanged.AddListener((bool toggle) => OnSheetShowToggleChanged(toggle));
         if (!PlayerPrefs.HasKey("user_SheetShow"))
         {
@@ -63,6 +65,17 @@ public class UI_Option : UI_Popup
             sheetShowToggle.isOn = false;
         else
             sheetShowToggle.isOn = true;
+
+        tempoSpeedSlider = Get<GameObject>((int)OptionPanels.TempoSpeed).transform.Find("Slider").GetComponent<Slider>();
+        tempoSpeedText = Get<GameObject>((int)OptionPanels.TempoSpeed).transform.Find("Value").GetComponent<TextMeshProUGUI>();
+        if (!PlayerPrefs.HasKey("user_TempoSpeed"))
+        {
+            PlayerPrefs.SetInt("user_TempoSpeed", 10);
+        }
+        tempoSpeedSlider.value = PlayerPrefs.GetInt("user_TempoSpeed");
+        tempoSpeedText.text = $"{tempoSpeedSlider.value / 10.0f}";
+        tempoSpeedSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.TempoSpeed, value));
+
     }
 
     public void CloseBtnClicked(PointerEventData data)
@@ -78,14 +91,20 @@ public class UI_Option : UI_Popup
                 metronomeVolumeSlider.value = value;
                 metronomeVolumeText.text = $"{Math.Truncate(value * 100)}";
                 Managers.Sound.SetMetronomeVolume(value);
-                PlayerPrefs.SetFloat("user_MetronomeVolume", value);
+                PlayerPrefs.SetFloat("user_TempoSpeed", value);
                 break;
 
             case OptionPanels.MetronomeOffset:
                 metronomeOffsetSlider.value = value;
                 metronomeOffsetText.text = $"{value}";
                 Managers.Sound.metronomeOffset = (int)value;
-                PlayerPrefs.SetInt("user_MetronomeOffset", (int)value);
+                PlayerPrefs.SetInt("user_TempoSpeed", (int)value);
+                break;
+
+            case OptionPanels.TempoSpeed:
+                tempoSpeedSlider.value = value;
+                tempoSpeedText.text = $"{value / 10.0f}";
+                PlayerPrefs.SetInt("user_TempoSpeed", (int)value);
                 break;
         }
         Managers.Ingame.OptionChangedAction.Invoke();
