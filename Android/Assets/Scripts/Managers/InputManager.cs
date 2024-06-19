@@ -78,7 +78,7 @@ public class InputManager : IMidiEventHandler
         }
     }
 
-    public void RawMidi(sbyte command, sbyte data1, sbyte data2)
+    public void RawMidi(byte command, byte data1, byte data2)
     {
         if(command>= 0xb0 && command <= 0xbf)
         {

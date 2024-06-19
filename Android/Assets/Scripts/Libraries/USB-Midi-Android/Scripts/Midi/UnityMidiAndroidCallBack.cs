@@ -27,4 +27,8 @@ public class UnityMidiAndroidCallBack : AndroidJavaProxy
     {
         _eventHandler.DeviceDetached(deviceName);
     }
+    public void RawMidi(byte command, byte data1, byte data2)
+    {
+        _eventHandler.RawMidi(command,data1,data2)
+    }
 }
