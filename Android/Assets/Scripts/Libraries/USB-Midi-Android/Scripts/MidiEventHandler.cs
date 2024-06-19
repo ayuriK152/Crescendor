@@ -41,5 +41,10 @@ namespace Midi
             Debug.Log("Device Detached " + deviceName);
             text.text += "Device Detached " + deviceName + Environment.NewLine;
         }
+        public void RawMidi(byte command, byte data1, byte data2)
+        {
+            Debug.Log("Raw Midi " + command + "data1" + data1 + "data2" + data2);
+            text.text += "Raw Midi " + command + "data1" + data1 + "data2" + data2 + Environment.NewLine;
+        }
     }
 }
