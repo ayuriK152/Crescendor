@@ -41,6 +41,8 @@ public class UI_NoteTransform : MonoBehaviour
         PlayerPrefs.SetFloat("trans_zpos", r_zpos);
 
         confirmMsg.text = "Confirm";
+
+        // Confirm 버튼 누른 후에 다른 버튼 누르면 앵커 위치 겹치는 현상 해결하기
     }
 
     public void UpBtn()
