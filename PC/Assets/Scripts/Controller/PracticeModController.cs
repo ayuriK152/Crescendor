@@ -277,7 +277,7 @@ public class PracticeModController : IngameController
                 if (Managers.Midi.barTiming[_currentBarIdx - 1] >= currentDeltaTime)
                 {
                     _currentBarIdx--;
-                    sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4);
+                    StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
                     isCurrentBarIdxChanged = true;
                 }
             }
@@ -286,11 +286,10 @@ public class PracticeModController : IngameController
                 if (Managers.Midi.barTiming[_currentBarIdx] < currentDeltaTime)
                 {
                     _currentBarIdx++;
-                    sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4);
+                    StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
                     isCurrentBarIdxChanged = true;
                 }
             }
-
 
             if (isNoteIdxChanged || isTempoMapIdxChanged || isBeatMapIdxChanged || isCurrentBarIdxChanged)
                 continue;

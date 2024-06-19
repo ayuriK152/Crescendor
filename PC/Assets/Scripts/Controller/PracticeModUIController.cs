@@ -12,8 +12,6 @@ public class PracticeModUIController : IngameUIController
     #endregion
 
     #region Private Members
-    private Button _forceScrollBtn;
-    private Button _autoScrollBtn;
     private Button _loopBtn;
     private Button _toBeginBtn;
     private Button _playBtn;
@@ -118,19 +116,6 @@ public class PracticeModUIController : IngameUIController
         (_controller as PracticeModController).currentDeltaTime = (int)sliderValue;
         (_controller as PracticeModController).SyncDeltaTime(true);
         StartCoroutine((_controller as PracticeModController).ForceUpdateNote());
-    }
-
-    void ForceScrollBtn()
-    {
-        (_controller as PracticeModController).isPlaying = true;
-        (_controller as PracticeModController).UpdatePassedNote();
-        (_controller as PracticeModController).UpdateTempo();
-        (_controller as PracticeModController).UpdateBeat();
-    }
-
-    void AutoScrollBtn()
-    {
-        (_controller as PracticeModController).AutoScroll();
     }
 
     protected override void OnClickExitBtn()
