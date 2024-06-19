@@ -6,11 +6,11 @@ using SmfLite;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static Define;
-using static Datas;
 using Newtonsoft.Json;
 using System.Linq;
 using System.IO;
+using static Define;
+using static Datas;
 
 public class MidiManager
 {
@@ -49,8 +49,6 @@ public class MidiManager
     // 각 건반별 쳐야하는 노트들 모음
     public Dictionary<int, List<KeyValuePair<int, int>>> noteSetByKey = new Dictionary<int, List<KeyValuePair<int, int>>>();
     public int[] nextKeyIndex = new int[88];
-
-    public List<Bar> bars = new List<Bar>();
 
     public List<Notes> replayNotes = new List<Notes>();
     public List<int> replayNoteTiming = new List<int>();
@@ -94,7 +92,6 @@ public class MidiManager
         replayNotes.Clear();
         replayNoteTiming.Clear();
         instantiateReplayNotes.Clear();
-        bars.Clear();
         barTiming.Clear();
 
         nextKeyIndex = new int[88];
@@ -254,7 +251,7 @@ public class MidiManager
 
             GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, noteInstantiatePoint);
             tempKeyObject.transform.parent = instantiateNotes[i].transform;
-            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
+            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -5.0f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
             tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(notes[i].keyNum);
         }
@@ -264,55 +261,6 @@ public class MidiManager
         for (int i = 0; i < barTiming.Count; i++)
         {
             GameObject.Instantiate(barLineObj, noteInstantiatePoint).transform.localPosition = new Vector3(0, 0, barTiming[i] / song.division * noteScaleZ);
-        }
-
-        int tempBarAmount = (int)Mathf.Ceil(totalDeltaTime / (song.division * beat.Key));
-        for (int i = 0; i < tempBarAmount; i++)
-        {
-            bars.Add(new Bar());
-            for (int j = 0; j < notes.Count; j++)
-            {
-                if (notes[j].startTime >= i * song.division * beat.Key && notes[j].startTime < (i + 1) * song.division * beat.Key)
-                {
-                    bool isUpper = notes[j].channel == 0 ? true : false;
-                    float noteOffset = i % 4 == 0 ? 88.5f : 16.5f;
-                    switch (notes[j].deltaTime / (song.division / 4))
-                    {
-                        case 2:
-                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Eighth));
-                            foreach (SheetNote sheetNote in bars[i].notes)
-                            {
-                                if (sheetNote.timing == bars[i].notes[bars[i].notes.Count - 1].timing && sheetNote.keyNum < bars[i].notes[bars[i].notes.Count - 1].keyNum)
-                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = true;
-                                else
-                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
-                            }
-                            break;
-                        case 3:
-                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Eighth));
-                            foreach (SheetNote sheetNote in bars[i].notes)
-                            {
-                                if (sheetNote.timing == bars[i].notes[bars[i].notes.Count - 1].timing && sheetNote.keyNum < bars[i].notes[bars[i].notes.Count - 1].keyNum)
-                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = true;
-                                else
-                                    bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
-                            }
-                            break;
-                        case 4:
-                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Fourth));
-                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
-                            break;
-                        case 8:
-                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.Second));
-                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
-                            break;
-                        case 16:
-                            bars[i].notes.Add(new SheetNote(notes[j].keyNum, (notes[j].startTime - i * song.division * beat.Key) / (song.division / 2) * 35 + noteOffset, isUpper, NoteKind.First));
-                            bars[i].notes[bars[i].notes.Count - 1].isShapeFourth = false;
-                            break;
-                    }
-                }
-            }
         }
     }
 

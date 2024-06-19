@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Datas;
 
 public class UI_MainMenu : UI_Scene
 {
@@ -15,9 +16,7 @@ public class UI_MainMenu : UI_Scene
     Button loginBtn;
     TextMeshProUGUI idText;
     Image profileImage;
-    private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
     Sprite originalSprite;
-    Image pianoConnectionCheckImg;
 
     enum Buttons
     {
@@ -43,23 +42,12 @@ public class UI_MainMenu : UI_Scene
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnMyPageButtonClick);
-
         idInput = GameObject.Find("MainMenu/LoginStuff/ID").GetComponent<TMP_InputField>();
         passwordInput = GameObject.Find("MainMenu/LoginStuff/PASSWORD").GetComponent<TMP_InputField>();
         signUpBtn = GameObject.Find("MainMenu/LoginStuff/SignUpBtn").GetComponent<Button>();
         loginBtn = GameObject.Find("MainMenu/LoginStuff/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
         profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
-        pianoConnectionCheckImg = GameObject.Find("MainMenu/NavBar/PianoConnectionCheck").GetComponent<Image>();
-
-        if (Managers.Input.isPianoConnected)
-        {
-            pianoConnectionCheckImg.color = new Color(1, 1, 1);
-        }
-        else
-        {
-            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
-        }
         originalSprite = profileImage.sprite;
 
         if (!Managers.Data.isUserLoggedIn)
@@ -82,13 +70,8 @@ public class UI_MainMenu : UI_Scene
             passwordInput.gameObject.SetActive(false);
             signUpBtn.gameObject.SetActive(false);
             loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
-            LoadImage(Managers.Data.userId);
+            LoadImage();
         }
-
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
-        Managers.Input.pianoConnectionAction -= PianoConnectionUpdate;
-        Managers.Input.pianoConnectionAction += PianoConnectionUpdate;
     }
 
     public void LoginUpdateNavBar() // 로그인 상태 시 NavBar 수정
@@ -145,7 +128,7 @@ public class UI_MainMenu : UI_Scene
             }
 
             // ID와 비밀번호가 유효한 경우에만 요청을 보냄.
-            StartCoroutine(LoginRequest(id, password));
+            StartCoroutine(Login(id, password));
         }
     }
 
@@ -179,7 +162,7 @@ public class UI_MainMenu : UI_Scene
         loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
     }
 
-    IEnumerator SendRequest(string url, string json, string method)
+    IEnumerator SendLoginRequest(string url, string json, string method)
     {
         UnityWebRequest www;
 
@@ -208,8 +191,10 @@ public class UI_MainMenu : UI_Scene
         {
             Managers.Data.isUserLoggedIn = true;
             ShowErrorMsg("Login Success");
+            Managers.Data.GetUserData(idInput.text);
+            Managers.Data.GetUserLogData(idInput.text);
             LoginUpdateNavBar(); // NavBar 변경
-            LoadImage(Managers.Data.userId); // 프로필 변경
+            LoadImage(); // 프로필 변경
         }
         else
         {
@@ -218,103 +203,14 @@ public class UI_MainMenu : UI_Scene
         }
     }
 
-    IEnumerator LoginRequest(string id, string password)
+    IEnumerator Login(string id, string password)
     {
         string json = "{\"id\":\"" + id + "\", \"password\":\"" + password + "\"}";
-        yield return StartCoroutine(SendRequest(baseURL, json, "POST"));
+        yield return StartCoroutine(SendLoginRequest($"http://{DEFAULT_SERVER_IP_PORT}/login", json, "POST"));
     }
 
-    void PianoConnectionUpdate(bool isConnected)
+    public void LoadImage()
     {
-        if (isConnected)
-        {
-            pianoConnectionCheckImg.color = new Color(1, 1, 1);
-        }
-        else
-        {
-            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
-        }
+        StartCoroutine(Managers.Data.SetProfileImage(Managers.Data.userProfileURL, profileImage));
     }
-
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
-    {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        Application.Quit();
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
-    }
-
-    #region Image Settings
-    public void LoadImage(string userId)
-    {
-        StartCoroutine(GetUserProfile(userId));
-    }
-
-
-    private IEnumerator GetUserProfile(string userID)
-    {
-
-        string url = "http://15.164.2.49:3000/getuser/" + userID;
-
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string responseText = request.downloadHandler.text;
-                Debug.Log("Response: " + responseText);
-
-                // 응답된 JSON 문자열에서 원하는 정보 추출
-                string profileURL = GetProfileURL(responseText);
-                // 프로필 이미지 다운로드 및 설정
-                yield return StartCoroutine(SetProfileImage(profileURL));
-            }
-            else
-            {
-                Debug.LogError("유저를 찾을 수 없음" + request.error);
-            }
-        }
-    }
-
-    private IEnumerator SetProfileImage(string imageURL)
-    {
-        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
-        {
-            yield return imageRequest.SendWebRequest();
-
-            if (imageRequest.result == UnityWebRequest.Result.Success)
-            {
-                // 텍스처 다운로드 및 이미지 UI에 설정
-                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                profileImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-            }
-        }
-    }
-
-
-    private string GetProfileURL(string json)
-    {
-        // JSON 문자열을 파싱하여 profile 정보 추출
-        string profileURL = "";
-
-        // JSON 문자열을 파싱하고 원하는 정보를 추출하는 로직을 작성
-        // 여기서는 간단하게 문자열을 찾아내는 방식으로 작성하였습니다.
-        int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
-        int endIndex = json.IndexOf("\"", startIndex + 1);
-        profileURL = json.Substring(startIndex, endIndex - startIndex);
-
-        return profileURL;
-    }
-
-    #endregion Image Settings 
 }

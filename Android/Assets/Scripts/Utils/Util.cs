@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Util : MonoBehaviour
 {
-    public static T GetOrAddComponent<T>(GameObject go) where T : Component
+    public static T GetOrAddComponent<T>(GameObject go) where T : UnityEngine.Component
     {
         T component = go.GetComponent<T>();
         if (component == null)
@@ -19,7 +21,7 @@ public class Util : MonoBehaviour
         return transform.gameObject;
     }
 
-    public static T FindChild<T>(GameObject go, string name = null, bool recursive = false) where T : Object
+    public static T FindChild<T>(GameObject go, string name = null, bool recursive = false) where T : UnityEngine.Object
     {
         if (go == null)
             return null;

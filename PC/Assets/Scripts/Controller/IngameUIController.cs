@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +9,7 @@ public class IngameUIController : BaseUIController
     public TextMeshProUGUI songNoteMountTMP;
     public TextMeshProUGUI songTempoTMP;
     public TextMeshProUGUI songBeatTMP;
-    public TextMeshProUGUI tempControllTMP;
+    public TextMeshProUGUI tempoControllTMP;
     public Slider songTimeSlider;
     public Button tempoPlusBtn;
     public Button tempoMinusBtn;
@@ -34,9 +33,10 @@ public class IngameUIController : BaseUIController
         songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
         songTempoTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
         songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        tempControllTMP = GameObject.Find("MainCanvas/Informations/TempoSpeed/Value").GetComponent<TextMeshProUGUI>();
+        tempoControllTMP = GameObject.Find("MainCanvas/Informations/TempoSpeed/Value").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+
         tempoPlusBtn = GameObject.Find("MainCanvas/Informations/TempoSpeed/PlusBtn").GetComponent<Button>();
         tempoMinusBtn = GameObject.Find("MainCanvas/Informations/TempoSpeed/MinusBtn").GetComponent<Button>();
         tempoPlusBtn.onClick.AddListener(IncreaseTempoSpeed);
@@ -63,7 +63,7 @@ public class IngameUIController : BaseUIController
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);
 
-        tempControllTMP.text = $"x{PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f}";
+        tempoControllTMP.text = $"x{PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f}";
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
@@ -77,7 +77,7 @@ public class IngameUIController : BaseUIController
         }
         PlayerPrefs.SetInt("user_TempoSpeed", PlayerPrefs.GetInt("user_TempoSpeed") + 1);
         _controller.tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
-        tempControllTMP.text = $"x{_controller.tempoSpeed}";
+        tempoControllTMP.text = $"x{_controller.tempoSpeed}";
     }
 
     public void DecreaseTempoSpeed()
@@ -88,7 +88,7 @@ public class IngameUIController : BaseUIController
         }
         PlayerPrefs.SetInt("user_TempoSpeed", PlayerPrefs.GetInt("user_TempoSpeed") - 1);
         _controller.tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
-        tempControllTMP.text = $"x{_controller.tempoSpeed}";
+        tempoControllTMP.text = $"x{_controller.tempoSpeed}";
     }
 
     public void UpdatePassedNoteText()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,6 +56,15 @@ public class PracticeModController : IngameController
         Managers.Input.noteAction += OnEventReceived;
 
         Managers.InitManagerPosition();
+
+        try
+        {
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 
     void Update()
@@ -80,6 +90,9 @@ public class PracticeModController : IngameController
                 transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScaleZ + notePosOffset);
             }
         }
+        
+        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.song.division * Time.deltaTime;
+        
         if (currentNoteIndex < Managers.Midi.noteTiming.Count)
         {
             if (Managers.Midi.noteTiming[currentNoteIndex] <= currentDeltaTimeF && _isWaitInput)
@@ -92,13 +105,14 @@ public class PracticeModController : IngameController
                 return;
             }
         }
-        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
+
         SyncDeltaTime(false);
-        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScaleZ * Time.deltaTime));
+        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.noteScaleZ * Time.deltaTime));
     }
 
     void WaitMidiInput()
     {
+        UpdateBar();
         if (currentNoteIndex >= Managers.Midi.noteTiming.Count)
         {
             if (currentDeltaTime >= Managers.Midi.songLengthDelta)
@@ -129,6 +143,7 @@ public class PracticeModController : IngameController
             UpdatePassedNote();
             UpdateTempo();
             UpdateBeat();
+            UpdateBar();
         }
     }
 
@@ -249,7 +264,27 @@ public class PracticeModController : IngameController
                 }
             }
 
-            if (isNoteIdxChanged || isTempoMapIdxChanged || isBeatMapIdxChanged)
+            bool isCurrentBarIdxChanged = false;
+            if (_currentBarIdx > 0)
+            {
+                if (Managers.Midi.barTiming[_currentBarIdx - 1] >= currentDeltaTime)
+                {
+                    _currentBarIdx--;
+                    StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
+                    isCurrentBarIdxChanged = true;
+                }
+            }
+            if (_currentBarIdx < Managers.Midi.barTiming.Count - 1 && !isCurrentBarIdxChanged)
+            {
+                if (Managers.Midi.barTiming[_currentBarIdx] < currentDeltaTime)
+                {
+                    _currentBarIdx++;
+                    StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
+                    isCurrentBarIdxChanged = true;
+                }
+            }
+
+            if (isNoteIdxChanged || isTempoMapIdxChanged || isBeatMapIdxChanged || isCurrentBarIdxChanged)
                 continue;
             break;
         }

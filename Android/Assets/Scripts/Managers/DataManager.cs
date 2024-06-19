@@ -6,18 +6,24 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 using static Datas;
+using static Define;
+using static UI_MyPage;
 
 public class DataManager
 {
     public string jsonDataFromServer;
     public string userId = "";
     public int userCurriculumProgress = 0;
+    public string userProfileURL = "";
+    public int[] logCounts = new int[12 * 4];
     public bool isServerConnectionComplete = false;
     public bool isUserLoggedIn = false;
     public Define.RankRecord rankRecord;
@@ -60,16 +66,16 @@ public class DataManager
 
     public Define.RankRecordList GetRankListFromLocal(string songFileName)
     {
-        if (!Directory.Exists($"{Application.persistentDataPath}/RecordReplay/"))
-            Directory.CreateDirectory($"{Application.persistentDataPath}/RecordReplay/");
+        if (!Directory.Exists($"{Application.dataPath}/RecordReplay/"))
+            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
         Define.RankRecordList rankRecordList = new Define.RankRecordList();
-        DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.persistentDataPath}/RecordReplay");
+        DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.dataPath}/RecordReplay");
         foreach (FileInfo file in replayDirInfo.GetFiles())
         {
             string songTitle = file.Name.Split("-")[0];
             if (songTitle == songFileName.Split("-")[0] && file.Name.Split(".")[file.Name.Split(".").Length - 1] == "json")
             {
-                string dataStr = File.ReadAllText($"{Application.persistentDataPath}/RecordReplay/{file.Name}");
+                string dataStr = System.IO.File.ReadAllText($"{Application.dataPath}/RecordReplay/{file.Name}");
                 Define.UserReplayRecord userReplayRecord = JsonConvert.DeserializeObject<Define.UserReplayRecord>(dataStr);
                 rankRecordList.records.Add(new Define.RankRecord(songTitle, file.Name.Split("-")[1], userReplayRecord.accuracy, file.Name.Split("-")[2], dataStr));
             }
@@ -191,6 +197,8 @@ public class DataManager
             isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
             userCurriculumProgress = GetUserCurriculumProgress(www.downloadHandler.text);
+            userProfileURL = GetProfileURL(www.downloadHandler.text);
+            Managers.Data.GetUserLogData(Managers.Data.userId);
             return true;
         }
         else
@@ -203,10 +211,83 @@ public class DataManager
 
     public int GetUserCurriculumProgress(string userData)
     {
-        int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length + 1;
-        int endIndex = userData.IndexOf("}", startIndex + 1);
+        int startIndex = userData.IndexOf("\"curriculum\":") + "\"curriculum\":".Length;
+        int endIndex = userData.IndexOf("}", startIndex);
         return int.Parse(userData.Substring(startIndex, endIndex - startIndex));
     }
+
+    private string GetProfileURL(string json)
+    {
+        // JSON 문자열을 파싱하여 profile 정보 추출
+        string profileURL = "";
+
+        // JSON 문자열을 파싱하고 원하는 정보를 추출하는 로직을 작성
+        // 여기서는 간단하게 문자열을 찾아내는 방식으로 작성하였습니다.
+        int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
+        int endIndex = json.IndexOf("\"", startIndex + 1);
+        profileURL = json.Substring(startIndex, endIndex - startIndex);
+
+        return profileURL;
+    }
+
+    // 반환되는 참 거짓 값으로 에러의 유무를 판별
+    public bool GetUserLogData(string userId)
+    {
+        UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/log/getlog/{userId}");
+
+        www.SendWebRequest();  // 응답이 올때까지 대기한다.
+        while (!www.isDone) { }
+
+        if (www.error == null)  // 에러가 나지 않으면 동작.
+        {
+            isServerConnectionComplete = true;
+            Debug.Log("Get Log Success");
+            GetLogPastWeek(www.downloadHandler.text);
+            return true;
+        }
+        else
+        {
+            isServerConnectionComplete = false;
+            return false;
+        }
+    }
+
+    private void GetLogPastWeek(string jsonResult)
+    {
+        List<LogEntry> logEntries = JsonUtility.FromJson<LogEntryList>("{\"logs\":" + jsonResult + "}").logs;
+
+        foreach (var entry in logEntries)
+        {
+            DateTime date = DateTime.Parse(entry.date).Date;
+            int month = date.Month;
+            int week = Mathf.CeilToInt(date.Day / 7.0f);
+            int rowIndex = (week - 1) * 12; // 행 인덱스
+            int colIndex = month - 1; // 열 인덱스
+            int imageIndex = rowIndex + colIndex;
+
+            // 이미지 인덱스가 배열 범위를 벗어나지 않도록 보정
+            if (imageIndex >= 0 && imageIndex < logCounts.Length)
+            {
+                logCounts[imageIndex]++;
+            }
+        }
+    }
+
+    public IEnumerator SetProfileImage(string imageURL, Image profileImage)
+    {
+        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
+        {
+            yield return imageRequest.SendWebRequest();
+
+            if (imageRequest.result == UnityWebRequest.Result.Success)
+            {
+                // 텍스처 다운로드 및 이미지 UI에 설정
+                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
+                profileImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            }
+        }
+    }
+
 
     public void SetUserCurriculumProgress(int value)
     {
@@ -237,5 +318,32 @@ public class DataManager
     {
         Debug.Log(origin.Replace("\"", "\\\""));
         return origin.Replace("\"", "\\\"");
+    }
+
+    public void AddLog(string userID)
+    {
+        string baseURL = "http://15.164.2.49:3000/log/addlog/";
+        string url = baseURL + userID;
+
+        string logData = "{\"date\":\"" + DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") + "\"}";
+
+        UnityWebRequest www = new UnityWebRequest(url, "POST")
+        {
+            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(logData)),
+            downloadHandler = new DownloadHandlerBuffer()
+        };
+        www.SetRequestHeader("Content-Type", "application/json");
+
+        www.SendWebRequest().completed += (AsyncOperation op) =>
+        {
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Log added successfully!");
+            }
+            else
+            {
+                Debug.LogError("Error adding log: " + www.error);
+            }
+        };
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ public class ActualModController : IngameController
     public int currentCorrect;
     public int currentFail;
     public int totalAcc;
-    public int currentBar = -1;
+    public int currentMetronomeIdx = -1;
     public float currentAcc = 1;
     #endregion
 
@@ -43,13 +44,19 @@ public class ActualModController : IngameController
 
         _noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
 
-        // Managers.Input.keyAction -= InputKeyEvent;
-        // Managers.Input.keyAction += InputKeyEvent;
-
         if (Managers.Input.isPianoConnected)
         {
             Managers.Input.noteAction -= OnEventReceived;
             Managers.Input.noteAction += OnEventReceived;
+        }
+
+        try
+        {
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", 0));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
         }
 
         Managers.InitManagerPosition();
@@ -104,16 +111,28 @@ public class ActualModController : IngameController
     {
         if (_isIntro)
             return;
-        if (currentBar < currentDeltaTime / Managers.Midi.song.division)
+
+        // ¸ÞÆ®·Î³ð
+        if (currentMetronomeIdx < (currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division)
         {
-            Managers.Sound.metronomeAction.Invoke();
-            currentBar++;
+            if ((Managers.Sound.metronomeOffset != 0 && Managers.Midi.barTiming[_currentBarIdx] <= currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) ||
+                currentMetronomeIdx == -1)
+            {
+                Managers.Sound.metronomeAction.Invoke(true);
+            }
+            else
+            {
+                Managers.Sound.metronomeAction.Invoke(false);
+            }
+            currentMetronomeIdx++;
         }
-        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
+
+        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.song.division * Time.deltaTime;
         SyncDeltaTime(false);
-        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScaleZ * Time.deltaTime));
+        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.noteScaleZ * Time.deltaTime));
         UpdateTempo();
         UpdateBeat();
+        UpdateBar();
     }
 
     public void SyncDeltaTime(bool isIntToFloat)
@@ -157,6 +176,10 @@ public class ActualModController : IngameController
                 {
                     currentFail += Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Value - _lastInputTiming[keyNum];
                     currentAcc = (totalAcc - currentFail) / (float)totalAcc;
+                }
+                else
+                {
+
                 }
             }
             Managers.Midi.nextKeyIndex[keyNum]++;

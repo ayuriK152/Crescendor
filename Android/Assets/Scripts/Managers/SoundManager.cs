@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager
 {
-    public Action metronomeAction;
+    public Action<bool> metronomeAction;
     public int metronomeOffset = 0;
 
     private AudioSource _metronomeAudioSource;
@@ -39,8 +37,16 @@ public class SoundManager
         _metronomeAudioSource.volume = value;
     }
 
-    private void TriggerMetronomeSound()
+    private void TriggerMetronomeSound(bool isHighPitch)
     {
+        if (isHighPitch)
+        {
+            _metronomeAudioSource.pitch = 2;
+        }
+        else
+        {
+            _metronomeAudioSource.pitch = 1;
+        }
         _metronomeAudioSource.Play();
     }
 }

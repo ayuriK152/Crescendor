@@ -1,5 +1,4 @@
 using ABCUnity.Example;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -48,7 +47,6 @@ public class IngameController : MonoBehaviour
     private GameObject accuracyEffect;
     private GameObject congratulationEffect;
 
-
     protected void Init()
     {
         songTitle = PlayerPrefs.GetString("trans_SongTitle");
@@ -58,7 +56,6 @@ public class IngameController : MonoBehaviour
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
-
 
         // ����Ʈ ���� �ʱ�ȭ
         vPiano = GameObject.Find("VirtualPiano");
@@ -245,7 +242,6 @@ public class IngameController : MonoBehaviour
         }
 
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
-
         GameObject effect_clone = Instantiate(correctEffect, effectPos);
         effect_clone.transform.Rotate(new Vector3(90, 0, 0));
         effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);

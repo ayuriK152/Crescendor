@@ -1,3 +1,4 @@
+using ABCUnity.Example;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,10 +11,10 @@ public class IngameController : MonoBehaviour
     public TextMeshProUGUI noteText;
 
     public int tempo = 120;
+    public float tempoSpeed;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 1.5f;
+    public float notePosOffset = -10.5f;
+    public float widthValue = 6.0f;
     public string songTitle;
 
     public int passedNote;
@@ -26,15 +27,18 @@ public class IngameController : MonoBehaviour
     #region Protected Members
     protected int _tempoMapIdx = 0;
     protected int _beatMapIdx = 0;
+    protected int _currentBarIdx = 0;
     protected int[] _initInputTiming = new int[88];
 
     protected List<Material> _vPianoKeyMat = new List<Material>();
     protected List<GameObject> _vPianoKeyObj = new List<GameObject>();
     protected List<SpriteRenderer> _vPianoKeyEffect = new List<SpriteRenderer>();
-    protected Color[] _vPianoKeyEffectColors = new Color[3];
+    protected Color[] _vPianoKeyEffectColors = new Color[4];
     protected List<int> _correctNoteKeys = new List<int>();
 
     protected IngameUIController _uiController;
+    protected BasicLayout sheetController;
+    protected GameObject sheetObject;
     #endregion
 
     // Effect 관련 변수
@@ -64,8 +68,8 @@ public class IngameController : MonoBehaviour
             _initInputTiming[i] = -1;
         }
 
-        Managers.Midi.noteScaleZ = noteScale;
         Managers.Midi.widthValue = widthValue;
+        Managers.Midi.notePositionOffset = notePosOffset;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
 
         totalNote = Managers.Midi.notes.Count;
@@ -73,6 +77,7 @@ public class IngameController : MonoBehaviour
         _vPianoKeyEffectColors[0] = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         _vPianoKeyEffectColors[1] = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         _vPianoKeyEffectColors[2] = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+        _vPianoKeyEffectColors[3] = new Color(0.0f, 0.5f, 0.0f, 1.0f);
 
         Transform[] tempVPianoMat = GameObject.Find("VirtualPiano").GetComponentsInChildren<Transform>();
         foreach (Transform t in tempVPianoMat)
@@ -85,6 +90,35 @@ public class IngameController : MonoBehaviour
                 _vPianoKeyEffect[_vPianoKeyEffect.Count - 1].color = _vPianoKeyEffectColors[0];
                 _vPianoKeyMat.Add(tempVPianoKeyMat.material);
             }
+        }
+
+        sheetController = GameObject.Find("SheetController").GetComponent<BasicLayout>();
+        sheetObject = GameObject.Find("ABCLayout");
+        if (PlayerPrefs.GetInt("user_SheetShow") == 0)
+            sheetObject.SetActive(false);
+        else
+            sheetObject.SetActive(true);
+
+        if (!PlayerPrefs.HasKey("user_TempoSpeed"))
+        {
+            PlayerPrefs.SetInt("user_TempoSpeed", 10);
+        }
+        tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
+
+        Managers.Ingame.OptionChangedAction = null;
+        Managers.Ingame.OptionChangedAction += ToggleSheetShow;
+    }
+
+    void ToggleSheetShow()
+    {
+        if (Managers.Scene.currentScene == Define.Scene.ActualModScene ||
+            Managers.Scene.currentScene == Define.Scene.PracticeModScene ||
+            Managers.Scene.currentScene == Define.Scene.ReplayModScene)
+        {
+            if (PlayerPrefs.GetInt("user_SheetShow") == 0)
+                sheetObject.SetActive(false);
+            else
+                sheetObject.SetActive(true);
         }
     }
 
@@ -110,6 +144,20 @@ public class IngameController : MonoBehaviour
         _beatMapIdx += 1;
     }
 
+    public void UpdateBar()
+    {
+        if (_currentBarIdx >= Managers.Midi.barTiming.Count - 1)
+            return;
+        if (Managers.Midi.barTiming[_currentBarIdx] >= currentDeltaTime)
+            return;
+        int temp = _currentBarIdx / 4;
+        _currentBarIdx += 1;
+        if (temp != _currentBarIdx / 4)
+        {
+            StartCoroutine(sheetController.ShowSheetAtIndex($"SheetDatas/{songTitle}", _currentBarIdx / 4));
+        }
+    }
+
     protected IEnumerator ToggleKeyHighlight()
     {
         for (int i = 0; i < 88; i++)
@@ -127,18 +175,27 @@ public class IngameController : MonoBehaviour
 
     void TurnOnHighlight(int keyNum)
     {
-        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+        if (_correctNoteKeys.Contains(keyNum))
         {
-            _vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
+            if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 1f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+            }
+            else
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 0.5f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[3];
+            }
+
         }
         else
         {
-            _vPianoKeyMat[keyNum].color = new Color(0.5f, 0, 0);
-        }
-        if (!_correctNoteKeys.Contains(keyNum) && _vPianoKeyEffect[keyNum].color != _vPianoKeyEffectColors[2])
+            _vPianoKeyMat[keyNum].color = new Color(1f, 0, 0);
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
-        else
-            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+
+        }
+
         if (_correctNoteKeys.Contains(keyNum))
             CorrectEffect(keyNum);
     }

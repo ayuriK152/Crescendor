@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 using static Define;
 
@@ -22,6 +20,7 @@ public class UI_Select : UI_Scene
         CurriListScrollView,
         CurriSongListScrollView,
         RankListScrollView,
+        SearchInputField
     }
 
     enum Buttons
@@ -56,10 +55,10 @@ public class UI_Select : UI_Scene
     TextMeshProUGUI _songInfoComposser;
     TextMeshProUGUI _songInfoLength;
     TextMeshProUGUI _songInfoTempo;
+    TMP_InputField _searchInputField;
     TMP_Dropdown _rankListDropdown;
     Define.RankRecordList rankRecords;
     Sprite originalSprite;
-    Image pianoConnectionCheckImg;
 
     void Start()
     {
@@ -73,11 +72,8 @@ public class UI_Select : UI_Scene
         Bind<GameObject>(typeof(GameObjects));
         Bind<Button>(typeof(Buttons));
         Bind<TMP_Dropdown>(typeof(Dropdowns));
-        GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
         GameObject curriculumPanel = Get<GameObject>((int)GameObjects.CurriculumPanel);
         Managers.Song.LoadSongsFromConvertsFolder();
-        foreach (Transform child in songPanel.transform)
-            Managers.Data.Destroy(child.gameObject);
 
         _rankPanelObj = Get<GameObject>((int)GameObjects.RankPanel);
         _songInfoPanel = Get<GameObject>((int)GameObjects.SongInfoPanel);
@@ -112,45 +108,14 @@ public class UI_Select : UI_Scene
         _songInfoComposser = _songInfoPanel.transform.Find("Detail/ComposerName").GetComponent<TextMeshProUGUI>();
         _songInfoLength = _songInfoPanel.transform.Find("Detail/SongLength/Value").GetComponent<TextMeshProUGUI>();
         _songInfoTempo = _songInfoPanel.transform.Find("Detail/Tempo/Value").GetComponent<TextMeshProUGUI>();
-        pianoConnectionCheckImg = GameObject.Find("UI_Select/NavBar/PianoConnectionCheck").GetComponent<Image>();
-        if (Managers.Input.isPianoConnected)
-        {
-            pianoConnectionCheckImg.color = new Color(1, 1, 1);
-        }
-        else
-        {
-            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
-        }
+        _searchInputField = Get<GameObject>((int)GameObjects.SearchInputField).GetComponent<TMP_InputField>();
+        _searchInputField.onValueChanged.AddListener((string s) => UpdateSongList());
 
         _rankListDropdown = transform.Find("RankListScrollView/RankCategory").GetComponent<TMP_Dropdown>();
 
         _noRankSignPanelObj = _rankPanelObj.transform.parent.Find("NoRankExists").gameObject;
 
-        // SongManager의 곡 정보를 이용하여 버튼 생성
-        for (int i = 0; i < Managers.Song.songs.Count; i++)
-        {
-            // SongButton 프리팹 로드
-            GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", songPanel.transform);
-            // SongButton 생성
-            if (songButtonPrefab != null)
-            {
-                Button button = songButtonPrefab.GetComponent<Button>();
-
-                // Song 정보를 버튼에 표시
-                if (button != null)
-                {
-                    // 예시로 Song의 songTitle을 버튼에 표시
-                    button.gameObject.name = $"{i}";
-                    button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
-                    button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
-                    button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
-                }
-            }
-            else
-            {
-                Debug.LogError($"Failed to load SongButton prefab");
-            }
-        }
+        UpdateSongList();
 
         _buttonByCurriculums = new Dictionary<Curriculum, GameObject>();
 
@@ -165,6 +130,7 @@ public class UI_Select : UI_Scene
             {
                 _buttonByCurriculums.Add(curriculum, curriculumButtonPrefab);
                 Button button = curriculumButtonPrefab.GetComponent<Button>();
+                button.onClick.AddListener(() => UpdateSelectedCurriculum(curriculum));
 
                 if (button != null)
                 {
@@ -189,7 +155,6 @@ public class UI_Select : UI_Scene
 
         if (Managers.Data.isUserLoggedIn)
         {
-            Managers.Data.GetUserData(Managers.Data.userId);
             int curriculumMount = 0;
             foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
             {
@@ -212,13 +177,8 @@ public class UI_Select : UI_Scene
         // 프로필 이미지 로드
         if (Managers.Data.isUserLoggedIn)
         {
-            LoadImage(Managers.Data.userId);
+            LoadImage();
         }
-
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
-        Managers.Input.pianoConnectionAction -= PianoConnectionUpdate;
-        Managers.Input.pianoConnectionAction += PianoConnectionUpdate;
     }
 
     public void OnSongButtonClick(int songIdx)
@@ -303,7 +263,7 @@ public class UI_Select : UI_Scene
         Managers.Scene.LoadScene(Define.Scene.MainMenuScene);
     }
 
-    void OnOptionButtonClick()
+    public void OnOptionButtonClick()
     {
         Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
     }
@@ -464,6 +424,10 @@ public class UI_Select : UI_Scene
     void UpdateCurriculumSongList()
     {
         GameObject curriculumSongPanel = Get<GameObject>((int)GameObjects.CurriculumSongPanel);
+        foreach (Transform child in curriculumSongPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
         Managers.Song.curriculumSongMounts.Clear();
 
         for (int i = 0; i < Managers.Song.songs.Count; i++)
@@ -485,6 +449,53 @@ public class UI_Select : UI_Scene
         }
     }
 
+    void UpdateSongList()
+    {
+        GameObject songPanel = Get<GameObject>((int)GameObjects.SongPanel);
+        foreach (Transform child in songPanel.transform)
+            Managers.Data.Destroy(child.gameObject);
+        for (int i = 0; i < Managers.Song.songs.Count; i++)
+        {
+            // 검색
+            if (_searchInputField.text == "" ||
+                Managers.Song.songs[i].songComposer.ToLower().Contains(_searchInputField.text.ToLower()) ||
+                Managers.Song.songs[i].songTitle.ToLower().Contains(_searchInputField.text.ToLower()))
+            {
+                // SongButton 프리팹 로드
+                GameObject songButtonPrefab = Managers.Data.Instantiate($"UI/Sub/SongButton", songPanel.transform);
+                // SongButton 생성
+                if (songButtonPrefab != null)
+                {
+                    Button button = songButtonPrefab.GetComponent<Button>();
+
+                    // Song 정보를 버튼에 표시
+                    if (button != null)
+                    {
+                        // 예시로 Song의 songTitle을 버튼에 표시
+                        button.gameObject.name = $"{i}";
+                        button.transform.Find("Title/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songTitle;
+                        button.transform.Find("Composer/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].songComposer;
+                        if (Managers.Song.songs[i].curriculum != Curriculum.None)
+                            button.transform.Find("Curriculum/Value").GetComponent<TextMeshProUGUI>().text = Managers.Song.songs[i].curriculum.ToString();
+                        else
+                            button.transform.Find("Curriculum/Value").GetComponent<TextMeshProUGUI>().text = "Generic";
+                        button.onClick.AddListener(() => OnSongButtonClick(Convert.ToInt32(button.gameObject.name)));
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load SongButton prefab");
+                }
+            }
+        }
+    }
+
+    void UpdateSelectedCurriculum(Curriculum curriculum)
+    {
+        Managers.Song.selectedCurriculum = curriculum;
+        UpdateCurriculumSongList();
+    }
+
     void SwapListView()
     {
         Managers.Song.isModCurriculum = !Managers.Song.isModCurriculum;
@@ -497,82 +508,10 @@ public class UI_Select : UI_Scene
         _songInfoPanel.SetActive(!_songInfoPanel.active);
     }
 
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
-    {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        Managers.Scene.LoadScene(Scene.MainMenuScene);
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
-    }
-
-    void PianoConnectionUpdate(bool isConnected)
-    {
-        if (isConnected)
-        {
-            pianoConnectionCheckImg.color = new Color(1, 1, 1);
-        }
-        else
-        {
-            pianoConnectionCheckImg.color = new Color(0.6f, 0.6f, 0.6f);
-        }
-    }
-
     #region Image Settings
-    public void LoadImage(string userId)
+    public void LoadImage()
     {
-        StartCoroutine(GetUserProfile(userId));
-    }
-
-
-    private IEnumerator GetUserProfile(string userID)
-    {
-
-        string url = "http://15.164.2.49:3000/getuser/" + userID;
-
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string responseText = request.downloadHandler.text;
-                Debug.Log("Response: " + responseText);
-
-                // 응답된 JSON 문자열에서 원하는 정보 추출
-                string profileURL = GetProfileURL(responseText);
-                // 프로필 이미지 다운로드 및 설정
-                yield return StartCoroutine(SetProfileImage(profileURL));
-            }
-            else
-            {
-                Debug.LogError("유저를 찾을 수 없음" + request.error);
-            }
-        }
-    }
-
-    private IEnumerator SetProfileImage(string imageURL)
-    {
-        using (UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageURL))
-        {
-            yield return imageRequest.SendWebRequest();
-
-            if (imageRequest.result == UnityWebRequest.Result.Success)
-            {
-                // 텍스처 다운로드 및 이미지 UI에 설정
-                Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
-                originalSprite = _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite; // 원래 이미지를 저장
-                _profileBtn.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-            }
-        }
+        StartCoroutine(Managers.Data.SetProfileImage(Managers.Data.userProfileURL, _profileBtn.GetComponent<UnityEngine.UI.Image>()));
     }
 
 
@@ -592,4 +531,3 @@ public class UI_Select : UI_Scene
 
     #endregion Image Settings 
 }
-

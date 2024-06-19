@@ -13,9 +13,9 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 using static Datas;
 using static Define;
+using static UI_MyPage;
 
 public class DataManager
 {
@@ -66,8 +66,8 @@ public class DataManager
 
     public Define.RankRecordList GetRankListFromLocal(string songFileName)
     {
-        if (!System.IO.Directory.Exists($"{Application.dataPath}/RecordReplay/"))
-            System.IO.Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
+        if (!Directory.Exists($"{Application.dataPath}/RecordReplay/"))
+            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay/");
         Define.RankRecordList rankRecordList = new Define.RankRecordList();
         DirectoryInfo replayDirInfo = new DirectoryInfo($"{Application.dataPath}/RecordReplay");
         foreach (FileInfo file in replayDirInfo.GetFiles())

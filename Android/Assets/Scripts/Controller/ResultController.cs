@@ -16,7 +16,6 @@ public class ResultController : MonoBehaviour
     int _totalAcc;
     int _failMount;
     int _correctMount;
-    int _outlinerMount;
 
     ResultUIController _uiController;
     RankRecordList rankRecords;
@@ -36,7 +35,6 @@ public class ResultController : MonoBehaviour
         _totalAcc = Managers.Midi.totalDeltaTime;
         _failMount = PlayerPrefs.GetInt("trans_FailMount");
         _correctMount = _totalAcc - _failMount;
-        //_outlinerMount = PlayerPrefs.GetInt("trans_OutlinerMount");
 
         _uiController = Managers.UI.currentUIController as ResultUIController;
         _uiController.BindIngameUI();
@@ -44,17 +42,13 @@ public class ResultController : MonoBehaviour
         _uiController.songComposerTMP.text = $"{_songComposer}";
         _uiController.correctMountTMP.text = $"{_correctMount}";
         _uiController.failMountTMP.text = $"{_failMount}";
-        //_uiController.outlinerMountTMP.text = $"{_outlinerMount}";
         _uiController.songLengthTMP.text = $"{(int)(Managers.Midi.songLengthSecond / 60)}:{(int)(Managers.Midi.songLengthSecond % 60)}";
         _uiController.correctGraphImage.fillAmount = _correctMount / (float)_totalAcc;
         _uiController.failGraphImage.fillAmount = _failMount / (float)_failMount;
-        //_uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
-        //_uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
 
         _rankPanelObj = GameObject.Find("MainCanvas/TopRanks/RankListScrollView/Viewport/RankPanel");
 
-        // 데모 끝나고 수정해야함
         SaveResultToJson();
         if (Managers.Data.isUserLoggedIn)
         {
@@ -94,7 +88,6 @@ public class ResultController : MonoBehaviour
 
     void SaveResultToJson()
     {
-        RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), $"{_username}", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
         if (!Directory.Exists($"{Application.persistentDataPath}/RecordReplay"))
         {
             Directory.CreateDirectory($"{Application.persistentDataPath}/RecordReplay");

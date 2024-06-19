@@ -1,12 +1,10 @@
-using TMPro;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
-using SmfLite;
-using System;
 
 public class PracticeModController : IngameController
 {
@@ -97,7 +95,9 @@ public class PracticeModController : IngameController
                 transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScaleZ + notePosOffset);
             }
         }
+        
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.song.division * Time.deltaTime;
+        
         if (currentNoteIndex < Managers.Midi.noteTiming.Count)
         {
             if (Managers.Midi.noteTiming[currentNoteIndex] <= currentDeltaTimeF && _isWaitInput)

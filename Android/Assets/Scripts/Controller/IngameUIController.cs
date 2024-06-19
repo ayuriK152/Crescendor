@@ -9,7 +9,10 @@ public class IngameUIController : BaseUIController
     public TextMeshProUGUI songNoteMountTMP;
     public TextMeshProUGUI songTempoTMP;
     public TextMeshProUGUI songBeatTMP;
+    public TextMeshProUGUI tempoControllTMP;
     public Slider songTimeSlider;
+    public Button tempoPlusBtn;
+    public Button tempoMinusBtn;
     public GameObject songTimeSliderHandle;
     public GameObject pausePanelObj;
     public GameObject optionPanelObj;
@@ -30,8 +33,14 @@ public class IngameUIController : BaseUIController
         songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
         songTempoTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
         songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
+        tempoControllTMP = GameObject.Find("MainCanvas/Informations/TempoSpeed/Value").GetComponent<TextMeshProUGUI>();
         songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
         songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+
+        tempoPlusBtn = GameObject.Find("MainCanvas/Informations/TempoSpeed/PlusBtn").GetComponent<Button>();
+        tempoMinusBtn = GameObject.Find("MainCanvas/Informations/TempoSpeed/MinusBtn").GetComponent<Button>();
+        tempoPlusBtn.onClick.AddListener(IncreaseTempoSpeed);
+        tempoMinusBtn.onClick.AddListener(DecreaseTempoSpeed);
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
         optionPanelObj = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_Option");
@@ -48,6 +57,28 @@ public class IngameUIController : BaseUIController
 
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
+    }
+
+    public void IncreaseTempoSpeed()
+    {
+        if (PlayerPrefs.GetInt("user_TempoSpeed") >= 15)
+        {
+            return;
+        }
+        PlayerPrefs.SetInt("user_TempoSpeed", PlayerPrefs.GetInt("user_TempoSpeed") + 1);
+        _controller.tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
+        tempoControllTMP.text = $"x{_controller.tempoSpeed}";
+    }
+
+    public void DecreaseTempoSpeed()
+    {
+        if (PlayerPrefs.GetInt("user_TempoSpeed") <= 5)
+        {
+            return;
+        }
+        PlayerPrefs.SetInt("user_TempoSpeed", PlayerPrefs.GetInt("user_TempoSpeed") - 1);
+        _controller.tempoSpeed = PlayerPrefs.GetInt("user_TempoSpeed") / 10.0f;
+        tempoControllTMP.text = $"x{_controller.tempoSpeed}";
     }
 
     public void UpdatePassedNoteText()

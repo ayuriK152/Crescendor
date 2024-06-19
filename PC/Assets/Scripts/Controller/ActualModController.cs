@@ -1,11 +1,10 @@
-using TMPro;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using static Datas;
-using System;
 
 public class ActualModController : IngameController
 {
@@ -116,6 +115,7 @@ public class ActualModController : IngameController
     {
         if (_isIntro)
             return;
+
         // ¸ÞÆ®·Î³ð
         if (currentMetronomeIdx < (currentDeltaTime + (Managers.Midi.song.division / 10) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division)
         {
