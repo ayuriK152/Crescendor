@@ -1930,10 +1930,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Content: {fileID: 5048492922607537286}
   m_Horizontal: 0
-  m_Vertical: 1
+  m_Vertical: 0
   m_MovementType: 1
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 30
   m_Viewport: {fileID: 2751399795268518389}
@@ -5405,7 +5405,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6834129242337049029
 MonoBehaviour:
   m_ObjectHideFlags: 0

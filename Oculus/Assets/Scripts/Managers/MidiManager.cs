@@ -120,7 +120,16 @@ public class MidiManager
 
         GameObject tempNoteInstantiatePoint = new GameObject("Notes");
         tempNoteInstantiatePoint.transform.parent = Managers.ManagerInstance.transform;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(0, -0.25f, 0);
+
+        float vPianoWidth = PlayerPrefs.GetFloat("trans_VPianoWidth");
+        float xpos = PlayerPrefs.GetFloat("trans_xpos");
+        float ypos = PlayerPrefs.GetFloat("trans_ypos");
+        float zpos = PlayerPrefs.GetFloat("trans_zpos");
+        float widthRatio = vPianoWidth / 11.7f;
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(xpos + vPianoWidth / 2.0f, ypos, zpos);
+        widthValue = widthRatio;
+        // 너비랑 x축은 어떻게 처리할지...
+
         noteInstantiatePoint = tempNoteInstantiatePoint.transform;
 
         int trackNum = 0;
@@ -190,7 +199,7 @@ public class MidiManager
                 int keyOffset = int.Parse(noteKeyStr[noteKeyStr.Length - 1].ToString()) - 3;
                 instantiateNotes.Add(GameObject.Instantiate(noteObj, noteInstantiatePoint));
                 instantiateNotes[i].transform.localScale = new Vector3(blackNoteWidth * widthValue, blackNoteWidth * widthValue, notes[i].deltaTime / (float)song.division * noteScale);
-                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.2f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
+                instantiateNotes[i].transform.localPosition = new Vector3((blackNoteWidth / 2 + keyPos * blackNoteWidth + keyOffset * virtualPianoWidth) * widthValue, 0.02f, (notes[i].startTime + notes[i].deltaTime / 2.0f) / song.division * noteScale);
                 if (notes[i].channel == 0)
                 {
                     instantiateNotes[i].GetComponent<Renderer>().material = blackKeyOne;
