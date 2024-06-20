@@ -74,9 +74,9 @@ public class PracticeModController : IngameController
 
     void Update()
     {
+        ToggleKeyHighlight();  
         WaitMidiInput();
-        Scroll();
-        StartCoroutine(ToggleKeyHighlight());    
+        Scroll();  
     }
 
     void Scroll()
@@ -137,7 +137,7 @@ public class PracticeModController : IngameController
             for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
             {
                 Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-                _vPianoKeyEffect[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key].color = _vPianoKeyEffectColors[2];
+                // _vPianoKeyEffect[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key].color = _vPianoKeyEffectColors[2];
                 //AccurayEffect().startColor = new Color(255, 255, 255, 200);
                 if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
                 {
@@ -164,6 +164,9 @@ public class PracticeModController : IngameController
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
         _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
+
+        if (currentNoteIndex == Managers.Midi.noteTiming.Count)
+            return;
 
         for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
         {
@@ -305,14 +308,23 @@ public class PracticeModController : IngameController
         {
             NoteEvent noteEvent = e.Event as NoteEvent;
 
+            /*
             if (isSongEnd && noteEvent.Velocity != 0)
             {
                 isSongEnd = false;
                 currentDeltaTime = 0;
                 SyncDeltaTime(true);
-                StartCoroutine(ForceUpdateNote());
+                try
+                {
+                    StartCoroutine(ForceUpdateNote());
+                }
+                catch
+                {
+
+                }
                 (_uiController as PracticeModUIController).ToggleSongEndPanel();
             }
+            */
             // 노트 입력 시작
             if (noteEvent.Velocity != 0)
             {
@@ -324,6 +336,7 @@ public class PracticeModController : IngameController
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
+                _isPlayingEffect[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
                 Debug.Log(noteEvent);

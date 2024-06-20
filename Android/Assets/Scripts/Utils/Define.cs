@@ -193,6 +193,7 @@ public class Define
     public enum Curriculum
     {
         Hanon,
+        Czerny100,
         Beyer,
         None,
     }

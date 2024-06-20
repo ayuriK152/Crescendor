@@ -29,6 +29,7 @@ public class IngameController : MonoBehaviour
     protected int _beatMapIdx = 0;
     protected int _currentBarIdx = 0;
     protected int[] _initInputTiming = new int[88];
+    protected bool[] _isPlayingEffect = new bool[88];
 
     protected List<Material> _vPianoKeyMat = new List<Material>();
     protected List<GameObject> _vPianoKeyObj = new List<GameObject>();
@@ -44,6 +45,7 @@ public class IngameController : MonoBehaviour
     // Effect ���� ����
     private GameObject vPiano;
     private GameObject correctEffect;
+    private GameObject correctOrgEffect;
     private GameObject accuracyEffect;
     private GameObject congratulationEffect;
 
@@ -60,6 +62,7 @@ public class IngameController : MonoBehaviour
         // ����Ʈ ���� �ʱ�ȭ
         vPiano = GameObject.Find("VirtualPiano");
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
+        correctOrgEffect = Resources.Load<GameObject>("Effects/correct_org") as GameObject;
         accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
         congratulationEffect = Resources.Load<GameObject>("Effects/congratulation") as GameObject;
 
@@ -158,6 +161,7 @@ public class IngameController : MonoBehaviour
         }
     }
 
+    /*
     protected IEnumerator ToggleKeyHighlight()
     {
         for (int i = 0; i < 88; i++)
@@ -168,15 +172,30 @@ public class IngameController : MonoBehaviour
             }
             else
                 TurnOffHighlight(i);
-
         }
         yield return null;
+    }
+    */
+
+    protected void ToggleKeyHighlight()
+    {
+        for (int i = 0; i < 88; i++)
+        {
+            if (Managers.Input.keyChecks[i] || _isPlayingEffect[i])
+            {
+                TurnOnHighlight(i);
+            }
+            else
+                TurnOffHighlight(i);
+        }
     }
 
     void TurnOnHighlight(int keyNum)
     {
-        if (_correctNoteKeys.Contains(keyNum))
+        if (_correctNoteKeys.Contains(keyNum) || _isPlayingEffect[keyNum])
         {
+            _isPlayingEffect[keyNum] = true;
+            CorrectEffect(keyNum);
             if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
             {
                 _vPianoKeyMat[keyNum].color = new Color(0, 1f, 0);
@@ -195,9 +214,6 @@ public class IngameController : MonoBehaviour
             _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
 
         }
-
-        if (_correctNoteKeys.Contains(keyNum))
-            CorrectEffect(keyNum);
     }
 
     void TurnOffHighlight(int keyNum)
@@ -244,7 +260,10 @@ public class IngameController : MonoBehaviour
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
         GameObject effect_clone = Instantiate(correctEffect, effectPos);
         effect_clone.transform.Rotate(new Vector3(90, 0, 0));
-        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -2.6f);
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -10.5f);
+        GameObject effectOrg = Instantiate(correctOrgEffect, effectPos);
+        effectOrg.transform.Rotate(new Vector3(90, 0, 0));
+        effectOrg.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y + 1, -10.5f);
 
     }
 

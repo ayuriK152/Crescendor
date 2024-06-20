@@ -67,11 +67,11 @@ public class ActualModController : IngameController
 
     void Update()
     {
+        ToggleKeyHighlight();
         Scroll();
         CheckNotesStatus();
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !_isSceneOnSwap)
             SwapScene();
-        StartCoroutine(ToggleKeyHighlight());
     }
 
     //처음 게임 시작 전에 딜레이
@@ -207,6 +207,7 @@ public class ActualModController : IngameController
                 }
                 else if (Managers.Input.keyChecks[keyNum] && _lastInputTiming[keyNum] >= Managers.Midi.noteSetByKey[keyNum][Managers.Midi.nextKeyIndex[keyNum]].Key)
                 {
+                    _isPlayingEffect[keyNum] = true;
                     currentCorrect += currentDeltaTime - _lastInputTiming[keyNum];
                 }
 
@@ -239,6 +240,7 @@ public class ActualModController : IngameController
             // 노트 입력 종료
             else if (noteEvent.Velocity == 0)
             {
+                _isPlayingEffect[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
                 _noteRecords[noteEvent.NoteNumber - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
                 _initInputTiming[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
                 Managers.Input.keyChecks[noteEvent.NoteNumber - 1 - DEFAULT_KEY_NUM_OFFSET] = false;

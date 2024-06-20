@@ -69,9 +69,9 @@ public class PracticeModController : IngameController
 
     void Update()
     {
+        StartCoroutine(ToggleKeyHighlight());
         WaitMidiInput();
         Scroll();
-        StartCoroutine(ToggleKeyHighlight());
     }
 
     void Scroll()
@@ -131,7 +131,6 @@ public class PracticeModController : IngameController
             for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
             {
                 Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
-                _vPianoKeyEffect[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key].color = _vPianoKeyEffectColors[2];
                 if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
                 {
                     if (Managers.Input.isPianoConnected && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
@@ -157,6 +156,9 @@ public class PracticeModController : IngameController
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
         _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
+
+        if (currentNoteIndex == Managers.Midi.noteTiming.Count)
+            return;
 
         for (int i = 0; i < Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count; i++)
         {
@@ -311,6 +313,7 @@ public class PracticeModController : IngameController
         // 노트 입력 종료
         else if (velocity == 0)
         {
+            _isPlayingEffect[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
             Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             Debug.Log(noteNum);
