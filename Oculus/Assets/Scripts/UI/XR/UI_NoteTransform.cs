@@ -17,6 +17,10 @@ public class UI_NoteTransform : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI confirmMsg;
+    [SerializeField]
+    private TextMeshProUGUI leftAnchorMsg;
+    [SerializeField]
+    private TextMeshProUGUI rightAnchorMsg;
 
     private void Awake()
     {
@@ -27,18 +31,28 @@ public class UI_NoteTransform : MonoBehaviour
         l_ypos = GameObject.Find("LeftNoteAnchor").transform.position.y;
         r_zpos = GameObject.Find("RightNoteAnchor").transform.position.z;
         l_zpos = GameObject.Find("LeftNoteAnchor").transform.position.z;
+        leftAnchorMsg.text = $"{leftpos}, {l_ypos}, {l_zpos}";
+        rightAnchorMsg.text = $"{rightpos}, {r_ypos}, {r_zpos}";
     }
 
     public void ConfirmBtn()
     {
         leftpos = PlayerPrefs.GetFloat("trans_LeftAnchor");
         rightpos = PlayerPrefs.GetFloat("trans_RightAnchor");
+        l_ypos = PlayerPrefs.GetFloat("trans_LeftY");
+        r_ypos = PlayerPrefs.GetFloat("trans_RightY");
+        l_zpos = PlayerPrefs.GetFloat("trans_LeftZ");
+        r_zpos = PlayerPrefs.GetFloat("trans_RightZ");
 
         pianoWidth = Mathf.Abs(leftpos - rightpos);
 
         PlayerPrefs.SetFloat("trans_VPianoWidth", pianoWidth);
-        PlayerPrefs.SetFloat("trans_ypos", r_ypos);
-        PlayerPrefs.SetFloat("trans_zpos", r_zpos);
+        PlayerPrefs.SetFloat("trans_xpos", leftpos);
+        PlayerPrefs.SetFloat("trans_ypos", l_ypos);
+        PlayerPrefs.SetFloat("trans_zpos", l_zpos);
+
+        leftAnchorMsg.text = $"{leftpos}, {l_ypos}, {l_zpos}";
+        rightAnchorMsg.text = $"{rightpos}, {r_ypos}, {r_zpos}";
 
         confirmMsg.text = "Confirm";
 

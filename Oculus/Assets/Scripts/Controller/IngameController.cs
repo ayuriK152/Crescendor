@@ -11,7 +11,7 @@ public class IngameController : MonoBehaviour
 
     public int tempo = 120;
     public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
+    public float notePosOffset = 0;
     public float noteScale = 3.0f;
     public float widthValue = 1.5f;
     public string songTitle;
@@ -49,6 +49,7 @@ public class IngameController : MonoBehaviour
 
         passedNote = 0;
         totalNote = 0;
+        notePosOffset = PlayerPrefs.GetFloat("trans_zpos");
 
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;

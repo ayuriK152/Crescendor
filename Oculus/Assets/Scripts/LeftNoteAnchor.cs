@@ -25,6 +25,8 @@ public class LeftNoteAnchor : MonoBehaviour
         leftanchor.transform.position = handpos;
 
         PlayerPrefs.SetFloat("trans_LeftAnchor", handpos.x);
+        PlayerPrefs.SetFloat("trans_LeftY", handpos.y);
+        PlayerPrefs.SetFloat("trans_LeftZ", handpos.z);
     }
 
     public void LeftHandPosition()
