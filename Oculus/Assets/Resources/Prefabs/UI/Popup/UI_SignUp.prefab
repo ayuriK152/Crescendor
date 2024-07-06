@@ -1271,8 +1271,7 @@ GameObject:
   - component: {fileID: 2030444668640671914}
   - component: {fileID: 1136130559686046824}
   - component: {fileID: 2250876748413400440}
-  - component: {fileID: 8988051470259439976}
-  - component: {fileID: 8119938871268001222}
+  - component: {fileID: 3291473065781165723}
   m_Layer: 5
   m_Name: UI_SignUp
   m_TagString: Untagged
@@ -1289,7 +1288,7 @@ RectTransform:
   m_GameObject: {fileID: 6341720481033949132}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.05}
-  m_LocalScale: {x: 0.0005, y: 0.0005, z: 0}
+  m_LocalScale: {x: 0.0004, y: 0.0004, z: 0.0004}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3718448719419564498}
@@ -1376,7 +1375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9ee8ab46e227874a8ada85d396faf0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8988051470259439976
+--- !u!114 &3291473065781165723
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1385,37 +1384,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6341720481033949132}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cf2a74d69b1c1e41916d2a7afdff5be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 0
-  m_CheckFor3DOcclusion: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
---- !u!114 &8119938871268001222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6341720481033949132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7ecff74e52843a41ab3a441ac81379e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _canvas: {fileID: 1953880725233315698}
-  _renderScale: 1
-  _dimensionsDriveMode: 0
-  _resolution: {x: 128, y: 128}
-  _generateMipMaps: 0
-  _pixelsPerUnit: 1000
-  _renderingLayers:
-    serializedVersion: 2
-    m_Bits: 32
+  _facing: 0
+  _doubleSided: 0
 --- !u!1 &7296237751812630850
 GameObject:
   m_ObjectHideFlags: 0

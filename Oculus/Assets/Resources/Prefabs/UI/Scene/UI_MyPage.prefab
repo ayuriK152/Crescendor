@@ -3446,8 +3446,7 @@ GameObject:
   - component: {fileID: 8060595130821392550}
   - component: {fileID: 3635106067098729941}
   - component: {fileID: 7587695851360546533}
-  - component: {fileID: 7514885289745175101}
-  - component: {fileID: 4907198394323696363}
+  - component: {fileID: 1327729671155130370}
   m_Layer: 5
   m_Name: UI_MyPage
   m_TagString: Untagged
@@ -3543,7 +3542,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &7514885289745175101
+--- !u!114 &1327729671155130370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3552,29 +3551,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4229504576701780851}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc590889109f67c4dbf1d778f9206d2f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cf2a74d69b1c1e41916d2a7afdff5be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassImages: []
---- !u!114 &4907198394323696363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4229504576701780851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 0
-  m_CheckFor3DOcclusion: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
+  _facing: 0
+  _doubleSided: 0
 --- !u!1 &4294904392909882292
 GameObject:
   m_ObjectHideFlags: 0

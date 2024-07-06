@@ -1,4 +1,6 @@
+using Oculus.Interaction;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BaseUIController : MonoBehaviour
@@ -11,9 +13,9 @@ public class BaseUIController : MonoBehaviour
     {
         get
         {
-            GameObject root = GameObject.Find("Canvas");
+            GameObject root = GameObject.Find("UI");
             if (root == null)
-                root = new GameObject { name = "Canvas" };
+                root = new GameObject { name = "UI" };
             return root;
         }
     }
