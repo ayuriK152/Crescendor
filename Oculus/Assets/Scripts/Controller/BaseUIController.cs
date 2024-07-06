@@ -11,9 +11,9 @@ public class BaseUIController : MonoBehaviour
     {
         get
         {
-            GameObject root = GameObject.Find("Curved Panel");
+            GameObject root = GameObject.Find("Canvas");
             if (root == null)
-                root = new GameObject { name = "Curved Panel" };
+                root = new GameObject { name = "Canvas" };
             return root;
         }
     }
