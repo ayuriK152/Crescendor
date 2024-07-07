@@ -784,7 +784,7 @@ GameObject:
   - component: {fileID: 2370065631037446643}
   - component: {fileID: 7873125217511252537}
   - component: {fileID: 2628869161547143742}
-  - component: {fileID: 3717393929524846154}
+  - component: {fileID: 2421167999061252874}
   - component: {fileID: 4757522348190637689}
   m_Layer: 5
   m_Name: UI_Option
@@ -878,7 +878,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3717393929524846154
+--- !u!114 &2421167999061252874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
