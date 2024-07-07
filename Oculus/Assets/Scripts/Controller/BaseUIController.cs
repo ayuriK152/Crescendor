@@ -56,7 +56,7 @@ public class BaseUIController : MonoBehaviour
         if (string.IsNullOrEmpty(name))
             name = typeof(T).Name;
 
-        GameObject go = Managers.Data.Instantiate($"UI/Popup/{name}");
+        GameObject go = Managers.Data.Instantiate($"UI/XR_Popup/{name}");
         T popup = Util.GetOrAddComponent<T>(go);
         _popupStack.Push(popup);
 
