@@ -19,6 +19,8 @@ public class UI_MainMenu : UI_Scene
     Sprite originalSprite;
     Image pianoConnectionCheckImg;
 
+    public GameObject loginSuccessPopup;
+
     enum Buttons
     {
         PlayButton,
@@ -173,9 +175,17 @@ public class UI_MainMenu : UI_Scene
 
     public void ShowErrorMsg(string msg) // 에러 팝업창 생성
     {
-        GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
-        GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
-        loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+        // GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/XR_Popup/UI_ErrorMsg");
+        // GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+        if(!loginSuccessPopup.activeSelf)
+        {
+            loginSuccessPopup.SetActive(true);
+            loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+        }
+        else
+        {
+            loginSuccessPopup.SetActive(false);
+        }
     }
 
     IEnumerator SendRequest(string url, string json, string method)

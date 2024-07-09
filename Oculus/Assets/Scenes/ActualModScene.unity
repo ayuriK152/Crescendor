@@ -8464,7 +8464,6 @@ GameObject:
   - component: {fileID: 1300909531}
   - component: {fileID: 1300909530}
   - component: {fileID: 1300909529}
-  - component: {fileID: 1300909532}
   m_Layer: 5
   m_Name: PauseButton
   m_TagString: Untagged
@@ -8575,24 +8574,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1300909527}
   m_CullTransparentMesh: 1
---- !u!114 &1300909532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300909527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07b3638c2f5db5b479ff24c2859713d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PokeFollowTransform: {fileID: 0}
-  m_SmoothingSpeed: 16
-  m_ReturnToInitialPosition: 1
-  m_ApplyIfChildIsTarget: 1
-  m_ClampToMaxDistance: 0
-  m_MaxDistance: 10
 --- !u!1 &1321602120
 GameObject:
   m_ObjectHideFlags: 0
