@@ -28,6 +28,7 @@ public class DataManager
     public bool isUserLoggedIn = false;
     public Define.RankRecord rankRecord;
     public Define.UserReplayRecord userReplayRecord;
+    public List<DateTime> userLogDates = new List<DateTime>();
 
     public void Init()
     {
@@ -221,8 +222,6 @@ public class DataManager
         // JSON 문자열을 파싱하여 profile 정보 추출
         string profileURL = "";
 
-        // JSON 문자열을 파싱하고 원하는 정보를 추출하는 로직을 작성
-        // 여기서는 간단하게 문자열을 찾아내는 방식으로 작성하였습니다.
         int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
         int endIndex = json.IndexOf("\"", startIndex + 1);
         profileURL = json.Substring(startIndex, endIndex - startIndex);
@@ -230,7 +229,6 @@ public class DataManager
         return profileURL;
     }
 
-    // 반환되는 참 거짓 값으로 에러의 유무를 판별
     public bool GetUserLogData(string userId)
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/log/getlog/{userId}");
@@ -242,7 +240,8 @@ public class DataManager
         {
             isServerConnectionComplete = true;
             Debug.Log("Get Log Success");
-            GetLogPastWeek(www.downloadHandler.text);
+            Debug.Log($"Log Data: {www.downloadHandler.text}");
+            ParseLogDates(www.downloadHandler.text);
             return true;
         }
         else
@@ -252,26 +251,31 @@ public class DataManager
         }
     }
 
-    private void GetLogPastWeek(string jsonResult)
+    private void ParseLogDates(string logData)
     {
-        List<LogEntry> logEntries = JsonUtility.FromJson<LogEntryList>("{\"logs\":" + jsonResult + "}").logs;
+        userLogDates.Clear();
 
-        foreach (var entry in logEntries)
+        try
         {
-            DateTime date = DateTime.Parse(entry.date).Date;
-            int month = date.Month;
-            int week = Mathf.CeilToInt(date.Day / 7.0f);
-            int rowIndex = month - 1; // 행 인덱스 
-            int colIndex = week - 1; // 열 인덱스 
-            int imageIndex = rowIndex * 4 + colIndex; // 인덱스 계산 방식
+            // JSON 데이터 파싱
+            var logs = JsonUtility.FromJson<LogDateWrapper>($"{{\"logs\":{logData}}}");
 
-            // 이미지 인덱스가 배열 범위를 벗어나지 않도록 보정
-            if (imageIndex >= 0 && imageIndex < logCounts.Length)
+            foreach (var log in logs.logs)
             {
-                logCounts[imageIndex]++;
+                // 시간대 정보를 제거하고 날짜만 유지
+                if (DateTime.TryParse(log.date.Substring(0, 10), out DateTime logDate))
+                {
+                    userLogDates.Add(logDate);
+                }
             }
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to parse log data: {e.Message}");
         }
     }
+
 
     public IEnumerator SetProfileImage(string imageURL, Image profileImage)
     {
@@ -345,4 +349,5 @@ public class DataManager
             }
         };
     }
+
 }

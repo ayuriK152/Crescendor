@@ -116,15 +116,15 @@ public class Define
     }
 
     [Serializable]
-    public class LogEntry
+    public class LogDateWrapper
     {
-        public string date;
+        public LogDate[] logs;
     }
 
     [Serializable]
-    public class LogEntryList
+    public class LogDate
     {
-        public List<LogEntry> logs;
+        public string date;
     }
 
     public enum Scene
