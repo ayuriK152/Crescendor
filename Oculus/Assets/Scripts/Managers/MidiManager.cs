@@ -132,7 +132,7 @@ public class MidiManager
         float ypos = PlayerPrefs.GetFloat("trans_ypos");
         float zpos = PlayerPrefs.GetFloat("trans_zpos");
         float widthRatio = vPianoWidth / 11.7f;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(xpos + vPianoWidth / 2.0f, ypos, zpos);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(xpos + vPianoWidth / 2.0f, ypos, zpos - 0.05f);
         widthValue = widthRatio;
         // 너비랑 x축은 어떻게 처리할지...
 
