@@ -175,9 +175,10 @@ public class UI_MainMenu : UI_Scene
 
     public void ShowErrorMsg(string msg) // 에러 팝업창 생성
     {
+        bool isShowed = false;
         // GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/XR_Popup/UI_ErrorMsg");
         // GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
-        if(!loginSuccessPopup.activeSelf)
+        if(!isShowed)
         {
             loginSuccessPopup.SetActive(true);
             loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
@@ -186,6 +187,7 @@ public class UI_MainMenu : UI_Scene
         {
             loginSuccessPopup.SetActive(false);
         }
+        isShowed = !isShowed;
     }
 
     IEnumerator SendRequest(string url, string json, string method)

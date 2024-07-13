@@ -51,8 +51,8 @@ public class ReplayModUIController : IngameUIController
         _originalNotesToggle.onValueChanged.AddListener(ToggleOriginalNote);
         _originalNotesToggle.isOn = false;
 
-        Managers.Input.keyAction -= InputKeyEvent;
-        Managers.Input.keyAction += InputKeyEvent;
+        // Managers.Input.keyAction -= InputKeyEvent;
+        // Managers.Input.keyAction += InputKeyEvent;
 
         _controller = Managers.Ingame.currentController as ReplayModController;
     }
