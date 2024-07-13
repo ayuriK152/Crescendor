@@ -38,6 +38,7 @@ public class IngameUIController : BaseUIController
 
         pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
         optionPanelObj = Resources.Load<GameObject>("Prefabs/UI/XR_Popup/UI_Option");
+        handmenuPanelObj = GameObject.Find("UI/Canvas");
 
         _resumeBtn = handmenuPanelObj.transform.Find("ButtonPanel/Buttons/PauseBtn").GetComponent<Button>();
         _optionBtn = handmenuPanelObj.transform.Find("ButtonPanel/Buttons/PauseBtn").GetComponent<Button>();
