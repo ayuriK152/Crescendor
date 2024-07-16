@@ -288,16 +288,16 @@ MonoBehaviour:
     m_ClassDefinitionType: 0
   - m_Index: 66
     m_Metrics:
-      m_Width: 35.8125
-      m_Height: 49.859375
-      m_HorizontalBearingX: 5.671875
-      m_HorizontalBearingY: 49.234375
-      m_HorizontalAdvance: 49.234375
+      m_Width: 44.546875
+      m_Height: 65.609375
+      m_HorizontalBearingX: 9.546875
+      m_HorizontalBearingY: 65.609375
+      m_HorizontalAdvance: 63.625
     m_GlyphRect:
-      m_X: 95
-      m_Y: 34
-      m_Width: 37
-      m_Height: 51
+      m_X: 10
+      m_Y: 208
+      m_Width: 46
+      m_Height: 66
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
@@ -348,16 +348,16 @@ MonoBehaviour:
     m_ClassDefinitionType: 0
   - m_Index: 74
     m_Metrics:
-      m_Width: 5.3125
-      m_Height: 64.984375
-      m_HorizontalBearingX: 9
-      m_HorizontalBearingY: 64.984375
-      m_HorizontalAdvance: 23.125
+      m_Width: 43.5625
+      m_Height: 67.953125
+      m_HorizontalBearingX: 4.59375
+      m_HorizontalBearingY: 66.78125
+      m_HorizontalAdvance: 52.203125
     m_GlyphRect:
-      m_X: 10
-      m_Y: 36
-      m_Width: 6
-      m_Height: 65
+      m_X: 349
+      m_Y: 10
+      m_Width: 45
+      m_Height: 69
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
@@ -378,16 +378,16 @@ MonoBehaviour:
     m_ClassDefinitionType: 0
   - m_Index: 79
     m_Metrics:
-      m_Width: 36.09375
-      m_Height: 49.234375
-      m_HorizontalBearingX: 9
-      m_HorizontalBearingY: 49.234375
-      m_HorizontalAdvance: 53.375
+      m_Width: 47.515625
+      m_Height: 4.234375
+      m_HorizontalBearingX: 1.171875
+      m_HorizontalBearingY: 0
+      m_HorizontalAdvance: 49.859375
     m_GlyphRect:
-      m_X: 35
-      m_Y: 36
-      m_Width: 37
-      m_Height: 50
+      m_X: 95
+      m_Y: 10
+      m_Width: 48
+      m_Height: 5
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
@@ -451,18 +451,18 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-  - m_Index: 86
+  - m_Index: 71
     m_Metrics:
-      m_Width: 35.8125
-      m_Height: 49.140625
-      m_HorizontalBearingX: 8.28125
-      m_HorizontalBearingY: 47.96875
-      m_HorizontalAdvance: 53.09375
+      m_Width: 26.1875
+      m_Height: 72.71875
+      m_HorizontalBearingX: 3.15625
+      m_HorizontalBearingY: 72.71875
+      m_HorizontalAdvance: 26.8125
     m_GlyphRect:
-      m_X: 293
-      m_Y: 10
-      m_Width: 37
-      m_Height: 50
+      m_X: 91
+      m_Y: 104
+      m_Width: 27
+      m_Height: 73
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0

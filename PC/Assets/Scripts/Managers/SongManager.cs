@@ -18,7 +18,7 @@ public class SongManager
     {
         foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
         {
-            // Converts Æú´õ ³»¿¡ ÀÖ´Â ÅØ½ºÆ® ÆÄÀÏ¸¸ °¡Á®¿À±â
+            // Converts ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             TextAsset[] originSongFiles = Resources.LoadAll<TextAsset>("Converts");
             if (curriculum == Curriculum.None)
             {
@@ -34,15 +34,15 @@ public class SongManager
                 songFiles.Add(new KeyValuePair<string, string>(originSongFile.name, originSongFile.text));
             }
 
-            // °¢ ÆÄÀÏ¿¡ ´ëÇØ SongManager¿¡ °î Á¤º¸ Ãß°¡
+            // ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ SongManagerï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
             foreach (KeyValuePair<string, string> songFile in songFiles)
             {
-                // ÆÄÀÏ ÀÌ¸§¸¸ ÃßÃâ
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 string songTitle = songFile.Key.Split('-')[0];
                 songTitle = songTitle.Replace("_", " ");
                 string songComposer = songFile.Key.Split('-')[1];
                 songComposer = songComposer.Replace("_", " ");
-                // SongManager¿¡ Áßº¹ °Ë»ç ÈÄ °î Á¤º¸ Ãß°¡ 
+                // SongManagerï¿½ï¿½ ï¿½ßºï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ 
                 if (!IsSongAlreadyAdded(songTitle))
                 {
                     AddSong(songCount, songTitle, songComposer, curriculum);
@@ -60,17 +60,17 @@ public class SongManager
         }
     }
 
-    // SongManager¿¡ ÀÌ¹Ì ÇØ´ç °îÀÌ Ãß°¡µÇ¾î ÀÖ´ÂÁö È®ÀÎÇÏ´Â ¸Þ¼­µå
+    // SongManagerï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private bool IsSongAlreadyAdded(string songTitle)
     {
         foreach (Song song in songs)
         {
             if (song.songTitle == songTitle)
             {
-                return true; // ÀÌ¹Ì Ãß°¡µÇ¾î ÀÖÀ½
+                return true; // ï¿½Ì¹ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
         }
-        return false; // Ãß°¡µÇ¾î ÀÖÁö ¾ÊÀ½
+        return false; // ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     
     public void AddSong(int songNum, string songTitle, string composer, Curriculum curriculum)
