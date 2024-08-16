@@ -19,7 +19,6 @@ public class IngameUIController : BaseUIController
     #endregion
 
     #region Protected Members
-    protected Button _disconnectBtn;
     protected Button _resumeBtn;
     protected Button _optionBtn;
     protected Button _exitBtn;
@@ -49,16 +48,6 @@ public class IngameUIController : BaseUIController
         _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
         pausePanelObj.SetActive(false);
         _optionBtn.onClick.AddListener(OnOptionButtonClick);
-
-        try
-        {
-            _disconnectBtn = GameObject.Find("MainCanvas/Buttons/DisconnectBtn").GetComponent<Button>();
-            _disconnectBtn.onClick.AddListener(DisconnectPianoBtn);
-        }
-        catch
-        {
-            Debug.Log("No Object");
-        }
 
         _resumeBtn.onClick.AddListener(TogglePausePanel);
         _exitBtn.onClick.AddListener(OnClickExitBtn);

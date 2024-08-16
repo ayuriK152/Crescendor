@@ -161,7 +161,6 @@ public class IngameController : MonoBehaviour
         }
     }
 
-    /*
     protected IEnumerator ToggleKeyHighlight()
     {
         for (int i = 0; i < 88; i++)
@@ -174,20 +173,6 @@ public class IngameController : MonoBehaviour
                 TurnOffHighlight(i);
         }
         yield return null;
-    }
-    */
-
-    protected void ToggleKeyHighlight()
-    {
-        for (int i = 0; i < 88; i++)
-        {
-            if (Managers.Input.keyChecks[i] || _isPlayingEffect[i])
-            {
-                TurnOnHighlight(i);
-            }
-            else
-                TurnOffHighlight(i);
-        }
     }
 
     void TurnOnHighlight(int keyNum)
@@ -231,7 +216,7 @@ public class IngameController : MonoBehaviour
 
     public void DisconnectPiano()
     {
-        Managers.Input.inputDevice.StopEventsListening();
+        Managers.Input.DisconnectPiano();
     }
 
     protected void CorrectEffect(int keyNum)

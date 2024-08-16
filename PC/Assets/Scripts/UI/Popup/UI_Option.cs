@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,7 +18,9 @@ public class UI_Option : UI_Popup
 
     enum Buttons
     {
-        CloseBtn
+        CloseBtn,
+        PianoListBtn,
+        PianoDisconnectBtn
     }
 
     Slider metronomeVolumeSlider;
@@ -40,7 +43,9 @@ public class UI_Option : UI_Popup
         Bind<GameObject>(typeof(OptionPanels));
         Bind<Button>(typeof(Buttons));
 
-        GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(CloseBtnClicked);
+        GetButton((int)Buttons.CloseBtn).gameObject.BindEvent(OnCloseBtnClick);
+        GetButton((int)Buttons.PianoListBtn).gameObject.BindEvent(OnPianoListBtnClick);
+        GetButton((int)Buttons.PianoDisconnectBtn).gameObject.BindEvent(OnPianoDisconnectBtnClick);
 
         metronomeVolumeSlider = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Slider").GetComponent<Slider>();
         metronomeVolumeText = Get<GameObject>((int)OptionPanels.MetronomeVolume).transform.Find("Value").GetComponent<TextMeshProUGUI>();
@@ -91,9 +96,20 @@ public class UI_Option : UI_Popup
         tempoSpeedSlider.onValueChanged.AddListener((float value) => OnSliderValueChanged(OptionPanels.TempoSpeed, value));
     }
 
-    public void CloseBtnClicked(PointerEventData data)
+    public void OnCloseBtnClick(PointerEventData data)
     {
         Destroy(gameObject);
+    }
+
+    public void OnPianoListBtnClick(PointerEventData data)
+    {
+        Managers.ManagerInstance.GetOrAddComponent<BaseUIController>().ShowPopupUI<UI_PianoConnect>();
+    }
+
+    public void OnPianoDisconnectBtnClick(PointerEventData data)
+    {
+        Managers.Input.DisconnectPiano();
+        Managers.UI.ShowMsg("피아노 연결 해제 성공");
     }
 
     void OnSliderValueChanged(OptionPanels options, float value)

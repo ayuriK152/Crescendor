@@ -57,7 +57,7 @@ public class UI_MainMenu : UI_Scene
             signUpBtn.gameObject.SetActive(true);
             idText.gameObject.SetActive(false);
             Managers.Data.userId = "";
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그인";
             Managers.Data.isUserLoggedIn = false;
         }
         else
@@ -69,7 +69,7 @@ public class UI_MainMenu : UI_Scene
             idInput.gameObject.SetActive(false);
             passwordInput.gameObject.SetActive(false);
             signUpBtn.gameObject.SetActive(false);
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그\n아웃";
             LoadImage();
         }
     }
@@ -84,7 +84,7 @@ public class UI_MainMenu : UI_Scene
         idInput.gameObject.SetActive(false);
         passwordInput.gameObject.SetActive(false);
         signUpBtn.gameObject.SetActive(false);
-        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
+        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그\n아웃";
     }
 
     public void OnPlayButtonClick(PointerEventData data)
@@ -110,10 +110,10 @@ public class UI_MainMenu : UI_Scene
             signUpBtn.gameObject.SetActive(true);
             idText.gameObject.SetActive(false);
             Managers.Data.userId = "";
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그인";
             Managers.Data.isUserLoggedIn = false;
             // 에러메시지 표시
-            ShowErrorMsg("LogOut Successs");
+            ShowErrorMsg("로그아웃 성공");
             profileImage.sprite = originalSprite;
         }
         else // 로그인 버튼 클릭 시 
@@ -121,9 +121,14 @@ public class UI_MainMenu : UI_Scene
             string id = idInput.text;
             string password = passwordInput.text;
             // ID 또는 비밀번호가 null인지 확인
-            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(id))
             {
-                ShowErrorMsg("Please enter your id");
+                ShowErrorMsg("아이디를 입력해주세요");
+                return; // 전송을 중지
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                ShowErrorMsg("비밀번호를 입력해주세요");
                 return; // 전송을 중지
             }
 
@@ -134,13 +139,13 @@ public class UI_MainMenu : UI_Scene
 
     void OnOptionButtonClick(PointerEventData data)
     {
-        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
+        Managers.ManagerInstance.GetOrAddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
     }
 
     public void OnSignupButtonClick(PointerEventData data)
     {
         // 회원가입 팝업창 생성
-        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_SignUp>();
+        Managers.ManagerInstance.GetOrAddComponent<BaseUIController>().ShowPopupUI<UI_SignUp>();
     }
 
     public void OnMyPageButtonClick(PointerEventData data)
@@ -151,7 +156,7 @@ public class UI_MainMenu : UI_Scene
         }
         else
         {
-            ShowErrorMsg("Please log in");
+            ShowErrorMsg("로그인을 먼저 해주세요");
         }
     }
 
@@ -190,7 +195,7 @@ public class UI_MainMenu : UI_Scene
         if (www.result == UnityWebRequest.Result.Success)
         {
             Managers.Data.isUserLoggedIn = true;
-            ShowErrorMsg("Login Success");
+            ShowErrorMsg("로그인 성공");
             Managers.Data.GetUserData(idInput.text);
             Managers.Data.GetUserLogData(idInput.text);
             LoginUpdateNavBar(); // NavBar 변경
@@ -198,7 +203,7 @@ public class UI_MainMenu : UI_Scene
         }
         else
         {
-            ShowErrorMsg("Login Failed");
+            ShowErrorMsg("로그인 실패");
             Debug.Log(www.error);
         }
     }

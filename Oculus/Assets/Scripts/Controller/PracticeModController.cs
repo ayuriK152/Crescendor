@@ -278,6 +278,7 @@ public class PracticeModController : IngameController
         // 노트 입력 종료
         else if (velocity == 0)
         {
+            _isPlayingEffect[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
             Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             Debug.Log(noteNum);

@@ -46,10 +46,10 @@ public class ActualModController : IngameController
 
         _noteRecords = new Dictionary<int, List<KeyValuePair<int, int>>>();
 
-        if (Managers.Input.inputDevice != null)
+        if (Managers.Input.selectedInputDevice != null)
         {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
+            Managers.Input.selectedInputDevice.EventReceived -= OnEventReceived;
+            Managers.Input.selectedInputDevice.EventReceived += OnEventReceived;
         }
 
         try
@@ -67,7 +67,7 @@ public class ActualModController : IngameController
 
     void Update()
     {
-        ToggleKeyHighlight();
+        StartCoroutine(ToggleKeyHighlight());
         Scroll();
         CheckNotesStatus();
         if (currentDeltaTime > Managers.Midi.songLengthDelta && !_isSceneOnSwap)
@@ -123,6 +123,7 @@ public class ActualModController : IngameController
                 currentMetronomeIdx == -1)
             {
                 Managers.Sound.metronomeAction.Invoke(true);
+                //(_uiController as ActualModUIController).ResetMetronomePointPos();
             }
             else
             {
@@ -130,6 +131,7 @@ public class ActualModController : IngameController
             }
             currentMetronomeIdx++;
         }
+        (_uiController as ActualModUIController).UpdateMetronomeUI(((currentDeltaTime + (Managers.Midi.song.division / 10.0f) * Managers.Sound.metronomeOffset) / Managers.Midi.song.division) - currentMetronomeIdx);
 
         //템포에 따라 스크롤 되는 부분
         currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.song.division * Time.deltaTime;

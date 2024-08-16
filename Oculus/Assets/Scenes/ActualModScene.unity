@@ -12919,6 +12919,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: A#
       objectReference: {fileID: 0}
+    - target: {fileID: 2345413833016445135, guid: 8c32ee415e0b0974284c6d75c858f8c9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4238066660395804202, guid: 8c32ee415e0b0974284c6d75c858f8c9, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -12962,6 +12966,10 @@ PrefabInstance:
     - target: {fileID: 4238066660395804202, guid: 8c32ee415e0b0974284c6d75c858f8c9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517432531067483574, guid: 8c32ee415e0b0974284c6d75c858f8c9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

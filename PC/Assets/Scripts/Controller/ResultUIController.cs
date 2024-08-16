@@ -12,7 +12,6 @@ public class ResultUIController : MonoBehaviour
 
     public TextMeshProUGUI correctMountTMP;
     public TextMeshProUGUI failMountTMP;
-    public TextMeshProUGUI outlinerMountTMP;
 
     public TextMeshProUGUI songLengthTMP;
     public TextMeshProUGUI accuracyTMP;
@@ -21,7 +20,6 @@ public class ResultUIController : MonoBehaviour
 
     public Image correctGraphImage;
     public Image failGraphImage;
-    public Image outlinerGraphImage;
 
     public Button songSelectBtn;
 
@@ -35,7 +33,6 @@ public class ResultUIController : MonoBehaviour
 
         correctMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/CorrectValue").GetComponent<TextMeshProUGUI>();
         failMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/FailedValue").GetComponent<TextMeshProUGUI>();
-        outlinerMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/OutlinerValue").GetComponent<TextMeshProUGUI>();
 
         songLengthTMP = GameObject.Find("MainCanvas/ResultInfo/ResultValues/ValueSection/SongLength/Value").GetComponent<TextMeshProUGUI>();
         accuracyTMP = GameObject.Find("MainCanvas/ResultInfo/ResultValues/ValueSection/Accuracy/Value").GetComponent<TextMeshProUGUI>();
@@ -44,7 +41,6 @@ public class ResultUIController : MonoBehaviour
 
         correctGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/CorrectGraph").GetComponent<Image>();
         failGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/FailGraph").GetComponent<Image>();
-        outlinerGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/OutlinerGraph").GetComponent<Image>();
 
         songSelectBtn = GameObject.Find("MainCanvas/SideBar/SongSelectBtn").GetComponent<Button>();
         songSelectBtn.onClick.AddListener(OnClickSongSelectBtn);
