@@ -24,20 +24,20 @@ public class PracticeModUIController : IngameUIController
     public void BindIngameUI()
     {
         base.BindIngameUI();
-        loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
-        loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
+        loopStartMarker = GameObject.Find("UI/Canvas/TimeSlider/Slider/LoopStartMarker");
+        loopEndMarker = GameObject.Find("UI/Canvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
         loopEndMarkerSprite = loopEndMarker.GetComponent<Image>();
 
-        _toBeginBtn = GameObject.Find("MainCanvas/TimeSlider/ToBeginBtn").GetComponent<Button>();
-        _playBtn = GameObject.Find("MainCanvas/TimeSlider/PlayBtn").GetComponent<Button>();
-        _forceProgressBtn = GameObject.Find("MainCanvas/TimeSlider/ForceProgressBtn").GetComponent<Button>();
-        _toEndBtn = GameObject.Find("MainCanvas/TimeSlider/ToEndBtn").GetComponent<Button>();
-        _loopBtn = GameObject.Find("MainCanvas/TimeSlider/LoopBtn").GetComponent<Button>();
+        _toBeginBtn = GameObject.Find("UI/Canvas/TimeSlider/ToBeginBtn").GetComponent<Button>();
+        _playBtn = GameObject.Find("UI/Canvas/TimeSlider/PlayBtn").GetComponent<Button>();
+        _forceProgressBtn = GameObject.Find("UI/Canvas/TimeSlider/ForceProgressBtn").GetComponent<Button>();
+        _toEndBtn = GameObject.Find("UI/Canvas/TimeSlider/ToEndBtn").GetComponent<Button>();
+        _loopBtn = GameObject.Find("UI/Canvas/TimeSlider/LoopBtn").GetComponent<Button>();
         _loopBtn.interactable = false;
 
-        songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
-        songEndPanelObj.SetActive(false);
+        // songEndPanelObj = GameObject.Find("MainCanvas/SongEndPanel");
+        // songEndPanelObj.SetActive(false);
 
         _controller = Managers.Ingame.currentController as PracticeModController;
 

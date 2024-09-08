@@ -21,7 +21,7 @@ public class ResultUIController : MonoBehaviour
     public Image failGraphImage;
     public Image outlinerGraphImage;
 
-    public Button songSelectBtn;
+    // public Button songSelectBtn;
 
     ResultController _controller;
 
@@ -44,12 +44,14 @@ public class ResultUIController : MonoBehaviour
         failGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/FailGraph").GetComponent<Image>();
         outlinerGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/OutlinerGraph").GetComponent<Image>();
 
-        songSelectBtn = GameObject.Find("MainCanvas/SideBar/SongSelectBtn").GetComponent<Button>();
-        songSelectBtn.onClick.AddListener(OnClickSongSelectBtn);
+        // songSelectBtn = GameObject.Find("MainCanvas/SideBar/SongSelectBtn").GetComponent<Button>();
+        // songSelectBtn.onClick.AddListener(OnClickSongSelectBtn);
     }
 
+    /*
     void OnClickSongSelectBtn()
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
+    */
 }

@@ -11,9 +11,9 @@ public class BaseUIController : MonoBehaviour
     {
         get
         {
-            GameObject root = GameObject.Find("Curved Panel");
+            GameObject root = GameObject.Find("UI");
             if (root == null)
-                root = new GameObject { name = "Curved Panel" };
+                root = new GameObject { name = "UI" };
             return root;
         }
     }
@@ -54,7 +54,7 @@ public class BaseUIController : MonoBehaviour
         if (string.IsNullOrEmpty(name))
             name = typeof(T).Name;
 
-        GameObject go = Managers.Data.Instantiate($"UI/Popup/{name}");
+        GameObject go = Managers.Data.Instantiate($"UI/XR_Popup/{name}");
         T popup = Util.GetOrAddComponent<T>(go);
         _popupStack.Push(popup);
 
