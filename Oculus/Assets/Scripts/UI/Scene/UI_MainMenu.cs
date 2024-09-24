@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,9 +15,11 @@ public class UI_MainMenu : UI_Scene
     Button loginBtn;
     TextMeshProUGUI idText;
     Image profileImage;
-    private string baseURL = "http://15.164.2.49:3000/login"; // ±âº» URL
+    private string baseURL = "http://15.164.2.49:3000/login"; // ê¸°ë³¸ URL
     Sprite originalSprite;
     Image pianoConnectionCheckImg;
+
+    public GameObject loginSuccessPopup;
 
     enum Buttons
     {
@@ -90,7 +92,7 @@ public class UI_MainMenu : UI_Scene
         Managers.Input.pianoConnectionAction += PianoConnectionUpdate;
     }
 
-    public void LoginUpdateNavBar() // ·Î±×ÀÎ »óÅÂ ½Ã NavBar ¼öÁ¤
+    public void LoginUpdateNavBar() // ë¡œê·¸ì¸ ìƒíƒœ ì‹œ NavBar ìˆ˜ì •
     {
         Managers.Data.userId = idInput.text;
         idText.text = Managers.Data.userId;
@@ -119,7 +121,7 @@ public class UI_MainMenu : UI_Scene
 
     public void OnLoginButtonClick(PointerEventData data)
     {
-        if (Managers.Data.isUserLoggedIn) // ·Î±×¾Æ¿ô ¹öÆ° Å¬¸¯ ½Ã
+        if (Managers.Data.isUserLoggedIn) // ë¡œê·¸ì•„ì›ƒ ë²„íŠ¼ í´ë¦­ ì‹œ
         {
             idInput.gameObject.SetActive(true);
             passwordInput.gameObject.SetActive(true);
@@ -128,22 +130,22 @@ public class UI_MainMenu : UI_Scene
             Managers.Data.userId = "";
             loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
             Managers.Data.isUserLoggedIn = false;
-            // ¿¡·¯¸Ş½ÃÁö Ç¥½Ã
+            // ì—ëŸ¬ë©”ì‹œì§€ í‘œì‹œ
             ShowErrorMsg("LogOut Successs");
             profileImage.sprite = originalSprite;
         }
-        else // ·Î±×ÀÎ ¹öÆ° Å¬¸¯ ½Ã
+        else // ë¡œê·¸ì¸ ë²„íŠ¼ í´ë¦­ ì‹œ
         {
             string id = idInput.text;
             string password = passwordInput.text;
-            // ID ¶Ç´Â ºñ¹Ğ¹øÈ£°¡ nullÀÎÁö È®ÀÎ
+            // ID ë˜ëŠ” ë¹„ë°€ë²ˆí˜¸ê°€ nullì¸ì§€ í™•ì¸
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
             {
                 ShowErrorMsg("Please enter your id");
-                return; // Àü¼ÛÀ» ÁßÁö
+                return; // ì „ì†¡ì„ ì¤‘ì§€
             }
 
-            // ID¿Í ºñ¹Ğ¹øÈ£°¡ À¯È¿ÇÑ °æ¿ì¿¡¸¸ ¿äÃ»À» º¸³¿.
+            // IDì™€ ë¹„ë°€ë²ˆí˜¸ê°€ ìœ íš¨í•œ ê²½ìš°ì—ë§Œ ìš”ì²­ì„ ë³´ëƒ„.
             StartCoroutine(LoginRequest(id, password));
         }
     }
@@ -155,7 +157,7 @@ public class UI_MainMenu : UI_Scene
 
     public void OnSignupButtonClick(PointerEventData data)
     {
-        // È¸¿ø°¡ÀÔ ÆË¾÷Ã¢ »ı¼º
+        // íšŒì›ê°€ì… íŒì—…ì°½ ìƒì„±
         Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_SignUp>();
     }
 
@@ -171,11 +173,24 @@ public class UI_MainMenu : UI_Scene
         }
     }
 
-    public void ShowErrorMsg(string msg) // ¿¡·¯ ÆË¾÷Ã¢ »ı¼º
+    public void ShowErrorMsg(string msg) // ä¿ŠçŸ¾ æ‰‘è¯€èŠ’ ç§¯å·±
     {
         GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
         GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
         loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+        bool isShowed = false;
+        // GameObject loginSuccessPrefab = Resources.Load<GameObject>("Prefabs/UI/XR_Popup/UI_ErrorMsg");
+        // GameObject loginSuccessPopup = Instantiate(loginSuccessPrefab, transform.parent);
+        if (!isShowed)
+        {
+            loginSuccessPopup.SetActive(true);
+            loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+        }
+        else
+        {
+            loginSuccessPopup.SetActive(false);
+        }
+        isShowed = !isShowed;
     }
 
     IEnumerator SendRequest(string url, string json, string method)
@@ -207,8 +222,8 @@ public class UI_MainMenu : UI_Scene
         {
             Managers.Data.isUserLoggedIn = true;
             ShowErrorMsg("Login Success");
-            LoginUpdateNavBar(); // NavBar º¯°æ
-            LoadImage(Managers.Data.userId); // ÇÁ·ÎÇÊ º¯°æ
+            LoginUpdateNavBar(); // NavBar ë³€ê²½
+            LoadImage(Managers.Data.userId); // í”„ë¡œí•„ ë³€ê²½
         }
         else
         {
@@ -273,14 +288,14 @@ public class UI_MainMenu : UI_Scene
                 string responseText = request.downloadHandler.text;
                 Debug.Log("Response: " + responseText);
 
-                // ?‘ë‹µ??JSON ë¬¸ì?´ì—???í•˜???•ë³´ ì¶”ì¶œ
+                // ?ë¬ë–Ÿ??JSON è‡¾ëª„ì˜„?ëŒë¿‰???ë¨°ë¸¯???ëº£ë‚« ç•°ë¶¿í…§
                 string profileURL = GetProfileURL(responseText);
-                // ?„ë¡œ???´ë?ì§€ ?¤ìš´ë¡œë“œ ë°??¤ì •
+                // ?ê¾¨ì¤ˆ???ëŒ€?ï§Â€ ?ã…¼ìŠ«æ¿¡ì’•ë±¶ è«›??ã…¼ì ™
                 yield return StartCoroutine(SetProfileImage(profileURL));
             }
             else
             {
-                Debug.LogError("? ì?ë¥?ì°¾ì„ ???†ìŒ" + request.error);
+                Debug.LogError("?ì¢?ç‘œ?ï§¡ì– ì“£ ???ë†ì“¬" + request.error);
             }
         }
     }
@@ -293,7 +308,7 @@ public class UI_MainMenu : UI_Scene
 
             if (imageRequest.result == UnityWebRequest.Result.Success)
             {
-                // ?ìŠ¤ì²??¤ìš´ë¡œë“œ ë°??´ë?ì§€ UI???¤ì •
+                // ?ë¿ë’ªï§£??ã…¼ìŠ«æ¿¡ì’•ë±¶ è«›??ëŒ€?ï§Â€ UI???ã…¼ì ™
                 Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
                 profileImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             }
@@ -303,11 +318,11 @@ public class UI_MainMenu : UI_Scene
 
     private string GetProfileURL(string json)
     {
-        // JSON ë¬¸ì?´ì„ ?Œì‹±?˜ì—¬ profile ?•ë³´ ì¶”ì¶œ
+        // JSON è‡¾ëª„ì˜„?ëŒì“£ ?ëš¯ë–›?ì„ë¿¬ profile ?ëº£ë‚« ç•°ë¶¿í…§
         string profileURL = "";
 
-        // JSON ë¬¸ì?´ì„ ?Œì‹±?˜ê³  ?í•˜???•ë³´ë¥?ì¶”ì¶œ?˜ëŠ” ë¡œì§???‘ì„±
-        // ?¬ê¸°?œëŠ” ê°„ë‹¨?˜ê²Œ ë¬¸ì?´ì„ ì°¾ì•„?´ëŠ” ë°©ì‹?¼ë¡œ ?‘ì„±?˜ì??µë‹ˆ??
+        // JSON è‡¾ëª„ì˜„?ëŒì“£ ?ëš¯ë–›?ì„í€¬ ?ë¨°ë¸¯???ëº£ë‚«ç‘œ?ç•°ë¶¿í…§?ì„ë’— æ¿¡ì’–ì­…???ë¬’ê½¦
+        // ?Ñˆë¦°?ì’•ë’— åª›ê¾¨ë–’?ì„ì¾¶ è‡¾ëª„ì˜„?ëŒì“£ ï§¡ì– ë¸˜?ëŒ€ë’— è«›â‘¹ë–‡?ì‡°ì¤ˆ ?ë¬’ê½¦?ì„??ë“¬ë•²??
         int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
         int endIndex = json.IndexOf("\"", startIndex + 1);
         profileURL = json.Substring(startIndex, endIndex - startIndex);

@@ -19,11 +19,11 @@ public class ActualModUIController : IngameUIController
     public void BindIngameUI()
     {
         base.BindIngameUI();
-        accuracyTMP = GameObject.Find("MainCanvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
-        introCountTMP = GameObject.Find("MainCanvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
+        accuracyTMP = GameObject.Find("UI/Canvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
+        introCountTMP = GameObject.Find("UI/Canvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
 
-        _correctGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
-        _failGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
+        _correctGraph = GameObject.Find("UI/Canvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
+        _failGraph = GameObject.Find("UI/CanvasAccuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
         //_outlinerGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Outliner/Graph").GetComponent<Image>();
         _correctGraph.fillAmount = 0;
         _failGraph.fillAmount = 0;

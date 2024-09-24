@@ -66,6 +66,10 @@ public class UI_Select : UI_Scene
     int _songListIndex;
     Button _prevBtn;
     Button _nextBtn;
+
+    public GameObject songpopup;
+    public GameObject rankpopup;
+
     void Start()
     {
         Init();
@@ -276,7 +280,15 @@ public class UI_Select : UI_Scene
                 UpdateSongInfo();
             }
 
-            (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_SongPopup>();
+            // (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_SongPopup>();
+            if (!songpopup.activeSelf)
+            {
+                songpopup.SetActive(true);
+            }
+            else
+            {
+                songpopup.SetActive(false);
+            }
         }
     }
 
@@ -303,7 +315,17 @@ public class UI_Select : UI_Scene
                 }
             }
         }
-        (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
+        // (Managers.UI.currentUIController as BaseUIController).ShowPopupUI<UI_RankPopUp>().gameObject.name = recordIdx.ToString();
+
+        if (!rankpopup.activeSelf)
+        {
+            rankpopup.SetActive(true);
+            rankpopup.gameObject.name = recordIdx.ToString();
+        }
+        else
+        {
+            rankpopup.SetActive(false);
+        }
     }
 
     public void OnInstantReplayButtonClick(PointerEventData data)

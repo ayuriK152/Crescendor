@@ -50,7 +50,7 @@ public class UI_MyPage : UI_Scene
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
         _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
-        profileImage = transform.Find("UserInfo/ProfileBtn").GetComponent<Image>();
+        profileImage = transform.Find("UserInfo/Profile").GetComponent<Image>();
         GetButton((int)Buttons.LogOutBtn).gameObject.BindEvent(OnLogoutBtnClick);
         GetButton((int)Buttons.SecessionBtn).gameObject.BindEvent(OnSeccssionClick);
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnProfileBtnClick);
