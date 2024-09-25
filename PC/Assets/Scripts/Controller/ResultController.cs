@@ -46,6 +46,7 @@ public class ResultController : MonoBehaviour
         _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc);
         _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
+        _uiController.wellHitRatioTMP.text = $"{_correctMount}/{_totalAcc}";
 
         _rankPanelObj = GameObject.Find("MainCanvas/TopRanks/RankListScrollView/Viewport/RankPanel");
 
@@ -89,6 +90,10 @@ public class ResultController : MonoBehaviour
 
     void SaveResultToJson()
     {
+        if (!Directory.Exists($"{Application.dataPath}/RecordReplay"))
+        {
+            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay");
+        }
         File.WriteAllText($"{Application.dataPath}/RecordReplay/{_songTitle}-{_username}-{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
     }
 
