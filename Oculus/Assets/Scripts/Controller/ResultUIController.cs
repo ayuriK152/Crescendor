@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +6,7 @@ public class ResultUIController : MonoBehaviour
 {
     public TextMeshProUGUI songTitleTMP;
     public TextMeshProUGUI songComposerTMP;
+    public TextMeshProUGUI playerRankTMP;
 
     public TextMeshProUGUI correctMountTMP;
     public TextMeshProUGUI failMountTMP;
@@ -22,14 +21,15 @@ public class ResultUIController : MonoBehaviour
     public Image failGraphImage;
     public Image outlinerGraphImage;
 
-    public Button songSelectBtn;
+    // public Button songSelectBtn;
 
-    ResultController resultController;
+    ResultController _controller;
 
     public void BindIngameUI()
     {
         songTitleTMP = GameObject.Find("MainCanvas/ResultInfo/SongTitle").GetComponent<TextMeshProUGUI>();
         songComposerTMP = GameObject.Find("MainCanvas/ResultInfo/Composer").GetComponent<TextMeshProUGUI>();
+        playerRankTMP = GameObject.Find("MainCanvas/PlayerRank/Value").GetComponent<TextMeshProUGUI>();
 
         correctMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/CorrectValue").GetComponent<TextMeshProUGUI>();
         failMountTMP = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/Detail/FailedValue").GetComponent<TextMeshProUGUI>();
@@ -44,12 +44,14 @@ public class ResultUIController : MonoBehaviour
         failGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/FailGraph").GetComponent<Image>();
         outlinerGraphImage = GameObject.Find("MainCanvas/ResultInfo/ResultGraph/OutlinerGraph").GetComponent<Image>();
 
-        songSelectBtn = GameObject.Find("MainCanvas/SideBar/SongSelectBtn").GetComponent<Button>();
-        songSelectBtn.onClick.AddListener(OnClickSongSelectBtn);
+        // songSelectBtn = GameObject.Find("MainCanvas/SideBar/SongSelectBtn").GetComponent<Button>();
+        // songSelectBtn.onClick.AddListener(OnClickSongSelectBtn);
     }
 
+    /*
     void OnClickSongSelectBtn()
     {
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
+    */
 }

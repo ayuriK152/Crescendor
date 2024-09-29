@@ -34,12 +34,14 @@ public class Define
         public int songNum;
         public string songTitle;
         public string songComposer;
+        public Curriculum curriculum;
 
-        public Song(int songNum, string songTitle, string composer)
+        public Song(int songNum, string songTitle, string songComposer, Curriculum curriculum)
         {
             this.songNum = songNum;
             this.songTitle = songTitle;
-            this.songComposer = composer;
+            this.songComposer = songComposer;
+            this.curriculum = curriculum;
         }
     }
 
@@ -113,6 +115,57 @@ public class Define
         }
     }
 
+    public class SheetNote
+    {
+        public int keyNum;
+        public float timing;
+        public bool isUpper;
+        public bool isShapeFourth;
+        public NoteKind noteKind;
+        public Vector2 position;
+
+        public SheetNote(int keyNum, float timing, bool isUpper, NoteKind noteKind)
+        {
+            this.keyNum = keyNum;
+            this.timing = timing;
+            this.isUpper = isUpper;
+            this.noteKind = noteKind;
+            isShapeFourth = false;
+            if (isUpper)
+            {
+                int yPosOffset = (keyNum - 3) / 12;
+                position = new Vector2(timing, (Managers.Midi.NoteKeyPosOrder(keyNum) + yPosOffset * 7 - 32) * 7.5f);
+            }
+            else
+            {
+                int yPosOffset = (keyNum - 3) / 12;
+                position = new Vector2(timing, (Managers.Midi.NoteKeyPosOrder(keyNum) + yPosOffset * 7 - 20) * 7.5f);
+            }
+        }
+    }
+
+    public class Bar
+    {
+        public List<SheetNote> notes;
+
+        public Bar()
+        {
+            notes = new List<SheetNote>();
+        }
+    }
+
+    [Serializable]
+    public class LogDateWrapper
+    {
+        public LogDate[] logs;
+    }
+
+    [Serializable]
+    public class LogDate
+    {
+        public string date;
+    }
+
     public enum Scene
     {
         Unknown,
@@ -135,5 +188,22 @@ public class Define
     {
         OnKeyDown,
         OnKeyUp,
+    }
+
+    public enum Curriculum
+    {
+        Hanon,
+        Czerny100,
+        Beyer,
+        None,
+    }
+
+    public enum NoteKind
+    {
+        First,
+        Second,
+        Fourth,
+        Eighth,
+        Sixteenth,
     }
 }

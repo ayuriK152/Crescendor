@@ -1,0 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class UI_Test : MonoBehaviour
+{
+    void Start()
+    {
+        // 可记芒 积己
+        Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
+    }
+
+}

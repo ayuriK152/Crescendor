@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Datas;
 
 public class UI_MainMenu : UI_Scene
 {
@@ -17,7 +15,8 @@ public class UI_MainMenu : UI_Scene
     Button signUpBtn;
     Button loginBtn;
     TextMeshProUGUI idText;
-    private string baseURL = "http://15.164.2.49:3000/login"; // 기본 URL
+    Image profileImage;
+    Sprite originalSprite;
 
     enum Buttons
     {
@@ -26,7 +25,7 @@ public class UI_MainMenu : UI_Scene
         ExitButton,
         LoginBtn,
         SignUpBtn,
-        MypageBtn,
+        ProfileBtn,
     }
     // Start is called before the first frame update
     void Start()
@@ -38,15 +37,18 @@ public class UI_MainMenu : UI_Scene
     {
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.PlayButton).gameObject.BindEvent(OnPlayButtonClick);
+        GetButton((int)Buttons.OptionButton).gameObject.BindEvent(OnOptionButtonClick);
         GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnExitButtonClick);
         GetButton((int)Buttons.LoginBtn).gameObject.BindEvent(OnLoginButtonClick);
         GetButton((int)Buttons.SignUpBtn).gameObject.BindEvent(OnSignupButtonClick);
-        GetButton((int)Buttons.MypageBtn).gameObject.BindEvent(OnMyPageButtonClick);
-        idInput = GameObject.Find("MainMenu/NavBar/ID").GetComponent<TMP_InputField>(); 
-        passwordInput = GameObject.Find("MainMenu/NavBar/PASSWORD").GetComponent<TMP_InputField>();
-        signUpBtn = GameObject.Find("MainMenu/NavBar/SignUpBtn").GetComponent<Button>();
-        loginBtn = GameObject.Find("MainMenu/NavBar/LoginBtn").GetComponent<Button>();
+        GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnMyPageButtonClick);
+        idInput = GameObject.Find("MainMenu/LoginStuff/ID").GetComponent<TMP_InputField>(); 
+        passwordInput = GameObject.Find("MainMenu/LoginStuff/PASSWORD").GetComponent<TMP_InputField>();
+        signUpBtn = GameObject.Find("MainMenu/LoginStuff/SignUpBtn").GetComponent<Button>();
+        loginBtn = GameObject.Find("MainMenu/LoginStuff/LoginBtn").GetComponent<Button>();
         idText = GameObject.Find("MainMenu/NavBar/IDText").GetComponent<TextMeshProUGUI>();
+        profileImage = GameObject.Find("MainMenu/NavBar/ProfileMask/ProfileBtn").GetComponent<Image>();
+        originalSprite = profileImage.sprite;
 
         if (!Managers.Data.isUserLoggedIn)
         {
@@ -55,7 +57,7 @@ public class UI_MainMenu : UI_Scene
             signUpBtn.gameObject.SetActive(true);
             idText.gameObject.SetActive(false);
             Managers.Data.userId = "";
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그인";
             Managers.Data.isUserLoggedIn = false;
         }
         else
@@ -67,7 +69,8 @@ public class UI_MainMenu : UI_Scene
             idInput.gameObject.SetActive(false);
             passwordInput.gameObject.SetActive(false);
             signUpBtn.gameObject.SetActive(false);
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그\n아웃";
+            LoadImage();
         }
     }
 
@@ -81,7 +84,7 @@ public class UI_MainMenu : UI_Scene
         idInput.gameObject.SetActive(false);
         passwordInput.gameObject.SetActive(false);
         signUpBtn.gameObject.SetActive(false);
-        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogOut";
+        loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그\n아웃";
     }
 
     public void OnPlayButtonClick(PointerEventData data)
@@ -107,23 +110,42 @@ public class UI_MainMenu : UI_Scene
             signUpBtn.gameObject.SetActive(true);
             idText.gameObject.SetActive(false);
             Managers.Data.userId = "";
-            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "LogIn";
+            loginBtn.GetComponentInChildren<TextMeshProUGUI>().text = "로그인";
             Managers.Data.isUserLoggedIn = false;
             // 에러메시지 표시
-            ShowErrorMsg("LogOut Successs");
+            ShowErrorMsg("로그아웃 성공");
+            profileImage.sprite = originalSprite;
         }
         else // 로그인 버튼 클릭 시 
         {
             string id = idInput.text;
             string password = passwordInput.text;
-            StartCoroutine(LoginRequest(id, password));
+            // ID 또는 비밀번호가 null인지 확인
+            if (string.IsNullOrEmpty(id))
+            {
+                ShowErrorMsg("아이디를 입력해주세요");
+                return; // 전송을 중지
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                ShowErrorMsg("비밀번호를 입력해주세요");
+                return; // 전송을 중지
+            }
+
+            // ID와 비밀번호가 유효한 경우에만 요청을 보냄.
+            StartCoroutine(Login(id, password));
         }
+    }
+
+    void OnOptionButtonClick(PointerEventData data)
+    {
+        Managers.ManagerInstance.GetOrAddComponent<BaseUIController>().ShowPopupUI<UI_Option>();
     }
 
     public void OnSignupButtonClick(PointerEventData data)
     {
         // 회원가입 팝업창 생성
-        Managers.ManagerInstance.AddComponent<OutGameUIController>().ShowPopupUI<UI_SignUp>();
+        Managers.ManagerInstance.GetOrAddComponent<BaseUIController>().ShowPopupUI<UI_SignUp>();
     }
 
     public void OnMyPageButtonClick(PointerEventData data)
@@ -134,7 +156,7 @@ public class UI_MainMenu : UI_Scene
         }
         else
         {
-            ShowErrorMsg("Please log in");
+            ShowErrorMsg("로그인을 먼저 해주세요");
         }
     }
 
@@ -145,7 +167,7 @@ public class UI_MainMenu : UI_Scene
         loginSuccessPopup.GetComponentInChildren<TextMeshProUGUI>().text = msg;
     }
 
-    IEnumerator SendRequest(string url, string json, string method)
+    IEnumerator SendLoginRequest(string url, string json, string method)
     {
         UnityWebRequest www;
 
@@ -173,19 +195,27 @@ public class UI_MainMenu : UI_Scene
         if (www.result == UnityWebRequest.Result.Success)
         {
             Managers.Data.isUserLoggedIn = true;
-            ShowErrorMsg("Login Success");
+            ShowErrorMsg("로그인 성공");
+            Managers.Data.GetUserData(idInput.text);
+            Managers.Data.GetUserLogData(idInput.text);
             LoginUpdateNavBar(); // NavBar 변경
+            LoadImage(); // 프로필 변경
         }
         else
         {
-            ShowErrorMsg("Login Failed");
+            ShowErrorMsg("로그인 실패");
             Debug.Log(www.error);
         }
     }
 
-    IEnumerator LoginRequest(string id, string password)
+    IEnumerator Login(string id, string password)
     {
         string json = "{\"id\":\"" + id + "\", \"password\":\"" + password + "\"}";
-        yield return StartCoroutine(SendRequest(baseURL, json, "POST"));
+        yield return StartCoroutine(SendLoginRequest($"http://{DEFAULT_SERVER_IP_PORT}/login", json, "POST"));
+    }
+
+    public void LoadImage()
+    {
+        StartCoroutine(Managers.Data.SetProfileImage(Managers.Data.userProfileURL, profileImage));
     }
 }

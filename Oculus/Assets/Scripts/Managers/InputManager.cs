@@ -1,45 +1,80 @@
-/* ÀÎÇ² ¸Å´ÏÀú
- * ÀÛ¼º - ÀÌ¿ø¼·
- * ÀÔ·Â ±â±âÀÇ ÀÔÃâ·ÂÀ» Ã³¸®ÇÏ±â À§ÇØ »ç¿ëÇÏ´Â °´Ã¼ */
+/* ï¿½ï¿½Ç² ï¿½Å´ï¿½ï¿½ï¿½
+ * ï¿½Û¼ï¿½ - ï¿½Ì¿ï¿½ï¿½ï¿½
+ * ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã¼ */
 
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
 using System;
 using UnityEngine;
 
-public class InputManager
+public class InputManager : IMidiEventHandler
 {
-    public InputDevice inputDevice;
     public bool[] keyChecks = new bool[88];
+    public bool isPianoConnected = false;
 
-    public Action<KeyCode> keyAction;
+    public Action<KeyCode, Define.InputType> keyAction;
+    public Action<int, int> noteAction;
+    public Action<bool> pianoConnectionAction;
 
     public void Init()
     {
-        ConnectPiano();
+#if !UNITY_EDITOR
+        Managers.ManagerObj.AddComponent<AndroidMidiManager>();
+        AndroidMidiManager.Instance.RegisterEventHandler(this);
+#endif
         keyAction = null;
     }
 
     public void Update()
     {
-        // [, ] ÀÔ·Â ÀÌº¥Æ®. ±¸°£ ¹Ýº¹¿¡ »ç¿ë
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
-            keyAction.Invoke(KeyCode.LeftBracket);
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-            keyAction.Invoke(KeyCode.RightBracket);
+        if (keyAction != null)
+        {
+            // [, ] ï¿½Ô·ï¿½ ï¿½Ìºï¿½Æ®. ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+            if (Input.GetKeyDown(KeyCode.LeftBracket))
+                keyAction.Invoke(KeyCode.LeftBracket, Define.InputType.OnKeyDown);
+            if (Input.GetKeyDown(KeyCode.RightBracket))
+                keyAction.Invoke(KeyCode.RightBracket, Define.InputType.OnKeyDown);
+
+            // For Test
+            if (Input.GetKeyDown(KeyCode.A))
+                keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyDown);
+            if (Input.GetKeyUp(KeyCode.A))
+                keyAction.Invoke(KeyCode.A, Define.InputType.OnKeyUp);
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+                keyAction.Invoke(KeyCode.Escape, Define.InputType.OnKeyDown);
+        }
     }
 
-    public void ConnectPiano()
+    public void DeviceAttached(string deviceName)
     {
-        try
+        isPianoConnected = true;
+        if (pianoConnectionAction != null)
         {
-            inputDevice = InputDevice.GetByName("Digital Piano");
-            inputDevice.StartEventsListening();
-            Debug.Log(inputDevice.IsListeningForEvents);
+            pianoConnectionAction.Invoke(isPianoConnected);
         }
-        catch (Exception e)
+    }
+
+    public void DeviceDetached(string deviceName)
+    {
+        isPianoConnected = false;
+        if (pianoConnectionAction != null)
         {
-            Debug.Log(e.Message);
+            pianoConnectionAction.Invoke(isPianoConnected);
+        }
+    }
+
+    public void NoteOn(int note, int velocity)
+    {
+        if (noteAction != null)
+        {
+            noteAction.Invoke(note, velocity);
+        }
+    }
+
+    public void NoteOff(int note)
+    {
+        if (noteAction != null)
+        {
+            noteAction.Invoke(note, 0);
         }
     }
 }

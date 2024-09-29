@@ -1,41 +1,49 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActualModUIController : MonoBehaviour
+public class ActualModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
+    #region Public Members
     public TextMeshProUGUI accuracyTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
+    public TextMeshProUGUI introCountTMP;
+    #endregion
 
-    ActualModController actualModController;
+    #region Private Members
+    private Image _correctGraph;
+    private Image _failGraph;
+    private Image _outlinerGraph;
+    #endregion
 
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        accuracyTMP = GameObject.Find("MainCanvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
-        actualModController = Managers.Ingame.controller as ActualModController;
-    }
+        base.BindIngameUI();
+        accuracyTMP = GameObject.Find("UI/Canvas/Accuracy/Value").GetComponent<TextMeshProUGUI>();
+        introCountTMP = GameObject.Find("UI/Canvas/IntroTimeCount").GetComponent<TextMeshProUGUI>();
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{actualModController.passedNote}/{actualModController.totalNote}";
+        _correctGraph = GameObject.Find("UI/Canvas/Accuracy/DetailGraph/Correct/Graph").GetComponent<Image>();
+        _failGraph = GameObject.Find("UI/CanvasAccuracy/DetailGraph/Fail/Graph").GetComponent<Image>();
+        //_outlinerGraph = GameObject.Find("MainCanvas/Accuracy/DetailGraph/Outliner/Graph").GetComponent<Image>();
+        _correctGraph.fillAmount = 0;
+        _failGraph.fillAmount = 0;
+        //_outlinerGraph.fillAmount = 0;
+
+        _controller = Managers.Ingame.currentController as ActualModController;
+        _exitBtn.onClick.AddListener(OnClickExitBtn);
     }
 
     public void UpdateAccuracy()
     {
-        accuracyTMP.text = $"{Convert.ToInt32(actualModController.currentAcc * 10000.0f) / 100.0f}%";
+        accuracyTMP.text = $"{Convert.ToInt32((_controller as ActualModController).currentAcc * 10000.0f) / 100.0f}%";
+        _correctGraph.fillAmount = (float)(_controller as ActualModController).currentCorrect / ((_controller as ActualModController).currentFail + (_controller as ActualModController).currentCorrect);
+        _failGraph.fillAmount = (float)(_controller as ActualModController).currentFail / ((_controller as ActualModController).currentFail + (_controller as ActualModController).currentCorrect);
+    }
+
+    protected override void OnClickExitBtn()
+    {
+        Managers.Input.keyAction = null;
+        Managers.CleanManagerChilds();
+        Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
 }

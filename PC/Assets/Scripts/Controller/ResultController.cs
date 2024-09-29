@@ -1,11 +1,8 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 using static Define;
 
@@ -19,7 +16,6 @@ public class ResultController : MonoBehaviour
     int _totalAcc;
     int _failMount;
     int _correctMount;
-    int _outlinerMount;
 
     ResultUIController _uiController;
     RankRecordList rankRecords;
@@ -39,7 +35,6 @@ public class ResultController : MonoBehaviour
         _totalAcc = Managers.Midi.totalDeltaTime;
         _failMount = PlayerPrefs.GetInt("trans_FailMount");
         _correctMount = _totalAcc - _failMount;
-        _outlinerMount = PlayerPrefs.GetInt("trans_OutlinerMount");
 
         _uiController = Managers.UI.currentUIController as ResultUIController;
         _uiController.BindIngameUI();
@@ -47,21 +42,36 @@ public class ResultController : MonoBehaviour
         _uiController.songComposerTMP.text = $"{_songComposer}";
         _uiController.correctMountTMP.text = $"{_correctMount}";
         _uiController.failMountTMP.text = $"{_failMount}";
-        _uiController.outlinerMountTMP.text = $"{_outlinerMount}";
         _uiController.songLengthTMP.text = $"{(int)(Managers.Midi.songLengthSecond / 60)}:{(int)(Managers.Midi.songLengthSecond % 60)}";
-        _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc + _outlinerMount);
-        _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount + _outlinerMount);
+        _uiController.correctGraphImage.fillAmount = _correctMount / (float)(_totalAcc);
+        _uiController.failGraphImage.fillAmount = _failMount / (float)(_failMount);
         _uiController.accuracyTMP.text = $"{Convert.ToInt32((_correctMount / (float)_totalAcc) * 10000.0f) / 100.0f}%";
+        _uiController.wellHitRatioTMP.text = $"{_correctMount}/{_totalAcc}";
 
         _rankPanelObj = GameObject.Find("MainCanvas/TopRanks/RankListScrollView/Viewport/RankPanel");
 
         SaveResultToJson();
         if (Managers.Data.isUserLoggedIn)
         {
-            UpdateBestResult();
+            if (!Managers.Song.isModCurriculum)
+            {
+                UpdateBestResult();
+                Managers.Data.AddLog(Managers.Data.userId);
+            }
+            else
+            {
+                UpdateCurriculumProgress();
+            }
         }
-        UpdateHighScores();
-        if (Managers.Data.isUserLoggedIn)
+        try
+        {
+            UpdateHighScores();
+        }
+        catch (Exception ex)
+        {
+
+        }
+        if (Managers.Data.isUserLoggedIn && !Managers.Song.isModCurriculum)
         {
             for (int i = 0; i < rankRecords.records.Count; i++)
             {
@@ -80,7 +90,10 @@ public class ResultController : MonoBehaviour
 
     void SaveResultToJson()
     {
-        RankRecord tempRankRecord = new RankRecord(PlayerPrefs.GetString("trans_SongTitle"), $"{_username}", _correctMount / (float)_totalAcc, $"{DateTime.Now.ToString("yyyy-MM-dd")}T{DateTime.Now.ToString("HH:mm:ss")}.000Z", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
+        if (!Directory.Exists($"{Application.dataPath}/RecordReplay"))
+        {
+            Directory.CreateDirectory($"{Application.dataPath}/RecordReplay");
+        }
         File.WriteAllText($"{Application.dataPath}/RecordReplay/{_songTitle}-{_username}-{DateTime.Now.ToString("yyyyMMddHHmmss")}.json", JsonConvert.SerializeObject(Managers.Data.userReplayRecord));
     }
 
@@ -100,6 +113,25 @@ public class ResultController : MonoBehaviour
         else
         {
             Debug.Log("Á¡¼ö°¡ ³·´Ù!");
+        }
+    }
+
+    void UpdateCurriculumProgress()
+    {
+        int playedIdx = -1;
+        for (int i = 0; i < Managers.Song.curriculumIdx.Count; i++)
+        {
+            if (Managers.Song.curriculumIdx[i].Key == _songTitle)
+            {
+                playedIdx = i;
+                break;
+            }
+        }
+
+        if (playedIdx == Managers.Data.userCurriculumProgress)
+        {
+            Managers.Data.userCurriculumProgress += 1;
+            Managers.Data.SetUserCurriculumProgress(Managers.Data.userCurriculumProgress);
         }
     }
 

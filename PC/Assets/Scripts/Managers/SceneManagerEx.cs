@@ -4,15 +4,18 @@
  * 끝에 Ex가 붙은건 유니티 엔진 내에서 이미 사용중인 SceneManager라는 스크립트가 존재하기 때문.
  * 절대로 Ex를 지워서는 안됨.*/
 
+
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class SceneManagerEx
 {
     public Define.Scene currentScene;
 
     public void Init()
-    {
+    { 
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -20,6 +23,7 @@ public class SceneManagerEx
     public void LoadScene(Define.Scene sceneName)
     {
         SceneManager.LoadScene(GetSceneName(sceneName));
+
         // System.Enum.TryParse(GetSceneName(sceneName), true, out currentScene);
     }
 

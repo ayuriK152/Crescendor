@@ -2,41 +2,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ReplayModUIController : MonoBehaviour
+public class ReplayModUIController : IngameUIController
 {
-    public TextMeshProUGUI songTitleTMP;
-    public TextMeshProUGUI songNoteMountTMP;
-    public TextMeshProUGUI songBpmTMP;
-    public TextMeshProUGUI songBeatTMP;
-    public Slider songTimeSlider;
-    public GameObject songTimeSliderHandle;
+    #region Public Members
     public GameObject loopStartMarker;
     public Image loopStartMarkerSprite;
     public GameObject loopEndMarker;
     public Image loopEndMarkerSprite;
-    public GameObject pausePanelObj;
+    #endregion
 
-    Button _resumeBtn;
-    Button _optionBtn;
-    Button _exitBtn;
-    Button _toBeginBtn;
-    Button _playBtn;
-    Button _forceProgressBtn;
-    Button _toEndBtn;
-    Button _loopBtn;
-    Toggle _originalNotesToggle;
-    GameObject _originalNotes;
-
-    ReplayModController _controller;
+    #region Private Members
+    private Button _toBeginBtn;
+    private Button _playBtn;
+    private Button _forceProgressBtn;
+    private Button _toEndBtn;
+    private Button _loopBtn;
+    private Toggle _originalNotesToggle;
+    private GameObject _originalNotes;
+    #endregion
 
     public void BindIngameUI()
     {
-        songTitleTMP = GameObject.Find("MainCanvas/TimeSlider/Title").GetComponent<TextMeshProUGUI>();
-        songNoteMountTMP = GameObject.Find("MainCanvas/Informations/Notes/Value").GetComponent<TextMeshProUGUI>();
-        songBpmTMP = GameObject.Find("MainCanvas/Informations/BPM/Value").GetComponent<TextMeshProUGUI>();
-        songBeatTMP = GameObject.Find("MainCanvas/Informations/Beat/Value").GetComponent<TextMeshProUGUI>();
-        songTimeSlider = GameObject.Find("MainCanvas/TimeSlider/Slider").GetComponent<Slider>();
-        songTimeSliderHandle = GameObject.Find("MainCanvas/TimeSlider/Slider/Handle Slide Area/Handle");
+        base.BindIngameUI();
+
         loopStartMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopStartMarker");
         loopEndMarker = GameObject.Find("MainCanvas/TimeSlider/Slider/LoopEndMarker");
         loopStartMarkerSprite = loopStartMarker.GetComponent<Image>();
@@ -52,18 +40,10 @@ public class ReplayModUIController : MonoBehaviour
 
         _originalNotesToggle = GameObject.Find("MainCanvas/TimeSlider/OriginNoteToggle").GetComponent<Toggle>();
 
-        pausePanelObj = GameObject.Find("MainCanvas/PausePanel");
-        _resumeBtn = pausePanelObj.transform.Find("Buttons/ResumeBtn").GetComponent<Button>();
-        _optionBtn = pausePanelObj.transform.Find("Buttons/OptionBtn").GetComponent<Button>();
-        _exitBtn = pausePanelObj.transform.Find("Buttons/ExitBtn").GetComponent<Button>();
-        pausePanelObj.SetActive(false);
-
         songTimeSlider.onValueChanged.AddListener(UpdateDeltaTimeBySlider);
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
 
-        _resumeBtn.onClick.AddListener(TogglePausePanel);
-        _exitBtn.onClick.AddListener(OnClickExitBtn);
         _toBeginBtn.onClick.AddListener(OnToBeginBtnClick);
         _playBtn.onClick.AddListener(OnPlayBtnClick);
         _forceProgressBtn.onClick.AddListener(OnForceProgressBtnClick);
@@ -96,56 +76,20 @@ public class ReplayModUIController : MonoBehaviour
         loopEndMarker.transform.position = loopStartMarker.transform.position;
     }
 
-    public void UpdatePassedNote()
-    {
-        songNoteMountTMP.text = $"{_controller.passedNote}/{_controller.totalNote}";
-    }
-
     void UpdateDeltaTimeBySlider(float sliderValue)
     {
-        if (_controller.isPlaying)
-            _controller.isPlaying = false;
+        if ((_controller as ReplayModController).isPlaying)
+            (_controller as ReplayModController).isPlaying = false;
         _controller.currentDeltaTime = (int)sliderValue;
-        _controller.SyncDeltaTime(true);
-        StartCoroutine(_controller.UpdateNotePosByTime());
+        (_controller as ReplayModController).SyncDeltaTime(true);
+        StartCoroutine((_controller as ReplayModController).UpdateNotePosByTime());
     }
 
-    void OnClickExitBtn()
+    protected override void OnClickExitBtn()
     {
         Managers.Input.keyAction = null;
         Managers.CleanManagerChilds();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
-    }
-
-    void TogglePausePanel()
-    {
-        pausePanelObj.SetActive(!pausePanelObj.activeSelf);
-
-        if (pausePanelObj.activeSelf)
-        {
-            _controller.enabled = false;
-        }
-        else
-        {
-            _controller.enabled = true;
-        }
-    }
-
-    void InputKeyEvent(KeyCode keyCode, Define.InputType inputType)
-    {
-        switch (inputType)
-        {
-            case Define.InputType.OnKeyDown:
-                switch (keyCode)
-                {
-                    case KeyCode.Escape:
-                        TogglePausePanel();
-                        break;
-                }
-                break;
-            case Define.InputType.OnKeyUp:
-                break;
-        }
     }
 
     void OnToBeginBtnClick()
@@ -155,18 +99,22 @@ public class ReplayModUIController : MonoBehaviour
 
     void OnPlayBtnClick()
     {
-        _controller.isPlaying = true;
+        (_controller as ReplayModController).isPlaying = true;
     }
 
     void OnForceProgressBtnClick()
     {
-        _controller.IncreaseCurrentNoteIndex();
+        (_controller as ReplayModController).UpdatePassedNote();
+        (_controller as ReplayModController).UpdateTempo();
+        (_controller as ReplayModController).UpdateBeat();
     }
 
     void OnToEndBtnClick()
     {
+        (_controller as ReplayModController).UpdatePassedNote();
+        (_controller as ReplayModController).UpdateTempo();
+        (_controller as ReplayModController).UpdateBeat();
         UpdateDeltaTimeBySlider(Managers.Midi.songLengthDelta);
-        _controller.IncreaseCurrentNoteIndex();
     }
 
     public void ActiveLoopBtn()
@@ -176,7 +124,7 @@ public class ReplayModUIController : MonoBehaviour
 
     void TurnOffLoop()
     {
-        _controller.TurnOffLoop();
+        (_controller as ReplayModController).TurnOffLoop();
         loopStartMarkerSprite.enabled = false;
         loopEndMarkerSprite.enabled = false;
         _loopBtn.interactable = false;

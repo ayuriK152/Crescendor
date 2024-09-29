@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
@@ -5,52 +6,76 @@ using static Define;
 public class SongManager
 {
     public List<Song> songs = new List<Song>();
+    public List<Song> curriculumSongs = new List<Song>();
     public int songCount = 0;
+    public Song selectedSong = null;
+    public Curriculum selectedCurriculum = Curriculum.Hanon;
+    public Dictionary<Curriculum, int> curriculumSongMounts = new Dictionary<Curriculum, int>();
+    public List<KeyValuePair<string, int>> curriculumIdx = new List<KeyValuePair<string, int>>();
+    public bool isModCurriculum = false;
 
     public void LoadSongsFromConvertsFolder()
     {
-        // Converts Æú´õ ³»¿¡ ÀÖ´Â ÅØ½ºÆ® ÆÄÀÏ¸¸ °¡Á®¿À±â
-        TextAsset[] originSongFiles = Resources.LoadAll<TextAsset>("Converts");
-        List<KeyValuePair<string, string>> songFiles = new List<KeyValuePair<string, string>>();
-        foreach (TextAsset originSongFile in originSongFiles)
+        foreach (Curriculum curriculum in Enum.GetValues(typeof(Curriculum)))
         {
-            songFiles.Add(new KeyValuePair<string, string>(originSongFile.name, originSongFile.text));
-        }
-
-        // °¢ ÆÄÀÏ¿¡ ´ëÇØ SongManager¿¡ °î Á¤º¸ Ãß°¡
-        foreach (KeyValuePair<string, string> songFile in songFiles)
-        {
-            // ÆÄÀÏ ÀÌ¸§¸¸ ÃßÃâ
-            string songTitle = songFile.Key.Split('-')[0];
-            songTitle = songTitle.Replace("_", " ");
-            string songComposer = songFile.Key.Split('-')[1];
-            songComposer = songComposer.Replace("_", " ");
-
-            // SongManager¿¡ Áßº¹ °Ë»ç ÈÄ °î Á¤º¸ Ãß°¡
-            if (!IsSongAlreadyAdded(songTitle))
+            // Converts ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            TextAsset[] originSongFiles = Resources.LoadAll<TextAsset>("Converts");
+            if (curriculum == Curriculum.None)
             {
-                AddSong(songCount, songTitle, songComposer);
+                originSongFiles = Resources.LoadAll<TextAsset>("Converts");
+            }
+            else
+            {
+                originSongFiles = Resources.LoadAll<TextAsset>($"Converts/{curriculum}");
+            }
+            List<KeyValuePair<string, string>> songFiles = new List<KeyValuePair<string, string>>();
+            foreach (TextAsset originSongFile in originSongFiles)
+            {
+                songFiles.Add(new KeyValuePair<string, string>(originSongFile.name, originSongFile.text));
+            }
+
+            // ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ SongManagerï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+            foreach (KeyValuePair<string, string> songFile in songFiles)
+            {
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                string songTitle = songFile.Key.Split('-')[0];
+                songTitle = songTitle.Replace("_", " ");
+                string songComposer = songFile.Key.Split('-')[1];
+                songComposer = songComposer.Replace("_", " ");
+                // SongManagerï¿½ï¿½ ï¿½ßºï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ 
+                if (!IsSongAlreadyAdded(songTitle))
+                {
+                    AddSong(songCount, songTitle, songComposer, curriculum);
+                }
             }
         }
 
+        songs.Sort((Song a, Song b) => a.songTitle.CompareTo(b.songTitle));
+
+        for (int i = 0; i < songs.Count; i++)
+        {
+            if (songs[i].curriculum == Curriculum.None)
+                continue;
+            curriculumIdx.Add(new KeyValuePair<string, int>(songs[i].songTitle, i));
+        }
     }
 
-    // SongManager¿¡ ÀÌ¹Ì ÇØ´ç °îÀÌ Ãß°¡µÇ¾î ÀÖ´ÂÁö È®ÀÎÇÏ´Â ¸Þ¼­µå
+    // SongManagerï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private bool IsSongAlreadyAdded(string songTitle)
     {
         foreach (Song song in songs)
         {
             if (song.songTitle == songTitle)
             {
-                return true; // ÀÌ¹Ì Ãß°¡µÇ¾î ÀÖÀ½
+                return true; // ï¿½Ì¹ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
         }
-        return false; // Ãß°¡µÇ¾î ÀÖÁö ¾ÊÀ½
+        return false; // ï¿½ß°ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     
-    public void AddSong(int songNum, string songTitle, string composer)
+    public void AddSong(int songNum, string songTitle, string composer, Curriculum curriculum)
     {
-        Song newSong = new Song(songNum, songTitle, composer);
+        Song newSong = new Song(songNum, songTitle, composer, curriculum);
         songs.Add(newSong);
         songCount++;
     }

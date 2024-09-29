@@ -7,20 +7,9 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System.Collections;
 
-public class ReplayModController : MonoBehaviour
+public class ReplayModController : IngameController
 {
-    public TextMeshProUGUI deviceText;
-    public TextMeshProUGUI noteText;
-
-    public int tempo = 120;
-    public float scrollSpeed = 1.0f;
-    public float notePosOffset = -2.625f;
-    public float noteScale = 3.0f;
-    public float widthValue = 1.5f;
-    public string songTitle;
-
-    public int passedNote;
-    public int totalNote;
+    #region Public Members
     public int currentNoteIndex;
 
     public bool isLoop;
@@ -29,23 +18,17 @@ public class ReplayModController : MonoBehaviour
     public int loopEndDeltaTime;
     public int loopStartNoteIndex;
     public int loopStartPassedNote;
+    #endregion
 
-    public int currentDeltaTime;
-    public float currentDeltaTimeF;
-
-    int[] _initInputTiming = new int[88];
-
-    bool _isInputTiming = false;
-    bool _isWaitInput = true;
-
-    ReplayModUIController _uiController;
+    #region Private Members
+    private bool _isInputTiming = false;
+    private bool _isWaitInput = true;
+    #endregion
 
     public void Init()
     {
-        songTitle = PlayerPrefs.GetString("trans_SongTitle");
+        base.Init();
 
-        passedNote = 0;
-        totalNote = 0;
         currentNoteIndex = 0;
 
         isLoop = false;
@@ -55,25 +38,12 @@ public class ReplayModController : MonoBehaviour
         loopStartNoteIndex = 0;
         loopStartPassedNote = 0;
 
-        currentDeltaTime = -1;
-        currentDeltaTimeF = 0;
-
-        for (int i = 0; i < 88; i++)
-        {
-            _initInputTiming[i] = -1;
-        }
-
-        Managers.Midi.noteScale = noteScale;
-        Managers.Midi.widthValue = widthValue;
-        Managers.Midi.LoadAndInstantiateMidi(songTitle);
-        totalNote = Managers.Midi.notes.Count;
-
         _uiController = Managers.UI.currentUIController as ReplayModUIController;
-        _uiController.BindIngameUI();
+        (_uiController as ReplayModUIController).BindIngameUI();
         _uiController.songTitleTMP.text = songTitle.Replace("_", " ");
         _uiController.songNoteMountTMP.text = $"0/{totalNote}";
-        _uiController.songBpmTMP.text = $"{Managers.Midi.tempo}";
-        _uiController.songBeatTMP.text = $"4/4";
+        _uiController.songTempoTMP.text = $"{Managers.Midi.tempo}";
+        _uiController.songBeatTMP.text = $"{Managers.Midi.beat.Key}/{Managers.Midi.beat.Value}";
         _uiController.songTimeSlider.maxValue = Managers.Midi.songLengthDelta;
 
         Managers.Input.keyAction -= InputKeyEvent;
@@ -82,7 +52,6 @@ public class ReplayModController : MonoBehaviour
         Managers.InitManagerPosition();
 
         Managers.Midi.LoadAndInstantiateReplay(Managers.Data.rankRecord.midi, false);
-        //Managers.Midi.LoadAndInstantiateReplay("CanCan-ayuriK152-20240321011419", true);
     }
 
     void Update()
@@ -100,12 +69,15 @@ public class ReplayModController : MonoBehaviour
             {
                 currentNoteIndex = loopStartNoteIndex;
                 passedNote = loopStartPassedNote;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 currentDeltaTimeF = loopStartDeltaTime;
                 SyncDeltaTime(false);
-                transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+                transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScaleZ + notePosOffset);
             }
         }
+
+        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.song.division * Time.deltaTime;
+        
         if (currentNoteIndex < Managers.Midi.noteTiming.Count)
         {
             if (Managers.Midi.noteTiming[currentNoteIndex] <= currentDeltaTimeF && _isWaitInput)
@@ -113,14 +85,14 @@ public class ReplayModController : MonoBehaviour
                 currentDeltaTime = Managers.Midi.noteTiming[currentNoteIndex];
                 if (currentDeltaTime != currentDeltaTimeF)
                     SyncDeltaTime(true);
-                transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+                transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScaleZ + notePosOffset);
                 _isInputTiming = true;
                 return;
             }
         }
-        currentDeltaTimeF += 2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.song.division * Time.deltaTime;
+
         SyncDeltaTime(false);
-        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * Managers.Midi.noteScale * Time.deltaTime));
+        transform.Translate(new Vector3(0, 0, -2 * Datas.DEFAULT_QUARTER_NOTE_MILLISEC / Managers.Midi.song.tempoMap[0].milliSecond * tempoSpeed * Managers.Midi.noteScaleZ * Time.deltaTime));
     }
 
     void WaitMidiInput()
@@ -132,21 +104,21 @@ public class ReplayModController : MonoBehaviour
             Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i] = new KeyValuePair<int, bool>(Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key, Managers.Input.keyChecks[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key]);
             if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
             {
-                if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
+                if (Managers.Input.selectedInputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
                     return;
                 _isInputTiming = false;
                 return;
             }
         }
-        IncreaseCurrentNoteIndex();
+        UpdatePassedNote();
     }
 
-    public void IncreaseCurrentNoteIndex()
+    public void UpdatePassedNote()
     {
         if (Managers.Midi.noteTiming[currentNoteIndex] - currentDeltaTime > 0)
             return;
         passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-        _uiController.UpdatePassedNote();
+        _uiController.UpdatePassedNoteText();
         currentNoteIndex += 1;
     }
 
@@ -165,7 +137,7 @@ public class ReplayModController : MonoBehaviour
 
     public IEnumerator UpdateNotePosByTime()
     {
-        transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScale + notePosOffset);
+        transform.position = new Vector3(0, 0, -currentDeltaTimeF / Managers.Midi.song.division * Managers.Midi.noteScaleZ + notePosOffset);
         while (true)
         {
             if (currentNoteIndex > 0)
@@ -174,7 +146,7 @@ public class ReplayModController : MonoBehaviour
                 {
                     currentNoteIndex--;
                     passedNote -= Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
-                    _uiController.UpdatePassedNote();
+                    _uiController.UpdatePassedNoteText();
                     continue;
                 }
             }
@@ -182,7 +154,7 @@ public class ReplayModController : MonoBehaviour
             {
                 passedNote += Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]].Count;
                 currentNoteIndex++;
-                _uiController.UpdatePassedNote();
+                _uiController.UpdatePassedNoteText();
                 continue;
             }
             break;
@@ -228,20 +200,20 @@ public class ReplayModController : MonoBehaviour
         loopStartDeltaTime = currentDeltaTime;
         loopStartNoteIndex = currentNoteIndex;
         loopStartPassedNote = passedNote;
-        _uiController.SetLoopStartMarker();
+        (_uiController as ReplayModUIController).SetLoopStartMarker();
         if (loopEndDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as ReplayModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop Start Delta Time Set to {loopStartDeltaTime}");
         if (loopEndDeltaTime >= 0)
         {
             isLoop = true;
-            _uiController.ActiveLoopBtn();
+            (_uiController as ReplayModUIController).ActiveLoopBtn();
         }
     }
 
@@ -250,20 +222,20 @@ public class ReplayModController : MonoBehaviour
         if (loopStartDeltaTime < 0)
             return;
         loopEndDeltaTime = currentDeltaTime;
-        _uiController.SetLoopEndMarker();
+        (_uiController as ReplayModUIController).SetLoopEndMarker();
         if (loopStartDeltaTime >= 0 && loopStartDeltaTime > loopEndDeltaTime)
         {
             int temp = loopEndDeltaTime;
             loopEndDeltaTime = loopStartDeltaTime;
             loopStartDeltaTime = temp;
             Debug.Log($"Start/End Time Swaped! {loopStartDeltaTime} ~ {loopEndDeltaTime}");
-            _uiController.SwapStartEndMarker();
+            (_uiController as ReplayModUIController).SwapStartEndMarker();
         }
         Debug.Log($"Loop End Delta Time Set to {loopEndDeltaTime}");
         if (loopStartDeltaTime >= 0)
         {
             isLoop = true;
-            _uiController.ActiveLoopBtn();
+            (_uiController as ReplayModUIController).ActiveLoopBtn();
         }
     }
 }
