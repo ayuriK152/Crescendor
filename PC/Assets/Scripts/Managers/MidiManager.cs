@@ -251,7 +251,7 @@ public class MidiManager
 
             GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, noteInstantiatePoint);
             tempKeyObject.transform.parent = instantiateNotes[i].transform;
-            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -5.0f);
+            tempKeyObject.transform.localPosition = new Vector3(0, 0.1f, -5.0f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
             tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(notes[i].keyNum);
         }

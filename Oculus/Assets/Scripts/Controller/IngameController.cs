@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -27,6 +27,7 @@ public class IngameController : MonoBehaviour
     protected int _tempoMapIdx = 0;
     protected int _beatMapIdx = 0;
     protected int[] _initInputTiming = new int[88];
+    protected bool[] _isPlayingEffect = new bool[88];
 
     protected List<Material> _vPianoKeyMat = new List<Material>();
     protected List<GameObject> _vPianoKeyObj = new List<GameObject>();
@@ -37,9 +38,10 @@ public class IngameController : MonoBehaviour
     protected IngameUIController _uiController;
     #endregion
 
-    // Effect ∞¸∑√ ∫Øºˆ
+    // Effect Í¥ÄÎ†® Î≥ÄÏàò
     private GameObject vPiano;
     private GameObject correctEffect;
+    private GameObject correctOrgEffect;
     private GameObject accuracyEffect;
     private GameObject congratulationEffect;
 
@@ -54,9 +56,10 @@ public class IngameController : MonoBehaviour
         currentDeltaTime = -1;
         currentDeltaTimeF = 0;
 
-        // ¿Ã∆Â∆Æ ∞¸∑√ √ ±‚»≠
+        // Ïù¥ÌéôÌä∏ Í¥ÄÎ†® Ï¥àÍ∏∞Ìôî
         vPiano = GameObject.Find("VirtualPiano");
         correctEffect = Resources.Load<GameObject>("Effects/correct") as GameObject;
+        correctOrgEffect = Resources.Load<GameObject>("Effects/correct_org") as GameObject;
         accuracyEffect = Resources.Load<GameObject>("Effects/accuracy") as GameObject;
         congratulationEffect = Resources.Load<GameObject>("Effects/congratulation") as GameObject;
 
@@ -66,8 +69,13 @@ public class IngameController : MonoBehaviour
         }
 
         Managers.Midi.noteScale = noteScale * 0.1f;
-        Managers.Midi.widthValue = widthValue * 0.1f;
         Managers.Midi.LoadAndInstantiateMidi(songTitle);
+        vPiano.transform.position = Managers.Midi.noteInstantiatePoint.position;
+        vPiano.transform.localScale *= Managers.Midi.widthValue;
+        correctEffect.transform.localScale *= Managers.Midi.widthValue;
+        correctOrgEffect.transform.localScale *= Managers.Midi.widthValue;
+        accuracyEffect.transform.localScale *= Managers.Midi.widthValue;
+        congratulationEffect.transform.localScale *= Managers.Midi.widthValue;
 
         totalNote = Managers.Midi.notes.Count;
 
@@ -128,20 +136,28 @@ public class IngameController : MonoBehaviour
 
     void TurnOnHighlight(int keyNum)
     {
-        if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+        if (_correctNoteKeys.Contains(keyNum) || _isPlayingEffect[keyNum])
         {
-            _vPianoKeyMat[keyNum].color = new Color(1, 0, 0);
-        }
-        else
-        {
-            _vPianoKeyMat[keyNum].color = new Color(0.5f, 0, 0);
-        }
-        if (!_correctNoteKeys.Contains(keyNum) && _vPianoKeyEffect[keyNum].color != _vPianoKeyEffectColors[2])
-            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
-        else
-            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
-        if (_correctNoteKeys.Contains(keyNum))
+            _isPlayingEffect[keyNum] = true;
             CorrectEffect(keyNum);
+            if (!Managers.Midi.BlackKeyJudge(keyNum + 1))
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 1f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[2];
+            }
+            else
+            {
+                _vPianoKeyMat[keyNum].color = new Color(0, 0.5f, 0);
+                _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[3];
+            }
+
+        }
+        else
+        {
+            _vPianoKeyMat[keyNum].color = new Color(1f, 0, 0);
+            _vPianoKeyEffect[keyNum].color = _vPianoKeyEffectColors[1];
+
+        }
     }
 
     void TurnOffHighlight(int keyNum)
@@ -183,7 +199,10 @@ public class IngameController : MonoBehaviour
         Transform effectPos = vPiano.transform.GetChild(octave).GetChild(chord);
         GameObject effect_clone = Instantiate(accuracyEffect, effectPos);
         effect_clone.transform.Rotate(new Vector3(90, 0, 0));
-        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x + 0.2f, effect_clone.transform.position.y, -2.6f);
+        effect_clone.transform.position = new Vector3(effect_clone.transform.position.x, effect_clone.transform.position.y, 0.85f);
+        GameObject effectOrg = Instantiate(correctOrgEffect, effectPos);
+        effectOrg.transform.Rotate(new Vector3(90, 0, 0));
+        effectOrg.transform.position = new Vector3(effectOrg.transform.position.x, effectOrg.transform.position.y, 0.85f);
     }
 
     protected ParticleSystem AccurayEffect()
@@ -191,7 +210,7 @@ public class IngameController : MonoBehaviour
         Transform camera = GameObject.FindWithTag("MainCamera").transform;
         GameObject effect_clone = Instantiate(accuracyEffect, camera);
 
-        // ºˆ¡§ øπ¡§
+        // ÏàòÏ†ï ÏòàÏ†ï
         float range_x = Random.Range(-5, 5);
         float range_z = Random.Range(0, 4);
 

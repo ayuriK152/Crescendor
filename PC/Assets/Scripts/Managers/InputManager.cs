@@ -5,18 +5,21 @@
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class InputManager
 {
-    public InputDevice inputDevice;
+    public InputDevice selectedInputDevice;
+    public List<InputDevice> inputDevices;
     public bool[] keyChecks = new bool[88];
 
     public Action<KeyCode, Define.InputType> keyAction;
 
     public void Init()
     {
-        ConnectPiano();
+        inputDevices = new List<InputDevice>();
         keyAction = null;
     }
 
@@ -41,17 +44,47 @@ public class InputManager
         }
     }
 
-    void ConnectPiano()
+    public void ConnectPiano(int deviceIdx)
     {
         try
         {
-            inputDevice = InputDevice.GetByName("Digital Piano");
-            inputDevice.StartEventsListening();
-            Debug.Log(inputDevice.IsListeningForEvents);
+            if (selectedInputDevice != null)
+            {
+                if (selectedInputDevice.IsListeningForEvents)
+                {
+                    DisconnectPiano();
+                }
+            }
+            selectedInputDevice = InputDevice.GetByIndex(deviceIdx);
+            selectedInputDevice.StartEventsListening();
+            Debug.Log(selectedInputDevice.IsListeningForEvents);
+
+            Managers.UI.ShowMsg("피아노 연결 성공");
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+            Managers.UI.ShowMsg($"피아노 연결 실패\n{e.Message}");
+        }
+    }
+
+    public void DisconnectPiano()
+    {
+        try
+        {
+            selectedInputDevice.StopEventsListening();
+            selectedInputDevice.Dispose();
+            Debug.Log("Piano Disconnected!");
         }
         catch (Exception e)
         {
             Debug.Log(e.Message);
         }
+    }
+
+    public void UpdateConnectableDevice()
+    {
+        inputDevices.Clear();
+        inputDevices = InputDevice.GetAll().ToList();
     }
 }

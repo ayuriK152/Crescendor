@@ -1,8 +1,8 @@
-/* µ¥ÀÌÅÍ ¸Å´ÏÀú
- * ÀÛ¼º - ÀÌ¿ø¼·
- * µ¥ÀÌÅÍÀÇ ÀÔÃâ·Â, ¼­¹ö¿ÍÀÇ Åë½Å°ú °ü·ÃµÈ ±â´ÉÀ» ¼öÇàÇÏ´Â ¸Å´ÏÀú
- * À¯ÀúÀÇ ·Î±×ÀÎ°ú °ü·ÃµÈ Àü¹ÝÀûÀÎ ±â´É ¶ÇÇÑ ¸Ã¾Æ¼­ Ã³¸®ÇÔ.
- * ÇÊ¿äÇÑ °æ¿ì ¼­¹ö Åë½Å°ú °ü·ÃµÈ ¸ðµç ±â´ÉÀ» ´Ù¸¥ ¸Å´ÏÀú¿¡ ±¸ÇöÇÏ´Â °Íµµ »ý°¢ÇØº¼ ¼ö ÀÖÀ½ */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½
+ * ï¿½Û¼ï¿½ - ï¿½Ì¿ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Å´ï¿½ï¿½ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½Î°ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¾Æ¼ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½.
+ * ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 
 using Newtonsoft.Json;
 using System;
@@ -28,6 +28,7 @@ public class DataManager
     public bool isUserLoggedIn = false;
     public Define.RankRecord rankRecord;
     public Define.UserReplayRecord userReplayRecord;
+    public List<DateTime> userLogDates = new List<DateTime>();
 
     public void Init()
     {
@@ -88,10 +89,10 @@ public class DataManager
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/ranking/{songFileName}");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
@@ -108,10 +109,10 @@ public class DataManager
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/record/getscore/{userId}/{songFileName}");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
@@ -144,10 +145,10 @@ public class DataManager
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Set Data Success");
@@ -169,10 +170,10 @@ public class DataManager
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Add Data Success");
@@ -184,15 +185,15 @@ public class DataManager
         }
     }
 
-    // ¹ÝÈ¯µÇ´Â Âü °ÅÁþ °ªÀ¸·Î ¿¡·¯ÀÇ À¯¹«¸¦ ÆÇº°
+    // ï¿½ï¿½È¯ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çºï¿½
     public bool GetUserData(string userId)
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/getuser/{userId}");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Get Data Success");
@@ -218,11 +219,9 @@ public class DataManager
 
     private string GetProfileURL(string json)
     {
-        // JSON ¹®ÀÚ¿­À» ÆÄ½ÌÇÏ¿© profile Á¤º¸ ÃßÃâ
+        // JSON ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ï¿½Ï¿ï¿½ profile ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         string profileURL = "";
 
-        // JSON ¹®ÀÚ¿­À» ÆÄ½ÌÇÏ°í ¿øÇÏ´Â Á¤º¸¸¦ ÃßÃâÇÏ´Â ·ÎÁ÷À» ÀÛ¼º
-        // ¿©±â¼­´Â °£´ÜÇÏ°Ô ¹®ÀÚ¿­À» Ã£¾Æ³»´Â ¹æ½ÄÀ¸·Î ÀÛ¼ºÇÏ¿´½À´Ï´Ù.
         int startIndex = json.IndexOf("\"profile\":") + "\"profile\":".Length + 1;
         int endIndex = json.IndexOf("\"", startIndex + 1);
         profileURL = json.Substring(startIndex, endIndex - startIndex);
@@ -230,19 +229,19 @@ public class DataManager
         return profileURL;
     }
 
-    // ¹ÝÈ¯µÇ´Â Âü °ÅÁþ °ªÀ¸·Î ¿¡·¯ÀÇ À¯¹«¸¦ ÆÇº°
     public bool GetUserLogData(string userId)
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{DEFAULT_SERVER_IP_PORT}/log/getlog/{userId}");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Get Log Success");
-            GetLogPastWeek(www.downloadHandler.text);
+            Debug.Log($"Log Data: {www.downloadHandler.text}");
+            ParseLogDates(www.downloadHandler.text);
             return true;
         }
         else
@@ -252,26 +251,31 @@ public class DataManager
         }
     }
 
-    private void GetLogPastWeek(string jsonResult)
+    private void ParseLogDates(string logData)
     {
-        List<LogEntry> logEntries = JsonUtility.FromJson<LogEntryList>("{\"logs\":" + jsonResult + "}").logs;
+        userLogDates.Clear();
 
-        foreach (var entry in logEntries)
+        try
         {
-            DateTime date = DateTime.Parse(entry.date).Date;
-            int month = date.Month;
-            int week = Mathf.CeilToInt(date.Day / 7.0f);
-            int rowIndex = (week - 1) * 12; // Çà ÀÎµ¦½º
-            int colIndex = month - 1; // ¿­ ÀÎµ¦½º
-            int imageIndex = rowIndex + colIndex;
+            // JSON ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½
+            var logs = JsonUtility.FromJson<LogDateWrapper>($"{{\"logs\":{logData}}}");
 
-            // ÀÌ¹ÌÁö ÀÎµ¦½º°¡ ¹è¿­ ¹üÀ§¸¦ ¹þ¾î³ªÁö ¾Êµµ·Ï º¸Á¤
-            if (imageIndex >= 0 && imageIndex < logCounts.Length)
+            foreach (var log in logs.logs)
             {
-                logCounts[imageIndex]++;
+                // ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                if (DateTime.TryParse(log.date.Substring(0, 10), out DateTime logDate))
+                {
+                    userLogDates.Add(logDate);
+                }
             }
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to parse log data: {e.Message}");
         }
     }
+
 
     public IEnumerator SetProfileImage(string imageURL, Image profileImage)
     {
@@ -281,7 +285,7 @@ public class DataManager
 
             if (imageRequest.result == UnityWebRequest.Result.Success)
             {
-                // ÅØ½ºÃ³ ´Ù¿î·Îµå ¹× ÀÌ¹ÌÁö UI¿¡ ¼³Á¤
+                // ï¿½Ø½ï¿½Ã³ ï¿½Ù¿ï¿½Îµï¿½ ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 Texture2D texture = DownloadHandlerTexture.GetContent(imageRequest);
                 profileImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             }
@@ -299,10 +303,10 @@ public class DataManager
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
 
-        www.SendWebRequest();  // ÀÀ´äÀÌ ¿Ã¶§±îÁö ´ë±âÇÑ´Ù.
+        www.SendWebRequest();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         while (!www.isDone) { }
 
-        if (www.error == null)  // ¿¡·¯°¡ ³ªÁö ¾ÊÀ¸¸é µ¿ÀÛ.
+        if (www.error == null)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             isServerConnectionComplete = true;
             Debug.Log("Set Data Success");
@@ -346,4 +350,5 @@ public class DataManager
             }
         };
     }
+
 }

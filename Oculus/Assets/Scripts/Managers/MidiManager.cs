@@ -22,7 +22,7 @@ public class MidiManager
     Material blackKeyOne;
     Material blackKeyTwo;
     Material blackKeyThree;
-    Transform noteInstantiatePoint;
+    public Transform noteInstantiatePoint;
     Transform replayInstantiatePoint;
 
     public int tempo = 120;
@@ -132,7 +132,7 @@ public class MidiManager
         float ypos = PlayerPrefs.GetFloat("trans_ypos");
         float zpos = PlayerPrefs.GetFloat("trans_zpos");
         float widthRatio = vPianoWidth / 11.7f;
-        tempNoteInstantiatePoint.transform.localPosition = new Vector3(xpos + vPianoWidth / 2.0f, ypos, zpos);
+        tempNoteInstantiatePoint.transform.localPosition = new Vector3(xpos + vPianoWidth / 2.0f, ypos, zpos - 0.05f);
         widthValue = widthRatio;
         // 너비랑 x축은 어떻게 처리할지...
 
@@ -234,7 +234,7 @@ public class MidiManager
 
             GameObject tempKeyObject = GameObject.Instantiate(keyTextObj, noteInstantiatePoint);
             tempKeyObject.transform.parent = instantiateNotes[i].transform;
-            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -0.5f);
+            tempKeyObject.transform.localPosition = new Vector3(0, 0.55f, -5.0f);
             tempKeyObject.transform.position = new Vector3(tempKeyObject.transform.position.x, tempKeyObject.transform.position.y, tempKeyObject.transform.position.z + 0.1f);
             tempKeyObject.GetComponent<TextMeshPro>().text = GetKeyFromKeynum(notes[i].keyNum);
         }

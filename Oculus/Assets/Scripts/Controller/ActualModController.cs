@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using static Datas;
+using Melanchall.DryWetMidi.Core;
 
 public class ActualModController : IngameController
 {
@@ -206,6 +207,7 @@ public class ActualModController : IngameController
         // 노트 입력 종료
         else if (velocity == 0)
         {
+            _isPlayingEffect[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;
             _noteRecords[noteNum - DEFAULT_KEY_NUM_OFFSET].Add(new KeyValuePair<int, int>(_initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET], currentDeltaTime));
             _initInputTiming[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = -1;
             Managers.Input.keyChecks[noteNum - 1 - DEFAULT_KEY_NUM_OFFSET] = false;

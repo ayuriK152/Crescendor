@@ -12,10 +12,13 @@ using static Datas;
 public class UI_MyPage : UI_Scene
 {
     TextMeshProUGUI _userNameTMP;
-    public List<Image> grassImages; // 이미지를 담을 리스트
+    TextMeshProUGUI calendarText;
+    public List<Image> dateImages; // 달력 이미지 리스트
     public List<Image> badgeImages;
     Image profileImage;
 
+    int year;
+    int month;
     enum Buttons
     {
         MainMenuBtn,
@@ -23,6 +26,8 @@ public class UI_MyPage : UI_Scene
         LogOutBtn,
         SecessionBtn,
         ProfileBtn,
+        PreviousBtn,
+        NextBtn,
     }
 
     void Start()
@@ -35,27 +40,34 @@ public class UI_MyPage : UI_Scene
         Bind<Button>(typeof(Buttons));
         GetButton((int)Buttons.MainMenuBtn).gameObject.BindEvent(OnMainMenuBtnClick);
         GetButton((int)Buttons.SongSelectBtn).gameObject.BindEvent(OnSongSelectBtnClick);
-        _userNameTMP = transform.Find("UserInfo/Name/Value").GetComponent<TextMeshProUGUI>();
+        _userNameTMP = transform.Find("UserInfo/UserInfoDetail/Name/Value").GetComponent<TextMeshProUGUI>();
         _userNameTMP.text = Managers.Data.userId;
+        calendarText = transform.Find("Frequency/Calendar/CalendarText").GetComponent<TextMeshProUGUI>();
         profileImage = transform.Find("UserInfo/ProfileBtn").GetComponent<Image>();
         GetButton((int)Buttons.LogOutBtn).gameObject.BindEvent(OnLogoutBtnClick);
         GetButton((int)Buttons.SecessionBtn).gameObject.BindEvent(OnSeccssionClick);
         GetButton((int)Buttons.ProfileBtn).gameObject.BindEvent(OnProfileBtnClick);
-        FindImages(); // 이미지 찾기
+        GetButton((int)Buttons.PreviousBtn).gameObject.BindEvent(OnPreviousBtnClick);
+        GetButton((int)Buttons.NextBtn).gameObject.BindEvent(OnNextBtnClick);
         LoadImage();
         Managers.Data.GetUserData(Managers.Data.userId);
-        DisplayLog(Managers.Data.logCounts);
         SetBadge(Managers.Data.userCurriculumProgress);
-    }
 
+        DateTime now = DateTime.Now;
+        year = now.Year;
+        month = now.Month;
+        UpdateCalendar();
+    }
 
     public void OnMainMenuBtnClick(PointerEventData data)
     {
+        ResetLogData();
         SceneManager.LoadScene("MainMenuScene");
     }
 
     public void OnSongSelectBtnClick(PointerEventData data)
     {
+        ResetLogData();
         Managers.Scene.LoadScene(Define.Scene.SongSelectScene);
     }
 
@@ -76,53 +88,37 @@ public class UI_MyPage : UI_Scene
         Managers.ManagerInstance.AddComponent<BaseUIController>().ShowPopupUI<UI_Profile>();
     }
 
+    public void OnPreviousBtnClick(PointerEventData data)
+    {
+        if (month == 1)
+        {
+            month = 12;
+            year--;
+        }
+        else
+        {
+            month--;
+        }
+        UpdateCalendar();
+    }
+
+    public void OnNextBtnClick(PointerEventData data)
+    {
+        if (month == 12)
+        {
+            month = 1;
+            year++;
+        }
+        else
+        {
+            month++;
+        }
+        UpdateCalendar();
+    }
+
     public void LoadImage()
     {
         StartCoroutine(Managers.Data.SetProfileImage(Managers.Data.userProfileURL, profileImage));
-    }
-
-    // 이미지 찾아서 리스트에 추가하는 함수
-    private void FindImages()
-    {
-        Transform grassParent = transform.Find("UserInfo/Frequency/Grass");
-
-        foreach (Transform child in grassParent)
-        {
-            Image grassImage = child.GetComponent<Image>();
-            if (grassImage != null)
-            {
-                grassImages.Add(grassImage);
-            }
-        }
-    }
-
-    // 로그 횟수에 따라 색상을 계산하여 이미지에 적용하는 함수
-    private void DisplayLog(int[] logCounts)
-    {
-        for (int i = 0; i < grassImages.Count; i++)
-        {
-            Image grassImage = grassImages[i];
-            int logCount = logCounts[i];
-            Color color = CalculateColor(logCount);
-            grassImage.color = color;
-        }
-    }
-
-    // 로그 횟수에 따라 색상을 계산하는 함수
-    private Color CalculateColor(int logCount)
-    {
-        if (logCount >= 5) // 많은 활동이 있었던 날은 진한 초록색으로 표시
-        {
-            return new Color(0f, 0.5f, 0f); // Dark green
-        }
-        else if (logCount > 0) // 활동이 있었던 날은 연한 초록색으로 표시
-        {
-            return new Color(0.5f, 1f, 0.5f); // Light green
-        }
-        else // 활동이 없었던 날은 회색으로 표시
-        {
-            return new Color(0.75f, 0.75f, 0.75f); // Gray
-        }
     }
 
     // 로그 데이터와 이미지를 초기화하는 함수
@@ -133,14 +129,11 @@ public class UI_MyPage : UI_Scene
         {
             Managers.Data.logCounts[i] = 0;
         }
-
-        // 이미지를 초기화 (회색으로 설정)
-        DisplayLog(Managers.Data.logCounts);
     }
 
-    private void SetBadge(int progreessAmount)
+    private void SetBadge(int progressAmount)
     {
-        Transform badgeParent = transform.Find("Badge/Badges");
+        Transform badgeParent = transform.Find("UserInfo/CurriInfo/Badges");
 
         foreach (Transform child in badgeParent)
         {
@@ -151,7 +144,7 @@ public class UI_MyPage : UI_Scene
             }
         }
 
-        if (progreessAmount == 22)
+        if (progressAmount == 22)
         {
             Sprite badgeMark = Resources.Load<Sprite>("Textures/HanonBadge");
 
@@ -174,4 +167,75 @@ public class UI_MyPage : UI_Scene
             }
         }
     }
+
+
+    private void UpdateCalendar()
+    {
+        Transform dateParent = transform.Find("Frequency/Calendar/DateImages");
+
+        // 기존 dateImages 리스트를 초기화
+        dateImages.Clear();
+
+        // 달력의 모든 날짜 이미지를 리스트에 추가
+        foreach (Transform child in dateParent)
+        {
+            Image dateImage = child.GetComponent<Image>();
+            if (dateImage != null)
+            {
+                dateImages.Add(dateImage);
+            }
+        }
+
+        DateTime firstDayOfMonth = new DateTime(year, month, 1);
+        int daysInMonth = DateTime.DaysInMonth(year, month);
+        int firstDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+
+        // 텍스트 업데이트
+        calendarText.text = $"{year}/{month}";
+
+        // 달력 초기화
+        foreach (Image image in dateImages)
+        {
+            TextMeshProUGUI dateText = image.GetComponentInChildren<TextMeshProUGUI>();
+            dateText.text = "";
+            dateText.color = Color.red; // 기본 색상 빨강
+        }
+
+        // 날짜 채우기
+        for (int day = 1; day <= daysInMonth; day++)
+        {
+            int index = firstDayOfWeek + (day - 1);
+            TextMeshProUGUI dateText = dateImages[index].GetComponentInChildren<TextMeshProUGUI>();
+            dateText.text = day.ToString();
+        }
+
+        // 로그 데이터를 바탕으로 날짜 색상 업데이트
+        if (Managers.Data.GetUserLogData(Managers.Data.userId)) // 적절한 userId를 넣으세요
+        {
+            HighlightLogDates(Managers.Data.userLogDates);
+        }
+
+    }
+
+    private void HighlightLogDates(List<DateTime> logDates)
+    {
+        foreach (DateTime logDate in logDates)
+        {
+            if (logDate.Year == year && logDate.Month == month)
+            {
+                int day = logDate.Day;
+                DateTime firstDayOfMonth = new DateTime(year, month, 1);
+                int firstDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+                int index = firstDayOfWeek + (day - 1);
+
+                if (index >= 0 && index < dateImages.Count)
+                {
+                    TextMeshProUGUI dateText = dateImages[index].GetComponentInChildren<TextMeshProUGUI>();
+                    dateText.color = Color.green; // 로그 있는 날짜 초록색
+                }
+            }
+        }
+    }
+
+
 }

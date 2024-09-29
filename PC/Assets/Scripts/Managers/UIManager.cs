@@ -73,4 +73,11 @@ public class UIManager
                 break;
         }
     }
+
+    public void ShowMsg(string msg)
+    {
+        GameObject messagePrefab = Resources.Load<GameObject>("Prefabs/UI/Popup/UI_ErrorMsg");
+        GameObject messageObj = GameObject.Instantiate(messagePrefab, Managers.ManagerObj.transform.Find("MainCanvas"));
+        messageObj.GetComponentInChildren<TextMeshProUGUI>().text = msg;
+    }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5420344028452949297}
   - component: {fileID: 6151752520289370321}
   - component: {fileID: 7174420806016853844}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ActualBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 6480322111847146542}
   - component: {fileID: 1201855063974228768}
   - component: {fileID: 1846710767617649517}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: UI_SongPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 4739573460276957033}
   - component: {fileID: 5793453646378032093}
   - component: {fileID: 1752548879811623114}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CloseBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 3602493948897641664}
   - component: {fileID: 1873032820119477894}
   - component: {fileID: 5888766843440854530}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 6047642382423161805}
   - component: {fileID: 2843337624825491810}
   - component: {fileID: 1671943822977427138}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -631,7 +631,7 @@ GameObject:
   - component: {fileID: 6110440265084258483}
   - component: {fileID: 2960571620417341659}
   - component: {fileID: 5062344838171854180}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Composer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -768,7 +768,7 @@ GameObject:
   - component: {fileID: 2810769976718600211}
   - component: {fileID: 192640779165275519}
   - component: {fileID: 3666542278335738579}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -906,7 +906,7 @@ GameObject:
   - component: {fileID: 5520677532900252534}
   - component: {fileID: 4821303504165943726}
   - component: {fileID: 530254546547234681}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PracticeBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1027,7 +1027,7 @@ GameObject:
   - component: {fileID: 1123530660554331593}
   - component: {fileID: 6418681762006994485}
   - component: {fileID: 6918460763172804076}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1162,7 +1162,7 @@ GameObject:
   - component: {fileID: 8707301668203515068}
   - component: {fileID: 6414210742414110956}
   - component: {fileID: 4382136497278660881}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1217,7 +1217,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Practice Mod
+  m_text: Practice Mode
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d509747da3b3be429750fc2e3ce665b, type: 2}
   m_sharedMaterial: {fileID: 5491604793891476781, guid: 5d509747da3b3be429750fc2e3ce665b, type: 2}

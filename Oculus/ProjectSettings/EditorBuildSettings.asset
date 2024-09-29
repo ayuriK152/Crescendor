@@ -6,31 +6,31 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/LoadingScene.unity
+    path: Assets/_Scenes/LoadingScene.unity
     guid: 0d754bdd9b3b0f74ebfee9eee1fdfbe1
   - enabled: 1
-    path: Assets/Scenes/MainMenuScene.unity
+    path: Assets/_Scenes/MainMenuScene.unity
     guid: 3fceecf171f097245aeefc5d629f668e
   - enabled: 1
-    path: Assets/Scenes/GetPianoWidthScene.unity
+    path: Assets/_Scenes/GetPianoWidthScene.unity
     guid: 4ab27ef4e4728b24abe2ac237f482fa6
   - enabled: 1
-    path: Assets/Scenes/SongSelectScene.unity
+    path: Assets/_Scenes/SongSelectScene.unity
     guid: eb1cad2b4dc03a34eb2302d915d8e613
   - enabled: 1
-    path: Assets/Scenes/PracticeModScene.unity
+    path: Assets/_Scenes/PracticeModScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/ActualModScene.unity
+    path: Assets/_Scenes/ActualModScene.unity
     guid: 8626d5e5a4a89dc4d9b613007e23913f
   - enabled: 1
-    path: Assets/Scenes/ReplayModScene.unity
+    path: Assets/_Scenes/ReplayModScene.unity
     guid: 721899c2f7fb54e4380ee97fa99775dc
   - enabled: 1
-    path: Assets/Scenes/ResultScene.unity
+    path: Assets/_Scenes/ResultScene.unity
     guid: 19435be11aad906428766d7cfb1e7663
   - enabled: 1
-    path: Assets/Scenes/MyPageScene.unity
+    path: Assets/_Scenes/MyPageScene.unity
     guid: 5331b4529301a76479cca14709a74fcf
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 650ec8fc0a17b1b40bc6f9822092d12d, type: 2}

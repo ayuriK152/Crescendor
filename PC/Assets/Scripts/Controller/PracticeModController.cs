@@ -54,10 +54,10 @@ public class PracticeModController : IngameController
         Managers.Input.keyAction -= InputKeyEvent;
         Managers.Input.keyAction += InputKeyEvent;
 
-        if (Managers.Input.inputDevice != null)
+        if (Managers.Input.selectedInputDevice != null)
         {
-            Managers.Input.inputDevice.EventReceived -= OnEventReceived;
-            Managers.Input.inputDevice.EventReceived += OnEventReceived;
+            Managers.Input.selectedInputDevice.EventReceived -= OnEventReceived;
+            Managers.Input.selectedInputDevice.EventReceived += OnEventReceived;
         }
 
         Managers.InitManagerPosition();
@@ -74,7 +74,7 @@ public class PracticeModController : IngameController
 
     void Update()
     {
-        ToggleKeyHighlight();  
+        StartCoroutine(ToggleKeyHighlight());
         WaitMidiInput();
         Scroll();  
     }
@@ -141,7 +141,7 @@ public class PracticeModController : IngameController
                 //AccurayEffect().startColor = new Color(255, 255, 255, 200);
                 if (!Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Value)
                 {
-                    if (Managers.Input.inputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
+                    if (Managers.Input.selectedInputDevice != null && _initInputTiming[Managers.Midi.noteSetBySameTime[Managers.Midi.noteTiming[currentNoteIndex]][i].Key] < currentDeltaTime)
                         return;
                     _isInputTiming = false;
                     return;
